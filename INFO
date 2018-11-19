@@ -1,0 +1,3 @@
+This is a modified version of
+https://github.com/icsharpcode/SharpZipLib
+without the ZIP implementation.
