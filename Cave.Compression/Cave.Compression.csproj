@@ -6,22 +6,23 @@
     <Authors>Andreas Rohleder</Authors>
     <Company>CaveSystems GmbH, Andreas Rohleder</Company>
     <Product>CaveSystems Compression Library</Product>
-    <Copyright></Copyright>
+    <Copyright>
+    </Copyright>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Cave.Compression.snk</AssemblyOriginatorKeyFile>
-    <Version>1.0.0-alpha-$(Configuration.ToLower())-1</Version>
+    <Version>1.0.0-alpha-$(Configuration.ToLower())-2</Version>
     <PackageIconUrl>https://www.cavesystems.de/favicon.ico</PackageIconUrl>
-	  <PackageTags>CaveSystems Compression</PackageTags>
-    <PackageProjectUrl>https://www.cavesystems.de</PackageProjectUrl>
+    <PackageTags>CaveSystems Compression</PackageTags>
+    <PackageProjectUrl>https://github.com/CaveSystems/cave-compression</PackageProjectUrl>
     <PackageReleaseNotes>Aktueller Release Candidate 2018</PackageReleaseNotes>
     <Description>The compression library is a modified version of the MIT version of SharpZipLib.</Description>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Cave.Compression.xml</DocumentationFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyVersion>1.0.0.1</AssemblyVersion>
-    <FileVersion>2018.509.1536.31</FileVersion>
+    <AssemblyVersion>1.0.0.2</AssemblyVersion>
+    <FileVersion>2018.1120.2236.2878</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>pdbonly</DebugType>
@@ -66,10 +67,6 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Cave.Extensions" Version="1.0.0-alpha-release-3" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Cave.Extensions" Version="1.0.0-alpha-release-4" />
   </ItemGroup>
 </Project>
