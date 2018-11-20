@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cave.Compression", "Cave.Compression\Cave.Compression.csproj", "{FE901C70-9364-491D-B361-1855A7284EBE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{84D5E11D-A583-4640-A675-D0B9ECF2CA7F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{FE901C70-9364-491D-B361-1855A7284EBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE901C70-9364-491D-B361-1855A7284EBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE901C70-9364-491D-B361-1855A7284EBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84D5E11D-A583-4640-A675-D0B9ECF2CA7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84D5E11D-A583-4640-A675-D0B9ECF2CA7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84D5E11D-A583-4640-A675-D0B9ECF2CA7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84D5E11D-A583-4640-A675-D0B9ECF2CA7F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
