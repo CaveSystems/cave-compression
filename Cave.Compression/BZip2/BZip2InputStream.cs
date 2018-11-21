@@ -345,9 +345,9 @@ namespace Cave.Compression.BZip2
         }
 
         /// <summary>
-        /// Closes the stream, releasing any associated resources.
+        /// Releases the unmanaged resources used and optionally releases the managed resources.
         /// </summary>
-        /// <param name="disposing">Dispose value</param>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && IsStreamOwner)

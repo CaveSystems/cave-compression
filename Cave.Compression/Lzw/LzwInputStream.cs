@@ -552,10 +552,10 @@ namespace Cave.Compression.Lzw
         }
 
         /// <summary>
-        /// Closes the input stream.  When <see cref="IsStreamOwner"></see>
+        /// Closes the input stream. When <see cref="IsStreamOwner"></see>
         /// is true the underlying stream is also closed.
         /// </summary>
-        /// <param name="disposing">Dispose value</param>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             if (!isClosed)

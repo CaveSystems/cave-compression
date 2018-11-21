@@ -4,7 +4,7 @@ using Cave.Compression.Checksum;
 using Cave.Compression.Core;
 using Cave.Compression.Streams;
 
-namespace Cave.Compression
+namespace Cave.Compression.GZip
 {
     /// <summary>
     /// This filter stream is used to compress a stream into a "GZIP" stream.
@@ -114,7 +114,7 @@ namespace Cave.Compression
         /// Writes remaining compressed output data to the output stream
         /// and closes it.
         /// </summary>
-        /// <param name="disposing">Dispose value</param>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             try

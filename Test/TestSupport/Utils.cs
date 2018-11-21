@@ -9,9 +9,9 @@ namespace Cave.Compression.Tests.TestSupport
 	/// </summary>
 	public static class Utils
 	{
-		private static Random random = new Random();
+		static Random random = new Random();
 
-		private static void Compare(byte[] a, byte[] b)
+		static void Compare(byte[] a, byte[] b)
 		{
 			if (a == null)
 			{
@@ -65,7 +65,7 @@ namespace Cave.Compression.Tests.TestSupport
 
 			#region IDisposable Support
 
-			private bool disposed = false; // To detect redundant calls
+			bool disposed = false; // To detect redundant calls
 
 			protected virtual void Dispose(bool disposing)
 			{
@@ -102,7 +102,7 @@ namespace Cave.Compression.Tests.TestSupport
 
 			#region IDisposable Support
 
-			private bool disposed = false; // To detect redundant calls
+			bool disposed = false; // To detect redundant calls
 
 			protected virtual void Dispose(bool disposing)
 			{

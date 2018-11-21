@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.IO;
 using Cave.Compression.Checksum;
 using Cave.Compression.Core;
 using Cave.Compression.Streams;
 
-namespace Cave.Compression
+namespace Cave.Compression.GZip
 {
     /// <summary>
     /// This filter stream is used to decompress a "GZIP" format stream.

@@ -1,4 +1,4 @@
-namespace Cave.Compression
+namespace Cave.Compression.GZip
 {
     /// <summary>
     /// This class contains constants used for gzip.

@@ -164,7 +164,7 @@ namespace Cave.Compression.Core
         }
         #endregion
 
-        #region private class Tree
+        #region class Tree
 #pragma warning disable SA1401 // Fields must be private
         class Tree
         {

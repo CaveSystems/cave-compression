@@ -16,7 +16,7 @@ namespace Cave.Compression
         {
             using (var ms = new MemoryStream())
             {
-                GZip.Compress(new MemoryStream(data), ms, true, level);
+                GZip.GZip.Compress(new MemoryStream(data), ms, true, level);
                 return ms.ToArray();
             }
         }
@@ -28,7 +28,7 @@ namespace Cave.Compression
         {
             using (var ms = new MemoryStream())
             {
-                GZip.Decompress(new MemoryStream(data), ms, true);
+                GZip.GZip.Decompress(new MemoryStream(data), ms, true);
                 return ms.ToArray();
             }
         }

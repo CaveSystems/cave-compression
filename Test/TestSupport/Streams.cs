@@ -92,9 +92,9 @@ namespace Cave.Compression.Tests.TestSupport
 
 		#region Instance Fields
 
-		private bool isDisposed_;
+		bool isDisposed_;
 
-		private bool isClosed_;
+		bool isClosed_;
 
 		#endregion Instance Fields
 	}
@@ -449,7 +449,7 @@ namespace Cave.Compression.Tests.TestSupport
 
 		#region Instance Fields
 
-		private readonly ReadWriteRingBuffer ringBuffer;
+		readonly ReadWriteRingBuffer ringBuffer;
 
 		#endregion Instance Fields
 	}

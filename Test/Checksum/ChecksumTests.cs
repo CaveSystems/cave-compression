@@ -9,7 +9,7 @@ namespace Cave.Compression.Tests.Checksum
 	[Category("Checksum")]
 	public class ChecksumTests
 	{
-		private readonly
+		readonly
 				// Represents ASCII string of "123456789"
 				byte[] check = { 49, 50, 51, 52, 53, 54, 55, 56, 57 };
 
@@ -58,7 +58,7 @@ namespace Cave.Compression.Tests.Checksum
 			exceptionTesting(underTestCrc32);
 		}
 
-		private void exceptionTesting(IZipChecksum crcUnderTest)
+		void exceptionTesting(IZipChecksum crcUnderTest)
 		{
 			bool exception = false;
 

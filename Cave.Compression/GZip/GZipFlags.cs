@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Cave.Compression
+namespace Cave.Compression.GZip
 {
     /// <summary>
     /// GZip header flags

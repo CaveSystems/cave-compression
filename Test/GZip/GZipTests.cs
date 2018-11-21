@@ -1,4 +1,5 @@
 using Cave.Compression;
+using Cave.Compression.GZip;
 using Cave.Compression.Tests.TestSupport;
 using NUnit.Framework;
 using System;

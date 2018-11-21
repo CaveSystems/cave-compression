@@ -8,7 +8,6 @@ namespace Cave.Compression.Tar
     /// Methods are provided to put entries, and then write their contents
     /// by writing to this stream using write().
     /// </summary>
-    /// public
     public class TarOutputStream : Stream
     {
         #region Constructors
@@ -178,7 +177,7 @@ namespace Cave.Compression.Tar
         /// </summary>
         /// <remarks>This means that Finish() is called followed by calling the
         /// TarBuffer's Close().</remarks>
-        /// <param name="disposing">Dispose value</param>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             if (!isClosed)

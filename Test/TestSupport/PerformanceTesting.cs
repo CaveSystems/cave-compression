@@ -10,8 +10,8 @@ namespace Cave.Compression.Tests.TestSupport
 {
 	internal static class PerformanceTesting
 	{
-		private const double ByteToMB = 1000000;
-		private const int PacifierOffset = 0x100000;
+		const double ByteToMB = 1000000;
+		const int PacifierOffset = 0x100000;
 
 		public static void TestReadWrite(TestDataSize size, Func<Stream, Stream> input, Func<Stream, Stream> output, Action<Stream> outputClose = null)
 			=> TestReadWrite((int)size, input, output);
@@ -111,14 +111,21 @@ namespace Cave.Compression.Tests.TestSupport
 			{
 				writerJoined = writer.Join(timeout);
 				if (writerJoined && writerState.exception != null)
-					ExceptionDispatchInfo.Capture(writerState.exception).Throw();
+                {
+                    ExceptionDispatchInfo.Capture(writerState.exception).Throw();
+                }
 
-				readerJoined = reader.Join(timeout);
+                readerJoined = reader.Join(timeout);
 				if (readerJoined && readerState.exception != null)
-					ExceptionDispatchInfo.Capture(readerState.exception).Throw();
+                {
+                    ExceptionDispatchInfo.Capture(readerState.exception).Throw();
+                }
 
-				if (cts.IsCancellationRequested) break;
-			}
+                if (cts.IsCancellationRequested)
+                {
+                    break;
+                }
+            }
 
 			//Assert.IsTrue(writerJoined, "Timed out waiting for reader thread to join");
 			//Assert.IsTrue(readerJoined, "Timed out waiting for writer thread to join");
@@ -164,9 +171,11 @@ namespace Cave.Compression.Tests.TestSupport
 			while (state.bytesLeft > 0 && !state.token.IsCancellationRequested)
 			{
 				if (state.bytesLeft < bufferSize)
-					bytesToWrite = bufferSize;
+                {
+                    bytesToWrite = bufferSize;
+                }
 
-				state.stream.Write(buffer, 0, bytesToWrite);
+                state.stream.Write(buffer, 0, bytesToWrite);
 				state.bytesLeft -= bytesToWrite;
 			}
 		}
@@ -182,9 +191,11 @@ namespace Cave.Compression.Tests.TestSupport
 			while ((state.bytesLeft > 0) && !state.token.IsCancellationRequested)
 			{
 				if (state.bytesLeft < bufferSize)
-					bytesToRead = bufferSize;
+                {
+                    bytesToRead = bufferSize;
+                }
 
-				bytesRead = state.stream.Read(buffer, 0, bytesToRead);
+                bytesRead = state.stream.Read(buffer, 0, bytesToRead);
 				state.bytesLeft -= bytesRead;
 
 				if (state.bytesLeft <= pacifierLevel)
@@ -193,8 +204,11 @@ namespace Cave.Compression.Tests.TestSupport
 					pacifierLevel = state.bytesLeft - PacifierOffset;
 				}
 
-				if (bytesRead == 0) break;
-			}
+				if (bytesRead == 0)
+                {
+                    break;
+                }
+            }
 		}
 	}
 

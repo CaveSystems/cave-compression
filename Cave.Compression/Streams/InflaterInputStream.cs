@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Cave.Compression.Core;
+using Cave.Compression.GZip;
 
 namespace Cave.Compression.Streams
 {
@@ -30,14 +31,14 @@ namespace Cave.Compression.Streams
         #endregion
 
         /// <summary>
-        /// Gets the decompressor for this stream
+        /// Gets or sets the decompressor for this stream
         /// </summary>
-        protected Inflater Inflater { get; private set; }
+        protected Inflater Inflater { get; set; }
 
         /// <summary>
-        /// Gets the <see cref="InflaterInputBuffer"/> for this stream.
+        /// Gets or sets the <see cref="InflaterInputBuffer"/> for this stream.
         /// </summary>
-        protected InflaterInputBuffer InputBuffer { get; private set; }
+        protected InflaterInputBuffer InputBuffer { get; set; }
 
         /// <summary>
         /// Gets or sets the compressed size
@@ -330,7 +331,7 @@ namespace Cave.Compression.Streams
         /// Closes the input stream.  When <see cref="IsStreamOwner"></see>
         /// is true the underlying stream is also closed.
         /// </summary>
-        /// <param name="disposing">Dispose value</param>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             if (!isClosed)

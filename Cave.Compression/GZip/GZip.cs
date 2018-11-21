@@ -2,7 +2,7 @@
 using System.IO;
 using Cave.Compression.Core;
 
-namespace Cave.Compression
+namespace Cave.Compression.GZip
 {
     /// <summary>
     /// An example class to demonstrate compression and decompression of GZip streams.

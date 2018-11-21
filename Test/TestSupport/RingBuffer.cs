@@ -365,36 +365,36 @@ namespace Cave.Compression.Tests.TestSupport
 		/// <summary>
 		/// Flag indicating the buffer is closed.
 		/// </summary>
-		private bool isClosed_;
+		bool isClosed_;
 
 		/// <summary>
 		/// Index for the head of the buffer.
 		/// </summary>
 		/// <remarks>Its the index of the next byte to be <see cref="Write">written</see>.</remarks>
-		private int head_;
+		int head_;
 
 		/// <summary>
 		/// Index for the tail of the buffer.
 		/// </summary>
 		/// <remarks>Its the index of the next byte to be <see cref="Read">written</see>.</remarks>
-		private int tail_;
+		int tail_;
 
 		/// <summary>
 		/// The total number of elements added to the buffer.
 		/// </summary>
-		private int count_;
+		int count_;
 
 		/// <summary>
 		/// Storage for the ring buffer contents.
 		/// </summary>
-		private byte[] array_;
+		byte[] array_;
 
-		private long bytesWritten_;
-		private long bytesRead_;
+		long bytesWritten_;
+		long bytesRead_;
 
-		private object lockObject_;
-		private CancellationToken? token_;
-		private TimeSpan waitSpan_;
+		object lockObject_;
+		CancellationToken? token_;
+		TimeSpan waitSpan_;
 
 #if !SimpleSynch
 		ManualResetEvent notEmptyEvent_;
@@ -507,7 +507,7 @@ namespace Cave.Compression.Tests.TestSupport
 			reader.Join();
 		}
 
-		private void Reader()
+		void Reader()
 		{
 			var r = new Random();
 			byte nextValue = 0;
@@ -538,7 +538,7 @@ namespace Cave.Compression.Tests.TestSupport
 			Assert.IsTrue(buffer_.IsClosed);
 		}
 
-		private void Writer()
+		void Writer()
 		{
 			var r = new Random();
 
@@ -563,9 +563,9 @@ namespace Cave.Compression.Tests.TestSupport
 			buffer_.Close();
 		}
 
-		private int readTarget_;
-		private int writeTarget_;
+		int readTarget_;
+		int writeTarget_;
 
-		private ReadWriteRingBuffer buffer_;
+		ReadWriteRingBuffer buffer_;
 	}
 }

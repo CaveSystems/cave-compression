@@ -130,15 +130,15 @@ namespace Cave.Compression.Tar
         #region Class Fields
 
         // Values used during recursive operations.
-        internal static int UserIdAsSet { get; private set; }
-        internal static int GroupIdAsSet { get; private set; }
-        internal static string UserNameAsSet { get; private set; }
-        internal static string GroupNameAsSet { get; private set; } = "None";
+        internal static int UserIdAsSet { get; set; }
+        internal static int GroupIdAsSet { get; set; }
+        internal static string UserNameAsSet { get; set; }
+        internal static string GroupNameAsSet { get; set; } = "None";
 
-        internal static int DefaultUserId { get; private set; }
-        internal static int DefaultGroupId { get; private set; }
-        internal static string DefaultGroupName { get; private set; } = "None";
-        internal static string DefaultUser { get; private set; }
+        internal static int DefaultUserId { get; set; }
+        internal static int DefaultGroupId { get; set; }
+        internal static string DefaultGroupName { get; set; } = "None";
+        internal static string DefaultUser { get; set; }
         #endregion
 
         /// <summary>

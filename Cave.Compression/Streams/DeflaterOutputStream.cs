@@ -24,14 +24,14 @@ namespace Cave.Compression.Streams
         #endregion
 
         /// <summary>
-        /// Gets the deflater which is used to deflate the stream.
+        /// Gets or sets the deflater which is used to deflate the stream.
         /// </summary>
-        protected Deflater Deflater { get; private set; }
+        protected Deflater Deflater { get; set; }
 
         /// <summary>
-        /// Gets the base stream the deflater depends on.
+        /// Gets or sets the base stream the deflater depends on.
         /// </summary>
-        protected Stream BaseOutputStream { get; private set; }
+        protected Stream BaseOutputStream { get; set; }
 
         #region Constructors
 
@@ -383,7 +383,7 @@ namespace Cave.Compression.Streams
         /// Calls <see cref="Finish"/> and closes the underlying
         /// stream when <see cref="IsStreamOwner"></see> is true.
         /// </summary>
-        /// <param name="disposing">Dispose value</param>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             if (!isClosed)

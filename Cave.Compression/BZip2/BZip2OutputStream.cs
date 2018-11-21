@@ -625,7 +625,7 @@ namespace Cave.Compression.BZip2
         public int BytesWritten { get; set; }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="BZip2OutputStream"/> and optionally releases the managed resources.
+        /// Releases the unmanaged resources used and optionally releases the managed resources.
         /// </summary>
         /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)

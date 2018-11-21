@@ -13,7 +13,7 @@ namespace Cave.Compression.Tests.TestSupport
 			AddLanguage("Russian", "Прйвёт.txt", "windows-1251");
 		}
 
-		private static void AddLanguage(string language, string filename, string encoding)
+		static void AddLanguage(string language, string filename, string encoding)
 		{
 			languages.Add(language);
 			filenames.Add(filename);
@@ -21,10 +21,10 @@ namespace Cave.Compression.Tests.TestSupport
 			entries++;
 		}
 
-		private static int entries = 0;
-		private static List<string> languages = new List<string>();
-		private static List<string> filenames = new List<string>();
-		private static List<string> encodings = new List<string>();
+		static int entries = 0;
+		static List<string> languages = new List<string>();
+		static List<string> filenames = new List<string>();
+		static List<string> encodings = new List<string>();
 
 		public static IEnumerable<string> Languages => filenames.AsReadOnly();
 		public static IEnumerable<string> Filenames => filenames.AsReadOnly();

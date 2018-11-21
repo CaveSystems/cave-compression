@@ -829,12 +829,12 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Gets the total number of output bytes returned by Inflate().
+        /// Gets or sets the total number of output bytes returned by Inflate().
         /// </summary>
         /// <returns>
         /// the total number of output bytes.
         /// </returns>
-        public long TotalOut { get; private set; }
+        public long TotalOut { get; set; }
 
         /// <summary>
         /// Gets the total number of processed compressed input bytes.

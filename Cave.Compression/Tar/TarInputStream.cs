@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Cave.IO;
 
 namespace Cave.Compression.Tar
 {
@@ -25,9 +27,9 @@ namespace Cave.Compression.Tar
         TarEntry currentEntry;
 
         /// <summary>
-        /// Flag set when last block has been read
+        /// Eof block counter, needs 2 eof blocks in a row for eof mark
         /// </summary>
-        bool hasHitEOF;
+        int eofBlockNumber;
 
         /// <summary>
         /// Size of this entry as recorded in header
@@ -328,7 +330,7 @@ namespace Cave.Compression.Tar
         /// Closes this stream. Calls the TarBuffer's close() method.
         /// The underlying stream is closed by the TarBuffer.
         /// </summary>
-        /// <param name="disposing">Dispose value</param>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -445,7 +447,7 @@ namespace Cave.Compression.Tar
         /// </returns>
         public TarEntry GetNextEntry()
         {
-            if (hasHitEOF)
+            if (eofBlockNumber >= 2)
             {
                 return null;
             }
@@ -459,20 +461,23 @@ namespace Cave.Compression.Tar
 
             if (headerBuf == null)
             {
-                hasHitEOF = true;
+                throw new EndOfStreamException();
             }
             else
             {
-                hasHitEOF |= TarBuffer.IsEndOfArchiveBlock(headerBuf);
+                if (TarBuffer.IsEndOfArchiveBlock(headerBuf))
+                {
+                    eofBlockNumber++;
+                    currentEntry = null;
+                    return GetNextEntry();
+                }
             }
 
-            if (hasHitEOF)
+            eofBlockNumber = 0;
+            try
             {
-                currentEntry = null;
-            }
-            else
-            {
-                try
+                string longName = null;
+                for (; ;)
                 {
                     var header = new TarHeader();
                     header.ParseBuffer(headerBuf);
@@ -484,40 +489,36 @@ namespace Cave.Compression.Tar
                     entryOffset = 0;
                     entrySize = header.Size;
 
-                    StringBuilder longName = null;
-
-                    if (header.TypeFlag == TarEntryType.LongName)
+                    switch (header.TypeFlag)
                     {
-                        byte[] nameBuffer = new byte[TarBuffer.BlockSize];
-                        long numToRead = entrySize;
-
-                        longName = new StringBuilder();
-
-                        while (numToRead > 0)
+                        case TarEntryType.LongName:
                         {
-                            int numRead = this.Read(nameBuffer, 0, numToRead > nameBuffer.Length ? nameBuffer.Length : (int)numToRead);
-
-                            if (numRead == -1)
-                            {
-                                throw new InvalidDataException("Failed to read long name entry");
-                            }
-
-                            longName.Append(TarHeader.ParseName(nameBuffer, 0, numRead).ToString());
-                            numToRead -= numRead;
+                            longName = ReadStringData();
+                            headerBuf = tarBuffer.ReadBlock();
+                            continue;
                         }
 
-                        SkipToNextEntry();
-                        headerBuf = tarBuffer.ReadBlock();
-                    }
-                    else if (header.TypeFlag != TarEntryType.NormalFile &&
-                             header.TypeFlag != TarEntryType.OldNormalFile &&
-                             header.TypeFlag != TarEntryType.Link &&
-                             header.TypeFlag != TarEntryType.Symlink &&
-                             header.TypeFlag != TarEntryType.Directory)
-                    {
-                        // Ignore things we dont understand completely for now
-                        SkipToNextEntry();
-                        headerBuf = tarBuffer.ReadBlock();
+                        case TarEntryType.ExtendedHeader:
+                        {
+                            longName = GetExtendedHeaderName();
+                            headerBuf = tarBuffer.ReadBlock();
+                            continue;
+                        }
+
+                        case TarEntryType.NormalFile:
+                        case TarEntryType.OldNormalFile:
+                        case TarEntryType.Link:
+                        case TarEntryType.Symlink:
+                        case TarEntryType.Directory:
+                            break;
+
+                        default:
+                        {
+                            // Ignore things we dont understand completely for now
+                            SkipToNextEntry();
+                            headerBuf = tarBuffer.ReadBlock();
+                            continue;
+                        }
                     }
 
                     if (entryFactory == null)
@@ -539,41 +540,60 @@ namespace Cave.Compression.Tar
 
                     // TODO: Review How do we resolve this discrepancy?!
                     entrySize = currentEntry.Size;
+
+                    break;
                 }
-                catch (InvalidDataException ex)
-                {
-                    entrySize = 0;
-                    entryOffset = 0;
-                    currentEntry = null;
-                    string errorText = string.Format("Bad header in record {0} block {1} {2}", tarBuffer.CurrentRecord, tarBuffer.CurrentBlock, ex.Message);
-                    throw new InvalidDataException(errorText);
-                }
+            }
+            catch (InvalidDataException ex)
+            {
+                entrySize = 0;
+                entryOffset = 0;
+                currentEntry = null;
+                string errorText = string.Format("Bad header in record {0} block {1} {2}", tarBuffer.CurrentRecord, tarBuffer.CurrentBlock, ex.Message);
+                throw new InvalidDataException(errorText);
             }
 
             return currentEntry;
+        }
+
+        string GetExtendedHeaderName()
+        {
+            string data = ReadStringData();
+            var header = TarExtendedHeader.Parse(data);
+            return header.Path;
+        }
+
+        string ReadStringData()
+        {
+            var sb = new StringBuilder();
+            byte[] nameBuffer = new byte[TarBuffer.BlockSize];
+            long numToRead = entrySize;
+            while (numToRead > 0)
+            {
+                int numRead = this.Read(nameBuffer, 0, numToRead > nameBuffer.Length ? nameBuffer.Length : (int)numToRead);
+                if (numRead == -1)
+                {
+                    throw new InvalidDataException("Failed to read long name entry");
+                }
+
+                sb.Append(TarHeader.ParseName(nameBuffer, 0, numRead).ToString());
+                numToRead -= numRead;
+            }
+
+            SkipToNextEntry();
+            return sb.ToString();
         }
 
         /// <summary>
         /// Copies the contents of the current tar archive entry directly into
         /// an output stream.
         /// </summary>
-        /// <param name="outputStream">
-        /// The OutputStream into which to write the entry's data.
-        /// </param>
-        public void CopyEntryContents(Stream outputStream)
+        /// <param name="outputStream">The OutputStream into which to write the entry's data.</param>
+        /// <param name="callback">Callback to be called during copy or null.</param>
+        /// <param name="userItem">An user item for the callback.</param>
+        public void CopyEntryContents(Stream outputStream, ProgressCallback callback = null, object userItem = null)
         {
-            byte[] tempBuffer = new byte[32 * 1024];
-
-            while (true)
-            {
-                int numRead = Read(tempBuffer, 0, tempBuffer.Length);
-                if (numRead <= 0)
-                {
-                    break;
-                }
-
-                outputStream.Write(tempBuffer, 0, numRead);
-            }
+            this.CopyBlocksTo(outputStream, entrySize, callback, userItem);
         }
 
         void SkipToNextEntry()

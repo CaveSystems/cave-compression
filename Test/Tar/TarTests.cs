@@ -1,20 +1,20 @@
+using System;
+using System.IO;
 using Cave.Compression.Tar;
 using Cave.Compression.Tests.TestSupport;
 using NUnit.Framework;
-using System;
-using System.IO;
 
 namespace Cave.Compression.Tests.Tar
 {
-	/// <summary>
-	/// This class contains test cases for Tar archive handling.
-	/// </summary>
-	[TestFixture]
+    /// <summary>
+    /// This class contains test cases for Tar archive handling.
+    /// </summary>
+    [TestFixture]
 	public class TarTestSuite
 	{
-		private int entryCount;
+		int entryCount;
 
-		private void EntryCounter(TarArchive archive, TarEntry entry, string message)
+		void EntryCounter(TarArchive archive, TarEntry entry, string message)
 		{
 			entryCount++;
 		}
@@ -184,7 +184,7 @@ namespace Cave.Compression.Tests.Tar
 			}
 		}
 
-		private void TryLongName(string name)
+		void TryLongName(string name)
 		{
 			var ms = new MemoryStream();
 			using (TarOutputStream tarOut = new TarOutputStream(ms))
@@ -731,7 +731,7 @@ namespace Cave.Compression.Tests.Tar
 		[Test]
 		[Category("Tar")]
 		[Category("Performance")]
-		[Explicit("Long Running")]
+		//[Explicit("Long Running")]
 		public void WriteThroughput()
 		{
 			const string EntryName = "LargeTarEntry";
@@ -755,7 +755,7 @@ namespace Cave.Compression.Tests.Tar
 		[Test]
 		[Category("Tar")]
 		[Category("Performance")]
-		[Explicit("Long Running")]
+		//[Explicit("Long Running")]
 		public void SingleLargeEntry()
 		{
 			const string EntryName = "LargeTarEntry";
@@ -787,5 +787,5 @@ namespace Cave.Compression.Tests.Tar
 				}
 			);
 		}
-	}
+    }
 }
