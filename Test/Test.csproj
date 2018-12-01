@@ -2,9 +2,9 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <IsPackable>false</IsPackable>
-    <Version>1.0.0-alpha-$(Configuration.ToLower())-3</Version>
-    <AssemblyVersion>1.0.0.3</AssemblyVersion>
-    <FileVersion>2018.1121.1907.1264</FileVersion>
+    <Version>1.0.0-alpha-$(Configuration.ToLower())-4</Version>
+    <AssemblyVersion>1.0.0.4</AssemblyVersion>
+    <FileVersion>2018.1201.1703.1524</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="nunit" Version="3.10.1" />
