@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Cave.IO;
 
 namespace Cave.Compression.Tar
 {
@@ -10,7 +9,7 @@ namespace Cave.Compression.Tar
     {
         public static TarExtendedHeader Parse(string data)
         {
-            var result = new TarExtendedHeader();
+            TarExtendedHeader result = new TarExtendedHeader();
             int start = 0;
             for (int i = 0; i < data.Length; i++)
             {
@@ -20,11 +19,11 @@ namespace Cave.Compression.Tar
                     continue;
                 }
 
-                var numberLength = i - start;
-                var itemLength = int.Parse(data.Substring(start, numberLength));
+                int numberLength = i - start;
+                int itemLength = int.Parse(data.Substring(start, numberLength));
 
                 // read item
-                var itemString = data.Substring(i + 1, itemLength - 2 - numberLength);
+                string itemString = data.Substring(i + 1, itemLength - 2 - numberLength);
                 start = start + itemLength;
                 i = start - 1;
                 if (data[i] != '\n')
@@ -32,7 +31,7 @@ namespace Cave.Compression.Tar
                     throw new InvalidDataException("Extended header line needs to end with newline!");
                 }
 
-                var item = itemString.Split(new char[] { '=' }, 2);
+                string[] item = itemString.Split(new char[] { '=' }, 2);
                 result.Add(item[0], item[1]);
             }
 
@@ -71,13 +70,13 @@ namespace Cave.Compression.Tar
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            foreach (var i in this)
+            foreach (KeyValuePair<string, string> i in this)
             {
-                var content = $"{i.Key}={i.Value}\n";
+                string content = $"{i.Key}={i.Value}\n";
                 string result = content + 3;
                 for (; ;)
                 {
-                    var prefix = result.Length;
+                    int prefix = result.Length;
                     result = $"{prefix} {content}";
                     if (prefix == result.Length)
                     {

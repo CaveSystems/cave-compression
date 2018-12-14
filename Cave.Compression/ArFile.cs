@@ -12,6 +12,7 @@ namespace Cave.Compression
     public class ArFile
     {
         #region static functionality
+
         /// <summary>
         /// Creates a new ar file at the specified stream
         /// </summary>
@@ -91,6 +92,7 @@ namespace Cave.Compression
         #endregion
 
         #region constructors
+
         /// <summary>
         /// creates a new ar file from a stream
         /// </summary>
@@ -98,33 +100,32 @@ namespace Cave.Compression
         /// <param name="bottomStream">underlying compression / file stream</param>
         /// <param name="openRead">If set to true the stream is used for reading and will be checked for a valid header,
         /// otherwise a header for a new file is written</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Literale nicht als lokalisierte Parameter übergeben", MessageId = "Cave.Text.ASCII.GetBytes(System.String)")]
-        private ArFile(Stream topStream, Stream bottomStream, bool openRead)
+        ArFile(Stream topStream, Stream bottomStream, bool openRead)
         {
-            m_TopStream = topStream;
-            m_BottomStream = bottomStream;
-            byte[] ArHeader = ASCII.GetBytes("!<arch>\n");
+            this.topStream = topStream;
+            this.bottomStream = bottomStream;
+            byte[] arHeader = ASCII.GetBytes("!<arch>\n");
             if (openRead)
             {
                 byte[] header = new byte[8];
-                if ((m_TopStream.Read(header, 0, header.Length) != ArHeader.Length) || (!Equals(header, ArHeader)))
+                if ((this.topStream.Read(header, 0, header.Length) != arHeader.Length) || (!Equals(header, arHeader)))
                 {
                     throw new FormatException("ArFile header invalid!");
                 }
             }
             else
             {
-                m_TopStream.Write(ArHeader, 0, 8);
+                this.topStream.Write(arHeader, 0, 8);
             }
         }
         #endregion
 
         #region private functionality
 
-        private Stream m_BottomStream;
-        private Stream m_TopStream;
+        Stream bottomStream;
+        Stream topStream;
 
-        private enum Operation
+        enum Operation
         {
             None,
             ReadHeader,
@@ -134,64 +135,71 @@ namespace Cave.Compression
             Seek,
         }
 
-        private Operation m_LastOperation = Operation.None;
+        Operation lastOperation = Operation.None;
 
-        private void m_StartOperation(Operation operation)
+        void StartOperation(Operation operation)
         {
-            switch (m_LastOperation)
+            switch (lastOperation)
             {
-                case Operation.ReadData: m_LastOperation = Operation.None; break;
-                case Operation.WriteData: m_LastOperation = Operation.None; break;
-                case Operation.Seek: m_LastOperation = Operation.None; break;
+                case Operation.ReadData: lastOperation = Operation.None; break;
+                case Operation.WriteData: lastOperation = Operation.None; break;
+                case Operation.Seek: lastOperation = Operation.None; break;
             }
+
             bool valid = false;
-            string requirements = "";
-            string state = "";
+            string requirements = string.Empty;
+            string state = string.Empty;
             switch (operation)
             {
                 case Operation.ReadHeader:
-                    valid = m_TopStream.CanRead && (m_LastOperation == Operation.None);
+                    valid = topStream.CanRead && (lastOperation == Operation.None);
                     if (!valid)
                     {
                         requirements = "BaseStream.CanRead = true, Operation = None";
-                        state = "BaseStream.CanRead = " + m_TopStream.CanRead + ", Operation = " + m_LastOperation;
+                        state = "BaseStream.CanRead = " + topStream.CanRead + ", Operation = " + lastOperation;
                     }
+
                     break;
                 case Operation.ReadData:
-                    valid = m_TopStream.CanRead && (m_LastOperation == Operation.ReadHeader);
+                    valid = topStream.CanRead && (lastOperation == Operation.ReadHeader);
                     if (!valid)
                     {
                         requirements = "BaseStream.CanRead = true, Operation = ReadHeader";
-                        state = "BaseStream.CanRead = " + m_TopStream.CanRead + ", Operation = " + m_LastOperation;
+                        state = "BaseStream.CanRead = " + topStream.CanRead + ", Operation = " + lastOperation;
                     }
+
                     break;
                 case Operation.WriteHeader:
-                    valid = m_TopStream.CanWrite && (m_LastOperation == Operation.None);
+                    valid = topStream.CanWrite && (lastOperation == Operation.None);
                     if (!valid)
                     {
                         requirements = "BaseStream.CanWrite = true, Operation = None";
-                        state = "BaseStream.CanWrite = " + m_TopStream.CanWrite + ", Operation = " + m_LastOperation;
+                        state = "BaseStream.CanWrite = " + topStream.CanWrite + ", Operation = " + lastOperation;
                     }
+
                     break;
                 case Operation.WriteData:
-                    valid = m_TopStream.CanWrite && (m_LastOperation == Operation.WriteHeader);
+                    valid = topStream.CanWrite && (lastOperation == Operation.WriteHeader);
                     if (!valid)
                     {
                         requirements = "BaseStream.CanWrite = true, Operation = WriteHeader";
-                        state = "BaseStream.CanWrite = " + m_TopStream.CanWrite + ", Operation = " + m_LastOperation;
+                        state = "BaseStream.CanWrite = " + topStream.CanWrite + ", Operation = " + lastOperation;
                     }
+
                     break;
                 case Operation.Seek:
-                    valid = m_TopStream.CanSeek;
+                    valid = topStream.CanSeek;
                     if (!valid)
                     {
                         requirements = "BaseStream.CanSeek = true";
-                        state = "BaseStream.CanSeek = " + m_TopStream.CanSeek;
+                        state = "BaseStream.CanSeek = " + topStream.CanSeek;
                     }
+
                     break;
                 default:
                     throw new NotImplementedException("The requested operation is not implemented!");
             }
+
             if (!valid)
             {
                 throw new NotSupportedException(
@@ -199,7 +207,8 @@ namespace Cave.Compression
                     string.Format("Requirements:  {0}", requirements) + Environment.NewLine +
                     string.Format("Current state: {0}", state));
             }
-            m_LastOperation = operation;
+
+            lastOperation = operation;
         }
 
         #endregion
@@ -212,8 +221,8 @@ namespace Cave.Compression
         /// <returns>the header of the next file</returns>
         public ArHeader ReadHeader()
         {
-            m_StartOperation(Operation.ReadHeader);
-            return ArHeader.FromStream(m_TopStream);
+            StartOperation(Operation.ReadHeader);
+            return ArHeader.FromStream(topStream);
         }
 
         /// <summary>
@@ -233,6 +242,7 @@ namespace Cave.Compression
                 fileData = null;
                 return null;
             }
+
             fileData = ReadData(header.FileSize);
             return header;
         }
@@ -253,6 +263,7 @@ namespace Cave.Compression
             {
                 return null;
             }
+
             string fileName = header.FileName;
             string fullPath = Path.Combine(outputDirectory, fileName);
             ReadDataTo(fullPath, header.FileSize);
@@ -266,24 +277,33 @@ namespace Cave.Compression
         /// <returns></returns>
         public byte[] ReadData(int size)
         {
-            m_StartOperation(Operation.ReadData);
+            StartOperation(Operation.ReadData);
             byte[] result = new byte[size];
             int bytesLeft = size;
             int pos = 0;
             while (bytesLeft > 0)
             {
                 int block = 1024 * 1024;
-                if (block > bytesLeft) block = bytesLeft;
-                block = m_TopStream.Read(result, pos, block);
+                if (block > bytesLeft)
+                {
+                    block = bytesLeft;
+                }
+
+                block = topStream.Read(result, pos, block);
                 pos += block;
                 bytesLeft -= block;
             }
+
             int paddingBytes = size % 2;
             while (paddingBytes > 0)
             {
-                paddingBytes -= m_TopStream.Read(new byte[paddingBytes], 0, paddingBytes);
-                if (paddingBytes == 0) break;
+                paddingBytes -= topStream.Read(new byte[paddingBytes], 0, paddingBytes);
+                if (paddingBytes == 0)
+                {
+                    break;
+                }
             }
+
             return result;
         }
 
@@ -294,7 +314,7 @@ namespace Cave.Compression
         /// <param name="size"></param>
         public void ReadDataTo(string fileName, int size)
         {
-            m_StartOperation(Operation.ReadData);
+            StartOperation(Operation.ReadData);
             using (FileStream stream = File.OpenWrite(fileName))
             {
                 byte[] buffer = new byte[1024 * 1024];
@@ -302,17 +322,26 @@ namespace Cave.Compression
                 while (bytesLeft > 0)
                 {
                     int block = 1024 * 1024;
-                    if (block > bytesLeft) block = bytesLeft;
-                    block = m_TopStream.Read(buffer, 0, block);
+                    if (block > bytesLeft)
+                    {
+                        block = bytesLeft;
+                    }
+
+                    block = topStream.Read(buffer, 0, block);
                     stream.Write(buffer, 0, block);
                     bytesLeft -= block;
                 }
+
                 int paddingBytes = size % 2;
                 while (paddingBytes > 0)
                 {
-                    paddingBytes -= m_TopStream.Read(new byte[paddingBytes], 0, paddingBytes);
-                    if (paddingBytes == 0) break;
+                    paddingBytes -= topStream.Read(new byte[paddingBytes], 0, paddingBytes);
+                    if (paddingBytes == 0)
+                    {
+                        break;
+                    }
                 }
+
                 stream.Flush();
             }
         }
@@ -323,10 +352,10 @@ namespace Cave.Compression
         /// <param name="size"></param>
         public void SkipData(int size)
         {
-            m_StartOperation(Operation.ReadData);
-            if (m_TopStream.CanSeek)
+            StartOperation(Operation.ReadData);
+            if (topStream.CanSeek)
             {
-                m_TopStream.Seek(size + (size % 2), SeekOrigin.Current);
+                topStream.Seek(size + (size % 2), SeekOrigin.Current);
             }
             else
             {
@@ -335,8 +364,12 @@ namespace Cave.Compression
                 while (bytesLeft > 0)
                 {
                     int block = 1024 * 1024;
-                    if (block > bytesLeft) block = bytesLeft;
-                    bytesLeft -= m_TopStream.Read(buffer, 0, block);
+                    if (block > bytesLeft)
+                    {
+                        block = bytesLeft;
+                    }
+
+                    bytesLeft -= topStream.Read(buffer, 0, block);
                 }
             }
         }
@@ -347,9 +380,13 @@ namespace Cave.Compression
         /// <param name="header"></param>
         public void WriteHeader(ArHeader header)
         {
-            if (header == null) throw new ArgumentNullException("header");
-            m_StartOperation(Operation.WriteHeader);
-            m_TopStream.Write(header.Data, 0, 60);
+            if (header == null)
+            {
+                throw new ArgumentNullException("header");
+            }
+
+            StartOperation(Operation.WriteHeader);
+            topStream.Write(header.Data, 0, 60);
         }
 
         /// <summary>
@@ -358,7 +395,11 @@ namespace Cave.Compression
         /// <param name="file">Name of the file</param>
         public void WriteFile(string file)
         {
-            if (file == null) throw new ArgumentNullException("file");
+            if (file == null)
+            {
+                throw new ArgumentNullException("file");
+            }
+
             WriteHeader(new ArHeader(file));
             WriteDataFrom(file);
         }
@@ -369,21 +410,27 @@ namespace Cave.Compression
         /// <param name="file">Name of the file</param>
         public void WriteDataFrom(string file)
         {
-            if (file == null) throw new ArgumentNullException("file");
-            m_StartOperation(Operation.WriteData);
+            if (file == null)
+            {
+                throw new ArgumentNullException("file");
+            }
+
+            StartOperation(Operation.WriteData);
             using (FileStream stream = File.OpenRead(file))
             {
                 byte[] buffer = new byte[1024 * 1024];
                 while (stream.Position < stream.Length)
                 {
                     int size = stream.Read(buffer, 0, buffer.Length);
-                    m_TopStream.Write(buffer, 0, size);
+                    topStream.Write(buffer, 0, size);
                 }
+
                 if ((stream.Length % 2) != 0)
                 {
-                    //padding
-                    m_TopStream.WriteByte(0x0A);
+                    // padding
+                    topStream.WriteByte(0x0A);
                 }
+
                 stream.Flush();
             }
         }
@@ -394,22 +441,31 @@ namespace Cave.Compression
         /// <param name="data"></param>
         public void WriteData(byte[] data)
         {
-            if (data == null) throw new ArgumentNullException("data");
-            m_StartOperation(Operation.WriteData);
+            if (data == null)
+            {
+                throw new ArgumentNullException("data");
+            }
+
+            StartOperation(Operation.WriteData);
             int bytesLeft = data.Length;
             int pos = 0;
             while (bytesLeft > 0)
             {
                 int blockSize = 1024 * 1024;
-                if (blockSize > bytesLeft) blockSize = bytesLeft;
-                m_TopStream.Write(data, pos, blockSize);
+                if (blockSize > bytesLeft)
+                {
+                    blockSize = bytesLeft;
+                }
+
+                topStream.Write(data, pos, blockSize);
                 bytesLeft -= blockSize;
                 pos += blockSize;
             }
+
             if ((data.Length % 2) != 0)
             {
-                //padding
-                m_TopStream.WriteByte(0x0A);
+                // padding
+                topStream.WriteByte(0x0A);
             }
         }
 
@@ -434,8 +490,12 @@ namespace Cave.Compression
             }
             catch (EndOfStreamException)
             {
-                if (unexpectedError) throw;
+                if (unexpectedError)
+                {
+                    throw;
+                }
             }
+
             return headers.ToArray();
         }
 
@@ -444,16 +504,16 @@ namespace Cave.Compression
         /// </summary>
         public void Close()
         {
-            m_TopStream?.Flush();
+            topStream?.Flush();
 #if NETSTANDARD13
-            m_TopStream?.Dispose();
-            m_BottomStream?.Dispose();
+            topStream?.Dispose();
+            bottomStream?.Dispose();
 #else
-            m_TopStream?.Close();
-            m_BottomStream?.Close();
+            topStream?.Close();
+            bottomStream?.Close();
 #endif
-            m_TopStream = null;
-            m_BottomStream = null;
+            topStream = null;
+            bottomStream = null;
         }
 
         /// <summary>
@@ -463,7 +523,7 @@ namespace Cave.Compression
         {
             get
             {
-                return m_BottomStream.Position / (double)m_BottomStream.Length;
+                return bottomStream.Position / (double)bottomStream.Length;
             }
         }
 

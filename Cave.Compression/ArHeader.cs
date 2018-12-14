@@ -16,9 +16,17 @@ namespace Cave.Compression
         /// <returns></returns>
         public static ArHeader FromStream(Stream stream)
         {
-            if (stream == null) throw new ArgumentNullException("stream");
+            if (stream == null)
+            {
+                throw new ArgumentNullException("stream");
+            }
+
             byte[] data = new byte[60];
-            if (stream.Read(data, 0, 60) != 60) throw new EndOfStreamException();
+            if (stream.Read(data, 0, 60) != 60)
+            {
+                throw new EndOfStreamException();
+            }
+
             return new ArHeader(data);
         }
 
@@ -83,15 +91,18 @@ namespace Cave.Compression
         public static ArHeader CreateFile(string name, long size, int fileMode, int owner, int group, DateTime modificationTime)
         {
             ArHeader result = new ArHeader();
-            result.m_Initialize(name, size, fileMode, owner, group, modificationTime);
+            result.Initialize(name, size, fileMode, owner, group, modificationTime);
             return result;
         }
 
         #region constructors
+
         /// <summary>
         /// Creates a new empty <see cref="ArHeader"/>
         /// </summary>
-        private ArHeader() { }
+        private ArHeader()
+        {
+        }
 
         /// <summary>
         /// Creates a new <see cref="ArHeader"/> with the specified data
@@ -99,9 +110,16 @@ namespace Cave.Compression
         /// <param name="data"></param>
         private ArHeader(byte[] data)
         {
-            m_Data = data;
-            if (m_Data.Length != 60) throw new InvalidDataException(string.Format("Data length invalid!"));
-            if ((m_Data[58] != 0x60) || (m_Data[59] != 0x0A)) throw new InvalidDataException(string.Format("Invalid data! (File magic not correct)"));
+            this.data = data;
+            if (this.data.Length != 60)
+            {
+                throw new InvalidDataException(string.Format("Data length invalid!"));
+            }
+
+            if ((this.data[58] != 0x60) || (this.data[59] != 0x0A))
+            {
+                throw new InvalidDataException(string.Format("Invalid data! (File magic not correct)"));
+            }
         }
 
         /// <summary>
@@ -125,28 +143,41 @@ namespace Cave.Compression
             if (File.Exists(file))
             {
                 FileInfo info = new FileInfo(file);
-                m_Initialize(info.Name, info.Length, fileMode, owner, group, info.LastWriteTime);
+                Initialize(info.Name, info.Length, fileMode, owner, group, info.LastWriteTime);
             }
-            else throw new FileNotFoundException(string.Format("File '{0}' not found!", file));
+            else
+            {
+                throw new FileNotFoundException(string.Format("File '{0}' not found!", file));
+            }
         }
         #endregion
 
         #region private functionality
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Literale nicht als lokalisierte Parameter übergeben", MessageId = "Cave.IO.ArHeader.m_SetString(System.Int32,System.Int32,System.String)")]
-        private void m_Initialize(string name, long size, int fileMode, int owner, int group, DateTime modificationTime)
+        void Initialize(string name, long size, int fileMode, int owner, int group, DateTime modificationTime)
         {
             if (fileMode <= 0)
             {
                 fileMode = 644;
             }
-            if (owner < 0) throw new ArgumentException(string.Format("Owner may not be a value smaller than 0!"), "owner");
-            if (group < 0) throw new ArgumentException(string.Format("Group may not be a value smaller than 0!"), "group");
 
-            //check FileSize
-            if (size > 0x7FFFFFFFL) throw new NotSupportedException(string.Format("A FileSize with more then 2GiB is currently not supported!"));
+            if (owner < 0)
+            {
+                throw new ArgumentException(string.Format("Owner may not be a value smaller than 0!"), "owner");
+            }
 
-            //prepare unix file path and name
-            string fileNameInAr = "";
+            if (group < 0)
+            {
+                throw new ArgumentException(string.Format("Group may not be a value smaller than 0!"), "group");
+            }
+
+            // check FileSize
+            if (size > 0x7FFFFFFFL)
+            {
+                throw new NotSupportedException(string.Format("A FileSize with more then 2GiB is currently not supported!"));
+            }
+
+            // prepare unix file path and name
+            string fileNameInAr = string.Empty;
             for (int i = 0; i < name.Length; i++)
             {
                 char c = name[i];
@@ -160,50 +191,71 @@ namespace Cave.Compression
                     {
                         c = '_';
                     }
+
                     fileNameInAr += c;
                 }
             }
-            //check length
-            if (fileNameInAr.Length > 15) throw new ArgumentException(string.Format("FileName may not exceed 15 chars!"), "name");
+
+            // check length
+            if (fileNameInAr.Length > 15)
+            {
+                throw new ArgumentException(string.Format("FileName may not exceed 15 chars!"), "name");
+            }
+
             fileNameInAr += "/";
-            //set FileName
-            m_SetString(0, 16, fileNameInAr);
-            //set modification time
-            m_SetValue(16, 12, (int)modificationTime.ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds, 10);
-            //set owner
-            m_SetString(28, 6, owner.ToString());
-            //set group
-            m_SetString(34, 6, group.ToString());
-            //set filemode
-            m_SetString(40, 8, fileMode.ToString());
-            //set FileSize
-            m_SetValue(48, 10, (int)size, 10);
-            //set file magic
-            m_Data[58] = 0x60;
-            m_Data[59] = 0x0A;
+
+            // set FileName
+            SetString(0, 16, fileNameInAr);
+
+            // set modification time
+            SetValue(16, 12, (int)modificationTime.ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds, 10);
+
+            // set owner
+            SetString(28, 6, owner.ToString());
+
+            // set group
+            SetString(34, 6, group.ToString());
+
+            // set filemode
+            SetString(40, 8, fileMode.ToString());
+
+            // set FileSize
+            SetValue(48, 10, (int)size, 10);
+
+            // set file magic
+            data[58] = 0x60;
+            data[59] = 0x0A;
         }
 
-        private void m_SetString(int index, int count, string text)
+        void SetString(int index, int count, string text)
         {
             string result = text;
-            if (result.Length < count) result += new string(' ', count - result.Length);
-            if (result.Length > count) throw new ArgumentOutOfRangeException(string.Format("String range out of bounds!"));
+            if (result.Length < count)
+            {
+                result += new string(' ', count - result.Length);
+            }
+
+            if (result.Length > count)
+            {
+                throw new ArgumentOutOfRangeException(string.Format("String range out of bounds!"));
+            }
+
             foreach (byte b in ASCII.GetBytes(result))
             {
-                m_Data[index++] = b;
+                data[index++] = b;
             }
         }
 
-        private void m_SetValue(int index, int count, int value, int toBase)
+        void SetValue(int index, int count, int value, int toBase)
         {
-            m_SetString(index, count, Convert.ToString(value, toBase));
+            SetString(index, count, Convert.ToString(value, toBase));
         }
 
-        private string m_GetString(int index, int count)
+        string GetString(int index, int count)
         {
             StringBuilder result = new StringBuilder();
             bool nullDetected = false;
-            string str = ASCII.GetString(m_Data, index, count);
+            string str = ASCII.GetString(data, index, count);
             foreach (char c in str)
             {
                 if (c == '\0')
@@ -212,28 +264,37 @@ namespace Cave.Compression
                 }
                 else
                 {
-                    if ((c != ' ') && (nullDetected) && (result.Length > 0)) throw new FormatException(string.Format("Format failure! (Found ascii null in the middle of the string)!"));
+                    if ((c != ' ') && nullDetected && (result.Length > 0))
+                    {
+                        throw new FormatException(string.Format("Format failure! (Found ascii null in the middle of the string)!"));
+                    }
+
                     result.Append(c);
                 }
             }
+
             return result.ToString();
         }
 
-        private int m_GetValue(int index, int count, int toBase)
+        int GetValue(int index, int count, int toBase)
         {
-            //0 = no valid char found
-            //1 = at least one valid octal number
-            //2 = space after number found, there shouldn't be any more valid numbers
+            // 0 = no valid char found
+            // 1 = at least one valid octal number
+            // 2 = space after number found, there shouldn't be any more valid numbers
             int valueDetection = 0;
             int result = 0;
-            string str = m_GetString(index, count);
+            string str = GetString(index, count);
             foreach (char c in str)
             {
                 switch (c)
                 {
                     case '\0':
                     case ' ':
-                        if (valueDetection == 1) valueDetection = 2;
+                        if (valueDetection == 1)
+                        {
+                            valueDetection = 2;
+                        }
+
                         break;
                     case '0':
                     case '1':
@@ -245,28 +306,44 @@ namespace Cave.Compression
                     case '7':
                     case '8':
                     case '9':
-                        if (valueDetection == 2) throw new FormatException(string.Format("Format of the stored number not correct ! (Found space in the middle of the number)"));
-                        if (valueDetection == 0) valueDetection = 1;
+                        if (valueDetection == 2)
+                        {
+                            throw new FormatException(string.Format("Format of the stored number not correct ! (Found space in the middle of the number)"));
+                        }
+
+                        if (valueDetection == 0)
+                        {
+                            valueDetection = 1;
+                        }
+
                         int value = c - '0';
-                        if (value >= toBase) throw new FormatException(string.Format("Format of the stored number not correct ! (Value exceeds base)"));
-                        result = result * toBase + value;
+                        if (value >= toBase)
+                        {
+                            throw new FormatException(string.Format("Format of the stored number not correct ! (Value exceeds base)"));
+                        }
+
+                        result = (result * toBase) + value;
                         break;
                     default:
                         throw new FormatException(string.Format("Format of the stored number not correct ! (Illegal character found)"));
                 }
             }
+
             return result;
         }
 
         #endregion
 
         #region public functionality
-        byte[] m_Data = new byte[60];
+        byte[] data = new byte[60];
 
         /// <summary>
         /// retrieves a copy of the header data
         /// </summary>
-        public byte[] Data { get { return (byte[])m_Data.Clone(); } }
+        public byte[] Data
+        {
+            get { return (byte[])data.Clone(); }
+        }
 
         /// <summary>
         /// retrieves the unix FileName
@@ -275,7 +352,7 @@ namespace Cave.Compression
         {
             get
             {
-                string name = m_GetString(0, 16);
+                string name = GetString(0, 16);
                 return name.Substring(0, name.LastIndexOf('/'));
             }
         }
@@ -287,7 +364,7 @@ namespace Cave.Compression
         {
             get
             {
-                return m_GetValue(40, 8, 10);
+                return GetValue(40, 8, 10);
             }
         }
 
@@ -298,7 +375,7 @@ namespace Cave.Compression
         {
             get
             {
-                return m_GetValue(28, 6, 10);
+                return GetValue(28, 6, 10);
             }
         }
 
@@ -309,7 +386,7 @@ namespace Cave.Compression
         {
             get
             {
-                return m_GetValue(34, 6, 10);
+                return GetValue(34, 6, 10);
             }
         }
 
@@ -320,7 +397,7 @@ namespace Cave.Compression
         {
             get
             {
-                return m_GetValue(48, 10, 10);
+                return GetValue(48, 10, 10);
             }
         }
 
@@ -331,7 +408,7 @@ namespace Cave.Compression
         {
             get
             {
-                return (new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).AddSeconds(m_GetValue(16, 12, 10)).ToLocalTime();
+                return new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(GetValue(16, 12, 10)).ToLocalTime();
             }
         }
 

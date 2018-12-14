@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using Cave.Compression.GZip;
-using Cave.IO;
 
 namespace Cave.Compression.Tar
 {
@@ -40,7 +39,7 @@ namespace Cave.Compression.Tar
         /// <param name="gzip">Use gzip compression</param>
         public TarWriter(Stream target, bool gzip)
         {
-            var s = baseStream = target;
+            Stream s = baseStream = target;
             if (gzip)
             {
                 s = new GZipOutputStream(s);
@@ -66,17 +65,17 @@ namespace Cave.Compression.Tar
                 throw new ObjectDisposedException(nameof(TarWriter));
             }
 
-            foreach (var file in Directory.GetFiles(directory, fileMask, search))
+            foreach (string file in Directory.GetFiles(directory, fileMask, search))
             {
                 if (!file.StartsWith(directory))
                 {
                     throw new InvalidOperationException("Invalid relative path!");
                 }
 
-                var name = pathInTar + '/' + file.Substring(directory.Length);
-                using (var stream = File.OpenRead(file))
+                string name = pathInTar + '/' + file.Substring(directory.Length);
+                using (FileStream stream = File.OpenRead(file))
                 {
-                    var result = AddFile(name, stream, (int)stream.Length, callback, userItem);
+                    bool result = AddFile(name, stream, (int)stream.Length, callback, userItem);
                     if (!result)
                     {
                         return false;
@@ -97,7 +96,7 @@ namespace Cave.Compression.Tar
         /// <returns>Returns true if the operation completed, false if the callback used <see cref="ProgressEventArgs.Break"/>.</returns>
         public bool AddFile(string pathInTar, string fileName, ProgressCallback callback = null, object userItem = null)
         {
-            using (var fs = File.OpenRead(fileName))
+            using (FileStream fs = File.OpenRead(fileName))
             {
                 return AddFile(pathInTar, fs, (int)fs.Length, callback, userItem);
             }
@@ -141,10 +140,10 @@ namespace Cave.Compression.Tar
                 pathInTar = pathInTar.Replace("//", "/");
             }
 
-            var entry = TarEntry.CreateTarEntry(pathInTar);
+            TarEntry entry = TarEntry.CreateTarEntry(pathInTar);
             entry.Size = size;
             tarStream.PutNextEntry(entry);
-            var result = source.CopyBlocksTo(tarStream, size, callback, userItem);
+            long result = source.CopyBlocksTo(tarStream, size, callback, userItem);
             if (result < size)
             {
                 Dispose();
@@ -199,6 +198,6 @@ namespace Cave.Compression.Tar
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-#endregion
+        #endregion
     }
 }

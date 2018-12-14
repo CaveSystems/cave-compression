@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Cave.IO;
 
 namespace Cave.Compression.Tar
 {
@@ -88,8 +86,8 @@ namespace Cave.Compression.Tar
         /// <remarks>The default value is true.</remarks>
         public bool IsStreamOwner
         {
-            get { return tarBuffer.IsStreamOwner; }
-            set { tarBuffer.IsStreamOwner = value; }
+            get => tarBuffer.IsStreamOwner;
+            set => tarBuffer.IsStreamOwner = value;
         }
 
         #region Stream Overrides
@@ -97,48 +95,24 @@ namespace Cave.Compression.Tar
         /// <summary>
         /// Gets a value indicating whether the current stream supports reading
         /// </summary>
-        public override bool CanRead
-        {
-            get
-            {
-                return inputStream.CanRead;
-            }
-        }
+        public override bool CanRead => inputStream.CanRead;
 
         /// <summary>
         /// Gets a value indicating whether the current stream supports seeking
         /// This property always returns false.
         /// </summary>
-        public override bool CanSeek
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public override bool CanSeek => false;
 
         /// <summary>
         /// Gets a value indicating whether the stream supports writing.
         /// This property always returns false.
         /// </summary>
-        public override bool CanWrite
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public override bool CanWrite => false;
 
         /// <summary>
         /// Gets the length in bytes of the stream
         /// </summary>
-        public override long Length
-        {
-            get
-            {
-                return inputStream.Length;
-            }
-        }
+        public override long Length => inputStream.Length;
 
         /// <summary>
         /// Gets or sets the position within the stream.
@@ -147,15 +121,9 @@ namespace Cave.Compression.Tar
         /// <exception cref="NotSupportedException">Any attempt to set position</exception>
         public override long Position
         {
-            get
-            {
-                return inputStream.Position;
-            }
+            get => inputStream.Position;
 
-            set
-            {
-                throw new NotSupportedException("TarInputStream Seek not supported");
-            }
+            set => throw new NotSupportedException("TarInputStream Seek not supported");
         }
 
         /// <summary>
@@ -301,7 +269,7 @@ namespace Cave.Compression.Tar
                     throw new InvalidDataException("unexpected EOF with " + numToRead + " bytes unread");
                 }
 
-                var sz = (int)numToRead;
+                int sz = (int)numToRead;
                 int recLen = rec.Length;
 
                 if (recLen > sz)
@@ -365,13 +333,7 @@ namespace Cave.Compression.Tar
         /// <returns>
         /// The number of available bytes for the current entry.
         /// </returns>
-        public long Available
-        {
-            get
-            {
-                return entrySize - entryOffset;
-            }
-        }
+        public long Available => entrySize - entryOffset;
 
         /// <summary>
         /// Skip bytes in the input buffer. This skips bytes in the
@@ -407,13 +369,7 @@ namespace Cave.Compression.Tar
         /// Gets a value indicating whether marking is supported; false otherwise.
         /// </summary>
         /// <remarks>Currently marking is not supported, the return value is always false.</remarks>
-        public bool IsMarkSupported
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsMarkSupported => false;
 
         /// <summary>
         /// Since we do not support marking just yet, we do nothing.
@@ -479,7 +435,7 @@ namespace Cave.Compression.Tar
                 string longName = null;
                 for (; ;)
                 {
-                    var header = new TarHeader();
+                    TarHeader header = new TarHeader();
                     header.ParseBuffer(headerBuf);
                     if (!header.IsChecksumValid)
                     {
@@ -559,13 +515,13 @@ namespace Cave.Compression.Tar
         string GetExtendedHeaderName()
         {
             string data = ReadStringData();
-            var header = TarExtendedHeader.Parse(data);
+            TarExtendedHeader header = TarExtendedHeader.Parse(data);
             return header.Path;
         }
 
         string ReadStringData()
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             byte[] nameBuffer = new byte[TarBuffer.BlockSize];
             long numToRead = entrySize;
             while (numToRead > 0)
