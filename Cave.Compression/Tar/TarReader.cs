@@ -124,6 +124,7 @@ namespace Cave.Compression.Tar
 
                 var targetStream = streamForEntry(tarEntry);
                 tarStream.CopyEntryContents(targetStream, callback, userItem);
+                complete?.Invoke(tarEntry, targetStream);
                 return true;
             }
 
