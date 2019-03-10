@@ -3,7 +3,7 @@
 namespace Cave.Compression.GZip
 {
     /// <summary>
-    /// GZip header flags
+    /// GZip header flags.
     /// </summary>
     [Flags]
     public enum GZipFlags

@@ -3,7 +3,7 @@ namespace Cave.Compression.Checksum
     /// <summary>
     /// Interface to compute a data checksum used by checked input/output streams.
     /// A data checksum can be updated by one byte or with a byte array. After each
-    /// update the value of the current checksum can be returned by calling
+    /// update the value of the current checksum can be returned by calling.
     /// <code>getValue</code>. The complete checksum object can also be reset
     /// so it can be used again with new data.
     /// </summary>
@@ -31,7 +31,7 @@ namespace Cave.Compression.Checksum
         /// Updates the data checksum with the bytes taken from the array.
         /// </summary>
         /// <param name="buffer">
-        /// buffer an array of bytes
+        /// buffer an array of bytes.
         /// </param>
         void Update(byte[] buffer);
 
@@ -39,10 +39,10 @@ namespace Cave.Compression.Checksum
         /// Adds the byte array to the data checksum.
         /// </summary>
         /// <param name = "buffer">
-        /// The buffer which contains the data
+        /// The buffer which contains the data.
         /// </param>
         /// <param name = "offset">
-        /// The offset in the buffer where the data starts
+        /// The offset in the buffer where the data starts.
         /// </param>
         /// <param name = "count">
         /// the number of data bytes to add.

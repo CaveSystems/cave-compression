@@ -10,10 +10,10 @@ namespace Cave.Compression.Core
     /// to the "deflate" standard described in rfc1951.
     ///
     /// By default Zlib (rfc1950) headers and footers are expected in the input.
-    /// You can use constructor <code> public Inflater(bool noHeader)</code> passing true
+    /// You can use constructor. <code> public Inflater(bool noHeader)</code> passing true
     /// if there is no Zlib header information
     ///
-    /// The usage is as following.  First you have to set some input with
+    /// The usage is as following.  First you have to set some input with.
     /// <code>SetInput()</code>, then Inflate() it.  If inflate doesn't
     /// inflate any bytes there may be three reasons:
     /// <ul>
@@ -28,34 +28,34 @@ namespace Cave.Compression.Core
     /// Once the first output byte is produced, a dictionary will not be
     /// needed at a later stage.
     ///
-    /// author of the original java version : John Leuner, Jochen Hoenicke
+    /// author of the original java version : John Leuner, Jochen Hoenicke.
     /// </summary>
     public class Inflater
     {
         #region Constants/Readonly
 
         /// <summary>
-        /// Copy lengths for literal codes 257..285
+        /// Copy lengths for literal codes 257..285.
         /// </summary>
         static readonly int[] CPLENS = { 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258 };
 
         /// <summary>
-        /// Extra bits for literal codes 257..285
+        /// Extra bits for literal codes 257..285.
         /// </summary>
         static readonly int[] CPLEXT = { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0 };
 
         /// <summary>
-        /// Copy offsets for distance codes 0..29
+        /// Copy offsets for distance codes 0..29.
         /// </summary>
         static readonly int[] CPDIST = { 1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577 };
 
         /// <summary>
-        /// Extra bits for distance codes
+        /// Extra bits for distance codes.
         /// </summary>
         static readonly int[] CPDEXT = { 0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13 };
 
         /// <summary>
-        /// These are the possible states for an inflater
+        /// These are the possible states for an inflater.
         /// </summary>
         enum State
         {
@@ -479,7 +479,7 @@ namespace Cave.Compression.Core
                     return true;
 
                 case State.StoredLen1:
-                {
+                    {
                     if ((uncomprLen = input.PeekBits(16)) < 0)
                     {
                         return false;
@@ -489,7 +489,7 @@ namespace Cave.Compression.Core
                     mode = State.StoredLen2;
                 }
 
-                goto case State.StoredLen2; // fall through
+                    goto case State.StoredLen2; // fall through
 
                 case State.StoredLen2:
                 {
@@ -506,9 +506,8 @@ namespace Cave.Compression.Core
                     }
 
                     mode = State.Stored;
+                    goto case State.Stored; // fall through
                 }
-
-                goto case State.Stored; // fall through
 
                 case State.Stored:
                 {
@@ -581,7 +580,7 @@ namespace Cave.Compression.Core
         /// No dictionary is needed.
         /// </exception>
         /// <exception cref="InvalidDataException">
-        /// The adler checksum for the buffer is invalid
+        /// The adler checksum for the buffer is invalid.
         /// </exception>
         public void SetDictionary(byte[] buffer, int index, int count)
         {
@@ -634,7 +633,7 @@ namespace Cave.Compression.Core
         /// returns true.
         /// </summary>
         /// <param name="buffer">
-        /// The source of input data
+        /// The source of input data.
         /// </param>
         /// <param name="index">
         /// The index into buffer where the input starts.

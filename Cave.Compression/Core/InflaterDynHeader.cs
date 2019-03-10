@@ -92,7 +92,7 @@ namespace Cave.Compression.Core
                         mode = LENS;
                         goto case LENS; // fall through
                     case LENS:
-                    {
+                        {
                         int symbol;
                         while (((symbol = blTree.GetSymbol(input)) & ~15) == 0)
                         {
@@ -132,10 +132,10 @@ namespace Cave.Compression.Core
                         repSymbol = symbol - 16;
                     }
 
-                    mode = REPS;
-                    goto case REPS; // fall through
+                        mode = REPS;
+                        goto case REPS; // fall through
                     case REPS:
-                    {
+                        {
                         int bits = RepeatBits[repSymbol];
                         int count = input.PeekBits(bits);
                         if (count < 0)
@@ -164,8 +164,8 @@ namespace Cave.Compression.Core
                         }
                     }
 
-                    mode = LENS;
-                    goto decode_loop;
+                        mode = LENS;
+                        goto decode_loop;
                 }
             }
         }
@@ -191,7 +191,7 @@ namespace Cave.Compression.Core
         InflaterHuffmanTree blTree;
 
         /// <summary>
-        /// The current decode mode
+        /// The current decode mode.
         /// </summary>
         int mode;
         int lnum;

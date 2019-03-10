@@ -7,27 +7,27 @@ namespace Cave.Compression
 {
     /// <summary>
     /// Provides a very simple ar file reader / writer. This calss does not support filenames longer than 15 characters.
-    /// (Note: may be extended to support BSD style extended filenames)
+    /// (Note: may be extended to support BSD style extended filenames).
     /// </summary>
     public class ArFile
     {
         #region static functionality
 
         /// <summary>
-        /// Creates a new ar file at the specified stream
+        /// Creates a new ar file at the specified stream.
         /// </summary>
-        /// <param name="stream">The stream to be written</param>
-        /// <returns>A new <see cref="ArFile"/> instance</returns>
+        /// <param name="stream">The stream to be written.</param>
+        /// <returns>A new <see cref="ArFile"/> instance.</returns>
         public static ArFile CreateNewAr(Stream stream)
         {
             return new ArFile(stream, stream, false);
         }
 
         /// <summary>
-        /// Creates a new ar file
+        /// Creates a new ar file.
         /// </summary>
-        /// <param name="file">Can be an string containing a path</param>
-        /// <returns>A new <see cref="ArFile"/> instance</returns>
+        /// <param name="file">Can be an string containing a path.</param>
+        /// <returns>A new <see cref="ArFile"/> instance.</returns>
         public static ArFile CreateNewAr(string file)
         {
             Stream stream = File.Open(file, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
@@ -35,10 +35,10 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// Creates a new ar file with GZip compression
+        /// Creates a new ar file with GZip compression.
         /// </summary>
-        /// <param name="file">Can be an string containing a path</param>
-        /// <returns>A new <see cref="ArFile"/> instance</returns>
+        /// <param name="file">Can be an string containing a path.</param>
+        /// <returns>A new <see cref="ArFile"/> instance.</returns>
         public static ArFile CreateNewArGZip(string file)
         {
             Stream bottomStream = File.Open(file, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
@@ -47,20 +47,20 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// Reads a ar from stream
+        /// Reads a ar from stream.
         /// </summary>
-        /// <param name="stream">The stream to be read</param>
-        /// <returns>A new <see cref="ArFile"/> instance</returns>
+        /// <param name="stream">The stream to be read.</param>
+        /// <returns>A new <see cref="ArFile"/> instance.</returns>
         public static ArFile ReadAr(Stream stream)
         {
             return new ArFile(stream, stream, false);
         }
 
         /// <summary>
-        /// Reads a ar from stream with GZip compression
+        /// Reads a ar from stream with GZip compression.
         /// </summary>
-        /// <param name="stream">The stream to be read</param>
-        /// <returns>A new <see cref="ArFile"/> instance</returns>
+        /// <param name="stream">The stream to be read.</param>
+        /// <returns>A new <see cref="ArFile"/> instance.</returns>
         public static ArFile ReadArGZip(Stream stream)
         {
             Stream topStream = new GZipStream(stream, CompressionMode.Decompress);
@@ -68,10 +68,10 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// Reads a ar file
+        /// Reads a ar file.
         /// </summary>
-        /// <param name="file">Name of the file</param>
-        /// <returns>A new <see cref="ArFile"/> instance</returns>
+        /// <param name="file">Name of the file.</param>
+        /// <returns>A new <see cref="ArFile"/> instance.</returns>
         public static ArFile ReadAr(string file)
         {
             Stream stream = File.Open(file, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
@@ -79,10 +79,10 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// Reads a ar file with GZip compression
+        /// Reads a ar file with GZip compression.
         /// </summary>
-        /// <param name="file">Name of the file</param>
-        /// <returns>A new <see cref="ArFile"/> instance</returns>
+        /// <param name="file">Name of the file.</param>
+        /// <returns>A new <see cref="ArFile"/> instance.</returns>
         public static ArFile ReadArGZip(string file)
         {
             Stream bottomStream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -94,12 +94,12 @@ namespace Cave.Compression
         #region constructors
 
         /// <summary>
-        /// creates a new ar file from a stream
+        /// creates a new ar file from a stream.
         /// </summary>
-        /// <param name="topStream">top stream that is read / written</param>
-        /// <param name="bottomStream">underlying compression / file stream</param>
+        /// <param name="topStream">top stream that is read / written.</param>
+        /// <param name="bottomStream">underlying compression / file stream.</param>
         /// <param name="openRead">If set to true the stream is used for reading and will be checked for a valid header,
-        /// otherwise a header for a new file is written</param>
+        /// otherwise a header for a new file is written.</param>
         ArFile(Stream topStream, Stream bottomStream, bool openRead)
         {
             this.topStream = topStream;
@@ -216,9 +216,9 @@ namespace Cave.Compression
         #region public functionality
 
         /// <summary>
-        /// reads a header from the ar file throws an EndOfStreamException if the last entry was read already
+        /// reads a header from the ar file throws an EndOfStreamException if the last entry was read already.
         /// </summary>
-        /// <returns>the header of the next file</returns>
+        /// <returns>the header of the next file.</returns>
         public ArHeader ReadHeader()
         {
             StartOperation(Operation.ReadHeader);
@@ -226,10 +226,10 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// reads a file from the ar file
+        /// reads a file from the ar file.
         /// </summary>
         /// <param name="fileData"></param>
-        /// <returns>the header of the file read on success and null when no more files exist in the ar file</returns>
+        /// <returns>the header of the file read on success and null when no more files exist in the ar file.</returns>
         public ArHeader ReadFile(out byte[] fileData)
         {
             ArHeader header;
@@ -248,10 +248,10 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// reads a file from the ar file and saves it at the specified output directory
+        /// reads a file from the ar file and saves it at the specified output directory.
         /// </summary>
         /// <param name="outputDirectory"></param>
-        /// <returns>fileName and path on success and null when no more files exist in the ar file</returns>
+        /// <returns>fileName and path on success and null when no more files exist in the ar file.</returns>
         public string ReadFile(string outputDirectory)
         {
             ArHeader header;
@@ -271,7 +271,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// reads data from the ar file
+        /// reads data from the ar file.
         /// </summary>
         /// <param name="size"></param>
         /// <returns></returns>
@@ -308,9 +308,9 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// reads data from the ar file to a specific specified FileName
+        /// reads data from the ar file to a specific specified FileName.
         /// </summary>
-        /// <param name="fileName">Name of the file</param>
+        /// <param name="fileName">Name of the file.</param>
         /// <param name="size"></param>
         public void ReadDataTo(string fileName, int size)
         {
@@ -347,7 +347,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// skips reading of data from the ar file
+        /// skips reading of data from the ar file.
         /// </summary>
         /// <param name="size"></param>
         public void SkipData(int size)
@@ -375,7 +375,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// writes a file header to the ar file
+        /// writes a file header to the ar file.
         /// </summary>
         /// <param name="header"></param>
         public void WriteHeader(ArHeader header)
@@ -390,9 +390,9 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// writes a file to the ar file
+        /// writes a file to the ar file.
         /// </summary>
-        /// <param name="file">Name of the file</param>
+        /// <param name="file">Name of the file.</param>
         public void WriteFile(string file)
         {
             if (file == null)
@@ -405,9 +405,9 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// writes data from a specified file to the ar file
+        /// writes data from a specified file to the ar file.
         /// </summary>
-        /// <param name="file">Name of the file</param>
+        /// <param name="file">Name of the file.</param>
         public void WriteDataFrom(string file)
         {
             if (file == null)
@@ -436,7 +436,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// writes the specified data to the ar file
+        /// writes the specified data to the ar file.
         /// </summary>
         /// <param name="data"></param>
         public void WriteData(byte[] data)
@@ -470,7 +470,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// lists all entries in the ar file
+        /// lists all entries in the ar file.
         /// </summary>
         /// <returns></returns>
         public ArHeader[] GetAllEntries()
@@ -500,7 +500,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// closes the ar file
+        /// closes the ar file.
         /// </summary>
         public void Close()
         {
@@ -517,7 +517,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// obtain a simple progress on read operations
+        /// obtain a simple progress on read operations.
         /// </summary>
         public double Progress
         {

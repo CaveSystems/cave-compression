@@ -42,9 +42,9 @@ namespace Cave.Compression.Tar
         #region static class
 
         /// <summary>
-        /// Create TarBuffer for reading with default BlockFactor
+        /// Create TarBuffer for reading with default BlockFactor.
         /// </summary>
-        /// <param name="inputStream">Stream to buffer</param>
+        /// <param name="inputStream">Stream to buffer.</param>
         /// <returns>A new <see cref="TarBuffer"/> suitable for input.</returns>
         public static TarBuffer CreateInputTarBuffer(Stream inputStream)
         {
@@ -57,10 +57,10 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// Construct TarBuffer for reading inputStream setting BlockFactor
+        /// Construct TarBuffer for reading inputStream setting BlockFactor.
         /// </summary>
-        /// <param name="inputStream">Stream to buffer</param>
-        /// <param name="blockFactor">Blocking factor to apply</param>
+        /// <param name="inputStream">Stream to buffer.</param>
+        /// <param name="blockFactor">Blocking factor to apply.</param>
         /// <returns>A new <see cref="TarBuffer"/> suitable for input.</returns>
         public static TarBuffer CreateInputTarBuffer(Stream inputStream, int blockFactor)
         {
@@ -80,9 +80,9 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// Construct TarBuffer for writing with default BlockFactor
+        /// Construct TarBuffer for writing with default BlockFactor.
         /// </summary>
-        /// <param name="outputStream">output stream for buffer</param>
+        /// <param name="outputStream">output stream for buffer.</param>
         /// <returns>A new <see cref="TarBuffer"/> suitable for output.</returns>
         public static TarBuffer CreateOutputTarBuffer(Stream outputStream)
         {
@@ -98,7 +98,7 @@ namespace Cave.Compression.Tar
         /// Construct TarBuffer for writing Tar output to streams.
         /// </summary>
         /// <param name="outputStream">Output stream to write to.</param>
-        /// <param name="blockFactor">Blocking factor to apply</param>
+        /// <param name="blockFactor">Blocking factor to apply.</param>
         /// <returns>A new <see cref="TarBuffer"/> suitable for output.</returns>
         public static TarBuffer CreateOutputTarBuffer(Stream outputStream, int blockFactor)
         {
@@ -122,7 +122,7 @@ namespace Cave.Compression.Tar
         /// End of archive is indicated by a block that consists entirely of null bytes.
         /// All remaining blocks for the record should also be null's
         /// However some older tars only do a couple of null blocks (Old GNU tar for one)
-        /// and also partial records
+        /// and also partial records.
         /// </summary>
         /// <param name = "block">The data block to check.</param>
         /// <returns>Returns true if the block is an EOF block; false otherwise.</returns>
@@ -177,14 +177,14 @@ namespace Cave.Compression.Tar
         #endregion
 
         /// <summary>
-        /// Gets or sets the record size for this buffer
+        /// Gets or sets the record size for this buffer.
         /// </summary>
         /// <value>The record size in bytes.
-        /// This is equal to the <see cref="BlockFactor"/> multiplied by the <see cref="BlockSize"/></value>
+        /// This is equal to the <see cref="BlockFactor"/> multiplied by the <see cref="BlockSize"/>.</value>
         public int RecordSize { get; set; } = DefaultRecordSize;
 
         /// <summary>
-        /// Gets or sets the Blocking factor for the buffer
+        /// Gets or sets the Blocking factor for the buffer.
         /// </summary>
         /// <value>This is the number of blocks in each record.</value>
         public int BlockFactor { get; set; } = DefaultBlockFactor;
@@ -199,7 +199,7 @@ namespace Cave.Compression.Tar
         /// <summary>
         /// Initialization common to all constructors.
         /// </summary>
-        /// <param name="archiveBlockFactor">archive block factor</param>
+        /// <param name="archiveBlockFactor">archive block factor.</param>
         void Initialize(int archiveBlockFactor)
         {
             BlockFactor = archiveBlockFactor;
@@ -316,7 +316,7 @@ namespace Cave.Compression.Tar
         /// <summary>
         /// Gets or sets the current block number, within the current record, zero based.
         /// </summary>
-        /// <remarks>Block numbers are zero based values</remarks>
+        /// <remarks>Block numbers are zero based values.</remarks>
         /// <seealso cref="RecordSize"/>
         public int CurrentBlock { get; set; }
 

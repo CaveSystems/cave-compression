@@ -15,7 +15,7 @@ namespace Cave.Compression.Tar
         /// <summary>
         /// Initializes a new instance of the <see cref="TarOutputStream"/> class.
         /// </summary>
-        /// <param name="outputStream">stream to write to</param>
+        /// <param name="outputStream">stream to write to.</param>
         public TarOutputStream(Stream outputStream)
             : this(outputStream, TarBuffer.DefaultBlockFactor)
         {
@@ -24,8 +24,8 @@ namespace Cave.Compression.Tar
         /// <summary>
         /// Initializes a new instance of the <see cref="TarOutputStream"/> class.
         /// </summary>
-        /// <param name="outputStream">stream to write to</param>
-        /// <param name="blockFactor">blocking factor</param>
+        /// <param name="outputStream">stream to write to.</param>
+        /// <param name="blockFactor">blocking factor.</param>
         public TarOutputStream(Stream outputStream, int blockFactor)
         {
             this.outputStream = outputStream ?? throw new ArgumentNullException(nameof(outputStream));
@@ -80,7 +80,7 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// Gets length of stream in bytes
+        /// Gets length of stream in bytes.
         /// </summary>
         public override long Length
         {
@@ -106,9 +106,9 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// set the position within the current stream
+        /// set the position within the current stream.
         /// </summary>
-        /// <param name="offset">The offset relative to the <paramref name="origin"/> to seek to</param>
+        /// <param name="offset">The offset relative to the <paramref name="origin"/> to seek to.</param>
         /// <param name="origin">The <see cref="SeekOrigin"/> to seek from.</param>
         /// <returns>The new position in the stream.</returns>
         public override long Seek(long offset, SeekOrigin origin)
@@ -117,7 +117,7 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// Set the length of the current stream
+        /// Set the length of the current stream.
         /// </summary>
         /// <param name="value">The new stream length.</param>
         public override void SetLength(long value)
@@ -129,7 +129,7 @@ namespace Cave.Compression.Tar
         /// Read a byte from the stream and advance the position within the stream
         /// by one byte or returns -1 if at the end of the stream.
         /// </summary>
-        /// <returns>The byte value or -1 if at end of stream</returns>
+        /// <returns>The byte value or -1 if at end of stream.</returns>
         public override int ReadByte()
         {
             return outputStream.ReadByte();
@@ -151,7 +151,7 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// All buffered data is written to destination
+        /// All buffered data is written to destination.
         /// </summary>
         public override void Flush()
         {
@@ -413,12 +413,12 @@ namespace Cave.Compression.Tar
         #region Instance Fields
 
         /// <summary>
-        /// bytes written for this entry so far
+        /// bytes written for this entry so far.
         /// </summary>
         long currBytes;
 
         /// <summary>
-        /// current 'Assembly' buffer length
+        /// current 'Assembly' buffer length.
         /// </summary>
         int assemblyBufferLength;
 
@@ -428,27 +428,27 @@ namespace Cave.Compression.Tar
         bool isClosed;
 
         /// <summary>
-        /// Size for the current entry
+        /// Size for the current entry.
         /// </summary>
         long currSize;
 
         /// <summary>
-        /// single block working buffer
+        /// single block working buffer.
         /// </summary>
         byte[] blockBuffer;
 
         /// <summary>
-        /// 'Assembly' buffer used to assemble data before writing
+        /// 'Assembly' buffer used to assemble data before writing.
         /// </summary>
         byte[] assemblyBuffer;
 
         /// <summary>
-        /// TarBuffer used to provide correct blocking factor
+        /// TarBuffer used to provide correct blocking factor.
         /// </summary>
         TarBuffer buffer;
 
         /// <summary>
-        /// the destination stream for the archive contents
+        /// the destination stream for the archive contents.
         /// </summary>
         Stream outputStream;
         #endregion

@@ -26,7 +26,7 @@ namespace Cave.Compression.Core
         /// <param name="buffer">The buffer to store data in.</param>
         /// <param name="offset">The offset at which to begin storing data.</param>
         /// <param name="count">The number of bytes of data to store.</param>
-        /// <exception cref="ArgumentNullException">Required parameter is null</exception>
+        /// <exception cref="ArgumentNullException">Required parameter is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="offset"/> and or <paramref name="count"/> are invalid.</exception>
         /// <exception cref="EndOfStreamException">End of stream is encountered before all the data has been read.</exception>
         public static void ReadFully(Stream stream, byte[] buffer, int offset, int count)

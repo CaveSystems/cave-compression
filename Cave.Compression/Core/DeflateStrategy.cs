@@ -1,7 +1,7 @@
 ﻿namespace Cave.Compression.Core
 {
     /// <summary>
-    /// Strategies for deflater
+    /// Strategies for deflater.
     /// </summary>
     public enum DeflateStrategy
     {

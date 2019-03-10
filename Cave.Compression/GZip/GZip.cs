@@ -11,7 +11,7 @@ namespace Cave.Compression.GZip
     {
         /// <summary>
         /// Decompress the <paramref name="inStream">input</paramref> writing
-        /// uncompressed data to the <paramref name="outStream">output stream</paramref>
+        /// uncompressed data to the <paramref name="outStream">output stream</paramref>.
         /// </summary>
         /// <param name="inStream">The readable stream containing data to decompress.</param>
         /// <param name="outStream">The output stream to receive the decompressed data.</param>
@@ -43,7 +43,7 @@ namespace Cave.Compression.GZip
 
         /// <summary>
         /// Compress the <paramref name="inStream">input stream</paramref> sending
-        /// result data to <paramref name="outStream">output stream</paramref>
+        /// result data to <paramref name="outStream">output stream</paramref>.
         /// </summary>
         /// <param name="inStream">The readable stream to compress.</param>
         /// <param name="outStream">The output stream to receive the compressed data.</param>

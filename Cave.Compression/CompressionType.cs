@@ -3,7 +3,7 @@ using System;
 namespace Cave.Compression
 {
     /// <summary>
-    /// Compression type
+    /// Compression type.
     /// </summary>
     [Flags]
     public enum CompressionType

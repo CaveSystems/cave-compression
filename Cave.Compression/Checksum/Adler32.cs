@@ -45,7 +45,7 @@ namespace Cave.Compression.Checksum
     ///    The sum s1 is initialized to 1 instead of zero to make the length
     ///    of the sequence part of s2, so that the length does not have to be
     ///    checked separately. (Any sequence of zeroes has a Fletcher
-    ///    checksum of zero.)"
+    ///    checksum of zero.)".
     /// </summary>
     /// <see cref="InflaterInputStream"/>
     /// <see cref="DeflaterOutputStream"/>
@@ -54,7 +54,7 @@ namespace Cave.Compression.Checksum
         #region Instance Fields
 
         /// <summary>
-        /// largest prime smaller than 65536
+        /// largest prime smaller than 65536.
         /// </summary>
         static readonly uint BASE = 65521;
 
@@ -126,10 +126,10 @@ namespace Cave.Compression.Checksum
         }
 
         /// <summary>
-        /// Update Adler32 data checksum based on a portion of a block of data
+        /// Update Adler32 data checksum based on a portion of a block of data.
         /// </summary>
         /// <param name = "buffer">Contains the data to update the CRC with.</param>
-        /// <param name = "offset">The offset into the buffer where the data starts</param>
+        /// <param name = "offset">The offset into the buffer where the data starts.</param>
         /// <param name = "count">The number of data bytes to update the CRC with.</param>
         public void Update(byte[] buffer, int offset, int count)
         {

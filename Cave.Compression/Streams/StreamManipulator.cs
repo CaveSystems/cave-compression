@@ -15,7 +15,7 @@ namespace Cave.Compression.Streams
     /// peek bits before you may drop them.  This is not a general purpose
     /// class but optimized for the behaviour of the Inflater.
     ///
-    /// authors of the original java version : John Leuner, Jochen Hoenicke
+    /// authors of the original java version : John Leuner, Jochen Hoenicke.
     /// </summary>
     class StreamManipulator
     {
@@ -33,7 +33,7 @@ namespace Cave.Compression.Streams
         /// </summary>
         /// <param name="bitCount">The number of bits to peek.</param>
         /// <returns>
-        /// the value of the bits, or -1 if not enough bits available.  */
+        /// the value of the bits, or -1 if not enough bits available.  */.
         /// </returns>
         public int PeekBits(int bitCount)
         {
@@ -116,7 +116,7 @@ namespace Cave.Compression.Streams
         }
 
         /// <summary>
-        /// Gets a value indicating whether SetInput can be called
+        /// Gets a value indicating whether SetInput can be called.
         /// </summary>
         public bool IsNeedingInput
         {
@@ -136,7 +136,7 @@ namespace Cave.Compression.Streams
         /// The buffer to copy bytes to.
         /// </param>
         /// <param name="offset">
-        /// The offset in the buffer at which copying starts
+        /// The offset in the buffer at which copying starts.
         /// </param>
         /// <param name="length">
         /// The length to copy, 0 is allowed.
@@ -145,10 +145,10 @@ namespace Cave.Compression.Streams
         /// The number of bytes copied, 0 if no bytes were available.
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// Length is less than zero
+        /// Length is less than zero.
         /// </exception>
         /// <exception cref="InvalidOperationException">
-        /// Bit buffer isnt byte aligned
+        /// Bit buffer isnt byte aligned.
         /// </exception>
         public int CopyBytes(byte[] output, int offset, int length)
         {
@@ -198,7 +198,7 @@ namespace Cave.Compression.Streams
         }
 
         /// <summary>
-        /// Resets state and empties internal buffers
+        /// Resets state and empties internal buffers.
         /// </summary>
         public void Reset()
         {
@@ -208,10 +208,10 @@ namespace Cave.Compression.Streams
 
         /// <summary>
         /// Add more input for consumption.
-        /// Only call when IsNeedingInput returns true
+        /// Only call when IsNeedingInput returns true.
         /// </summary>
-        /// <param name="buffer">data to be input</param>
-        /// <param name="offset">offset of first byte of input</param>
+        /// <param name="buffer">data to be input.</param>
+        /// <param name="offset">offset of first byte of input.</param>
         /// <param name="count">number of bytes of input to add.</param>
         public void SetInput(byte[] buffer, int offset, int count)
         {

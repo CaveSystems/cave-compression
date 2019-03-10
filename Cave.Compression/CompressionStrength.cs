@@ -1,7 +1,7 @@
 ﻿namespace Cave.Compression
 {
     /// <summary>
-    /// Compression Level as an enum for safer use
+    /// Compression Level as an enum for safer use.
     /// </summary>
     public enum CompressionStrength
     {

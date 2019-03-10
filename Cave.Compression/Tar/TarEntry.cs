@@ -28,7 +28,7 @@ namespace Cave.Compression.Tar
     /// the archive, and the header information is constructed from
     /// other information. In this case the header fields are set to
     /// defaults and the File is set to null.</p>
-    /// <see cref="TarHeader"/>
+    /// <see cref="TarHeader"/>.
     /// </summary>
     public class TarEntry
     {
@@ -38,8 +38,8 @@ namespace Cave.Compression.Tar
         /// Construct an entry with only a <paramref name="name">name</paramref>.
         /// This allows the programmer to construct the entry's header "by hand".
         /// </summary>
-        /// <param name="name">The name to use for the entry</param>
-        /// <returns>Returns the newly created <see cref="TarEntry"/></returns>
+        /// <param name="name">The name to use for the entry.</param>
+        /// <returns>Returns the newly created <see cref="TarEntry"/>.</returns>
         public static TarEntry CreateTarEntry(string name)
         {
             var entry = new TarEntry();
@@ -52,7 +52,7 @@ namespace Cave.Compression.Tar
         /// header is constructed from information from the file.
         /// </summary>
         /// <param name = "fileName">The file name that the entry represents.</param>
-        /// <returns>Returns the newly created <see cref="TarEntry"/></returns>
+        /// <returns>Returns the newly created <see cref="TarEntry"/>.</returns>
         public static TarEntry CreateEntryFromFile(string fileName)
         {
             var entry = new TarEntry();
@@ -143,7 +143,7 @@ namespace Cave.Compression.Tar
         /// <summary>
         /// Initializes a new instance of the <see cref="TarEntry"/> class.
         /// </summary>
-        /// <param name="header">Header details for entry</param>
+        /// <param name="header">Header details for entry.</param>
         public TarEntry(TarHeader header)
         {
             if (header == null)
@@ -192,9 +192,9 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// Derive a Hash value for the current <see cref="object"/>
+        /// Derive a Hash value for the current <see cref="object"/>.
         /// </summary>
-        /// <returns>A Hash code for the current <see cref="object"/></returns>
+        /// <returns>A Hash code for the current <see cref="object"/>.</returns>
         public override int GetHashCode()
         {
             return Name.GetHashCode();
@@ -339,7 +339,7 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// Gets or sets the modification time for this entry
+        /// Gets or sets the modification time for this entry.
         /// </summary>
         public DateTime ModTime
         {
@@ -385,7 +385,7 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// Gets a value indicating whether this entry represents a directory, false otherwise
+        /// Gets a value indicating whether this entry represents a directory, false otherwise.
         /// </summary>
         /// <returns>
         /// True if this entry is a directory.

@@ -6,7 +6,7 @@ namespace Cave.Compression.GZip
     sealed class GZipConstants
     {
         /// <summary>
-        /// Magic number found at start of GZIP header
+        /// Magic number found at start of GZIP header.
         /// </summary>
         public const int MAGIC = 0x1F8B;
     }

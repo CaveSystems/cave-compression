@@ -10,12 +10,12 @@ namespace Cave.Compression
     public static class Deflate
     {
         /// <summary>
-        /// Compresses the data at the current read position in the source stream to the specified targetstream
+        /// Compresses the data at the current read position in the source stream to the specified targetstream.
         /// </summary>
-        /// <param name="sourceStream">The stream containing the data to be compressed</param>
-        /// <param name="targetStream">The stream that will receive the compressed data</param>
-        /// <param name="count">The number of bytes to compress</param>
-        /// <param name="closeStream">Close the source stream after compression</param>
+        /// <param name="sourceStream">The stream containing the data to be compressed.</param>
+        /// <param name="targetStream">The stream that will receive the compressed data.</param>
+        /// <param name="count">The number of bytes to compress.</param>
+        /// <param name="closeStream">Close the source stream after compression.</param>
         public static void Compress(Stream sourceStream, Stream targetStream, long count, bool closeStream)
         {
             if (sourceStream == null)
@@ -52,12 +52,12 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// Decompresses the data at the current read position in the source stream to the specified targetstream
+        /// Decompresses the data at the current read position in the source stream to the specified targetstream.
         /// </summary>
-        /// <param name="sourceStream">The stream containing the data to be compressed</param>
-        /// <param name="targetStream">The stream that will receive the decompressed data</param>
-        /// <param name="count">The number of bytes to decompress</param>
-        /// <param name="closeStream">Close the source stream after decompression</param>
+        /// <param name="sourceStream">The stream containing the data to be compressed.</param>
+        /// <param name="targetStream">The stream that will receive the decompressed data.</param>
+        /// <param name="count">The number of bytes to decompress.</param>
+        /// <param name="closeStream">Close the source stream after decompression.</param>
         public static void Decompress(Stream sourceStream, Stream targetStream, long count, bool closeStream)
         {
             if (sourceStream == null)
@@ -92,10 +92,10 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// Compresses a byte array into memory
+        /// Compresses a byte array into memory.
         /// </summary>
-        /// <param name="data">Array to compress</param>
-        /// <returns>Returns a new compressed byte[] array</returns>
+        /// <param name="data">Array to compress.</param>
+        /// <returns>Returns a new compressed byte[] array.</returns>
         public static byte[] Compress(byte[] data)
         {
             if (data == null)
@@ -114,10 +114,10 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// Decompresses a byte array into memory
+        /// Decompresses a byte array into memory.
         /// </summary>
-        /// <param name="data">data to decompress</param>
-        /// <returns>Returns a new byte[] array with decompressed data</returns>
+        /// <param name="data">data to decompress.</param>
+        /// <returns>Returns a new byte[] array with decompressed data.</returns>
         public static byte[] Decompress(byte[] data)
         {
             if (data == null)
@@ -136,10 +136,10 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// Compresses a file on the disk (new file will have .gz extension)
+        /// Compresses a file on the disk (new file will have .gz extension).
         /// </summary>
-        /// <param name="fileName">Filename of the file to compress</param>
-        /// <param name="delete">Delete the file after successful operation</param>
+        /// <param name="fileName">Filename of the file to compress.</param>
+        /// <param name="delete">Delete the file after successful operation.</param>
         public static void Compress(string fileName, bool delete)
         {
             if (fileName == null)
@@ -162,10 +162,10 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// Decompresses a file on the disk (new file will have no longer a .deflate extension)
+        /// Decompresses a file on the disk (new file will have no longer a .deflate extension).
         /// </summary>
-        /// <param name="fileName">Filename of the file to decompress</param>
-        /// <param name="delete">Delete the file after successful operation</param>
+        /// <param name="fileName">Filename of the file to decompress.</param>
+        /// <param name="delete">Delete the file after successful operation.</param>
         public static void Decompress(string fileName, bool delete)
         {
             if (fileName == null)

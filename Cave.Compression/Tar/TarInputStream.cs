@@ -20,37 +20,37 @@ namespace Cave.Compression.Tar
         readonly Stream inputStream;
 
         /// <summary>
-        /// Current entry being read
+        /// Current entry being read.
         /// </summary>
         TarEntry currentEntry;
 
         /// <summary>
-        /// Eof block counter, needs 2 eof blocks in a row for eof mark
+        /// Eof block counter, needs 2 eof blocks in a row for eof mark.
         /// </summary>
         int eofBlockNumber;
 
         /// <summary>
-        /// Size of this entry as recorded in header
+        /// Size of this entry as recorded in header.
         /// </summary>
         long entrySize;
 
         /// <summary>
-        /// Number of bytes read for this entry so far
+        /// Number of bytes read for this entry so far.
         /// </summary>
         long entryOffset;
 
         /// <summary>
-        /// Buffer used with calls to <code>Read()</code>
+        /// Buffer used with calls to. <code>Read()</code>
         /// </summary>
         byte[] readBuffer;
 
         /// <summary>
-        /// Working buffer
+        /// Working buffer.
         /// </summary>
         TarBuffer tarBuffer;
 
         /// <summary>
-        /// Factory used to create TarEntry or descendant class instance
+        /// Factory used to create TarEntry or descendant class instance.
         /// </summary>
         IEntryFactory entryFactory;
 
@@ -61,7 +61,7 @@ namespace Cave.Compression.Tar
         /// <summary>
         /// Initializes a new instance of the <see cref="TarInputStream"/> class.
         /// </summary>
-        /// <param name="inputStream">stream to source data from</param>
+        /// <param name="inputStream">stream to source data from.</param>
         public TarInputStream(Stream inputStream)
             : this(inputStream, TarBuffer.DefaultBlockFactor)
         {
@@ -70,8 +70,8 @@ namespace Cave.Compression.Tar
         /// <summary>
         /// Initializes a new instance of the <see cref="TarInputStream"/> class.
         /// </summary>
-        /// <param name="inputStream">stream to source data from</param>
-        /// <param name="blockFactor">block factor to apply to archive</param>
+        /// <param name="inputStream">stream to source data from.</param>
+        /// <param name="blockFactor">block factor to apply to archive.</param>
         public TarInputStream(Stream inputStream, int blockFactor)
         {
             this.inputStream = inputStream;
@@ -93,7 +93,7 @@ namespace Cave.Compression.Tar
         #region Stream Overrides
 
         /// <summary>
-        /// Gets a value indicating whether the current stream supports reading
+        /// Gets a value indicating whether the current stream supports reading.
         /// </summary>
         public override bool CanRead => inputStream.CanRead;
 
@@ -110,15 +110,15 @@ namespace Cave.Compression.Tar
         public override bool CanWrite => false;
 
         /// <summary>
-        /// Gets the length in bytes of the stream
+        /// Gets the length in bytes of the stream.
         /// </summary>
         public override long Length => inputStream.Length;
 
         /// <summary>
         /// Gets or sets the position within the stream.
-        /// Setting the Position is not supported and throws a NotSupportedExceptionNotSupportedException
+        /// Setting the Position is not supported and throws a NotSupportedExceptionNotSupportedException.
         /// </summary>
-        /// <exception cref="NotSupportedException">Any attempt to set position</exception>
+        /// <exception cref="NotSupportedException">Any attempt to set position.</exception>
         public override long Position
         {
             get => inputStream.Position;
@@ -127,7 +127,7 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// Flushes the baseInputStream
+        /// Flushes the baseInputStream.
         /// </summary>
         public override void Flush()
         {
@@ -135,12 +135,12 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// Set the streams position.  This operation is not supported and will throw a NotSupportedException
+        /// Set the streams position.  This operation is not supported and will throw a NotSupportedException.
         /// </summary>
         /// <param name="offset">The offset relative to the origin to seek to.</param>
         /// <param name="origin">The <see cref="SeekOrigin"/> to start seeking from.</param>
         /// <returns>The new position in the stream.</returns>
-        /// <exception cref="NotSupportedException">Any access</exception>
+        /// <exception cref="NotSupportedException">Any access.</exception>
         public override long Seek(long offset, SeekOrigin origin)
         {
             throw new NotSupportedException("TarInputStream Seek not supported");
@@ -148,10 +148,10 @@ namespace Cave.Compression.Tar
 
         /// <summary>
         /// Sets the length of the stream
-        /// This operation is not supported and will throw a NotSupportedException
+        /// This operation is not supported and will throw a NotSupportedException.
         /// </summary>
         /// <param name="value">The new stream length.</param>
-        /// <exception cref="NotSupportedException">Any access</exception>
+        /// <exception cref="NotSupportedException">Any access.</exception>
         public override void SetLength(long value)
         {
             throw new NotSupportedException("TarInputStream SetLength not supported");
@@ -159,12 +159,12 @@ namespace Cave.Compression.Tar
 
         /// <summary>
         /// Writes a block of bytes to this stream using data from a buffer.
-        /// This operation is not supported and will throw a NotSupportedException
+        /// This operation is not supported and will throw a NotSupportedException.
         /// </summary>
         /// <param name="buffer">The buffer containing bytes to write.</param>
         /// <param name="offset">The offset in the buffer of the frist byte to write.</param>
         /// <param name="count">The number of bytes to write.</param>
-        /// <exception cref="NotSupportedException">Any access</exception>
+        /// <exception cref="NotSupportedException">Any access.</exception>
         public override void Write(byte[] buffer, int offset, int count)
         {
             throw new NotSupportedException("TarInputStream Write not supported");
@@ -172,10 +172,10 @@ namespace Cave.Compression.Tar
 
         /// <summary>
         /// Writes a byte to the current position in the file stream.
-        /// This operation is not supported and will throw a NotSupportedException
+        /// This operation is not supported and will throw a NotSupportedException.
         /// </summary>
         /// <param name="value">The byte value to write.</param>
-        /// <exception cref="NotSupportedException">Any access</exception>
+        /// <exception cref="NotSupportedException">Any access.</exception>
         public override void WriteByte(byte value)
         {
             throw new NotSupportedException("TarInputStream WriteByte not supported");
@@ -202,7 +202,7 @@ namespace Cave.Compression.Tar
         /// Reads bytes from the current tar archive entry.
         ///
         /// This method is aware of the boundaries of the current
-        /// entry in the archive and will deal with them appropriately
+        /// entry in the archive and will deal with them appropriately.
         /// </summary>
         /// <param name="buffer">
         /// The buffer into which to place bytes read.
@@ -312,7 +312,7 @@ namespace Cave.Compression.Tar
         /// <summary>
         /// Set the entry factory for this instance.
         /// </summary>
-        /// <param name="factory">The factory for creating new entries</param>
+        /// <param name="factory">The factory for creating new entries.</param>
         public void SetEntryFactory(IEntryFactory factory)
         {
             entryFactory = factory;
@@ -572,67 +572,67 @@ namespace Cave.Compression.Tar
         public interface IEntryFactory
         {
             /// <summary>
-            /// Create an entry based on name alone
+            /// Create an entry based on name alone.
             /// </summary>
             /// <param name="name">
-            /// Name of the new EntryPointNotFoundException to create
+            /// Name of the new EntryPointNotFoundException to create.
             /// </param>
-            /// <returns>created TarEntry or descendant class</returns>
+            /// <returns>created TarEntry or descendant class.</returns>
             TarEntry CreateEntry(string name);
 
             /// <summary>
-            /// Create an instance based on an actual file
+            /// Create an instance based on an actual file.
             /// </summary>
             /// <param name="fileName">
-            /// Name of file to represent in the entry
+            /// Name of file to represent in the entry.
             /// </param>
             /// <returns>
-            /// Created TarEntry or descendant class
+            /// Created TarEntry or descendant class.
             /// </returns>
             TarEntry CreateEntryFromFile(string fileName);
 
             /// <summary>
-            /// Create a tar entry based on the header information passed
+            /// Create a tar entry based on the header information passed.
             /// </summary>
             /// <param name="headerBuffer">
             /// Buffer containing header information to create an an entry from.
             /// </param>
             /// <returns>
-            /// Created TarEntry or descendant class
+            /// Created TarEntry or descendant class.
             /// </returns>
             TarEntry CreateEntry(byte[] headerBuffer);
         }
 
         /// <summary>
-        /// Standard entry factory class creating instances of the class TarEntry
+        /// Standard entry factory class creating instances of the class TarEntry.
         /// </summary>
         public class EntryFactoryAdapter : IEntryFactory
         {
             /// <summary>
-            /// Create a <see cref="TarEntry"/> based on named
+            /// Create a <see cref="TarEntry"/> based on named.
             /// </summary>
-            /// <param name="name">The name to use for the entry</param>
-            /// <returns>A new <see cref="TarEntry"/></returns>
+            /// <param name="name">The name to use for the entry.</param>
+            /// <returns>A new <see cref="TarEntry"/>.</returns>
             public TarEntry CreateEntry(string name)
             {
                 return TarEntry.CreateTarEntry(name);
             }
 
             /// <summary>
-            /// Create a tar entry with details obtained from <paramref name="fileName">file</paramref>
+            /// Create a tar entry with details obtained from <paramref name="fileName">file</paramref>.
             /// </summary>
             /// <param name="fileName">The name of the file to retrieve details from.</param>
-            /// <returns>A new <see cref="TarEntry"/></returns>
+            /// <returns>A new <see cref="TarEntry"/>.</returns>
             public TarEntry CreateEntryFromFile(string fileName)
             {
                 return TarEntry.CreateEntryFromFile(fileName);
             }
 
             /// <summary>
-            /// Create an entry based on details in <paramref name="headerBuffer">header</paramref>
+            /// Create an entry based on details in <paramref name="headerBuffer">header</paramref>.
             /// </summary>
             /// <param name="headerBuffer">The buffer containing entry details.</param>
-            /// <returns>A new <see cref="TarEntry"/></returns>
+            /// <returns>A new <see cref="TarEntry"/>.</returns>
             public TarEntry CreateEntry(byte[] headerBuffer)
             {
                 return new TarEntry(headerBuffer);

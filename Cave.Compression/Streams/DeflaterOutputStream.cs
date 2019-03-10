@@ -8,7 +8,7 @@ namespace Cave.Compression.Streams
     /// <summary>
     /// A special stream deflating or compressing the bytes that are
     /// written to it.  It uses a Deflater to perform actual deflating.<br/>
-    /// Authors of the original java version : Tom Tromey, Jochen Hoenicke
+    /// Authors of the original java version : Tom Tromey, Jochen Hoenicke.
     /// </summary>
     public class DeflaterOutputStream : Stream
     {
@@ -78,19 +78,19 @@ namespace Cave.Compression.Streams
         /// The output stream where deflated output is written.
         /// </param>
         /// <param name="deflater">
-        /// The underlying deflater to use
+        /// The underlying deflater to use.
         /// </param>
         /// <param name="bufferSize">
-        /// The buffer size in bytes to use when deflating (minimum value 512)
+        /// The buffer size in bytes to use when deflating (minimum value 512).
         /// </param>
         /// <exception cref="ArgumentOutOfRangeException">
         /// bufsize is less than or equal to zero.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// baseOutputStream does not support writing
+        /// baseOutputStream does not support writing.
         /// </exception>
         /// <exception cref="ArgumentNullException">
-        /// deflater instance is null
+        /// deflater instance is null.
         /// </exception>
         public DeflaterOutputStream(Stream baseOutputStream, Deflater deflater, int bufferSize)
         {
@@ -121,7 +121,7 @@ namespace Cave.Compression.Streams
         /// Finishes the stream by calling finish() on the deflater.
         /// </summary>
         /// <exception cref="InvalidDataException">
-        /// Not all input is deflated
+        /// Not all input is deflated.
         /// </exception>
         public virtual void Finish()
         {
@@ -157,7 +157,7 @@ namespace Cave.Compression.Streams
         public bool IsStreamOwner { get; set; } = true;
 
         /// <summary>
-        /// Gets a value indicating whether an entry can be patched after it was added
+        /// Gets a value indicating whether an entry can be patched after it was added.
         /// </summary>
         public bool CanPatchEntries
         {
@@ -174,7 +174,7 @@ namespace Cave.Compression.Streams
         string password;
 
         /// <summary>
-        /// Gets or sets the current <see cref="ICryptoTransform"/> instance
+        /// Gets or sets the current <see cref="ICryptoTransform"/> instance.
         /// </summary>
         protected ICryptoTransform CryptoTransform { get; set; }
 
@@ -186,7 +186,7 @@ namespace Cave.Compression.Streams
         /// <summary>
         /// Gets or sets the password used for encryption.
         /// </summary>
-        /// <remarks>When set to null or if the password is empty no encryption is performed</remarks>
+        /// <remarks>When set to null or if the password is empty no encryption is performed.</remarks>
         public string Password
         {
             get
@@ -208,16 +208,16 @@ namespace Cave.Compression.Streams
         }
 
         /// <summary>
-        /// Encrypt a block of data
+        /// Encrypt a block of data.
         /// </summary>
         /// <param name="buffer">
-        /// Data to encrypt.  NOTE the original contents of the buffer are lost
+        /// Data to encrypt.  NOTE the original contents of the buffer are lost.
         /// </param>
         /// <param name="offset">
-        /// Offset of first byte in buffer to encrypt
+        /// Offset of first byte in buffer to encrypt.
         /// </param>
         /// <param name="length">
-        /// Number of bytes in buffer to encrypt
+        /// Number of bytes in buffer to encrypt.
         /// </param>
         protected void EncryptBlock(byte[] buffer, int offset, int length)
         {
@@ -229,7 +229,7 @@ namespace Cave.Compression.Streams
         #region Deflation Support
 
         /// <summary>
-        /// Deflates everything in the input buffers.  This will call
+        /// Deflates everything in the input buffers.  This will call.
         /// <code>def.deflate()</code> until all bytes from the input buffers
         /// are processed.
         /// </summary>
@@ -262,7 +262,7 @@ namespace Cave.Compression.Streams
         #region Stream Overrides
 
         /// <summary>
-        /// Gets a value indicating whether stream can be read from
+        /// Gets a value indicating whether stream can be read from.
         /// </summary>
         public override bool CanRead
         {
@@ -274,7 +274,7 @@ namespace Cave.Compression.Streams
 
         /// <summary>
         /// Gets a value indicating whether seeking is supported for this stream
-        /// This property always returns false
+        /// This property always returns false.
         /// </summary>
         public override bool CanSeek
         {
@@ -285,7 +285,7 @@ namespace Cave.Compression.Streams
         }
 
         /// <summary>
-        /// Gets a value indicating whether this stream supports writing
+        /// Gets a value indicating whether this stream supports writing.
         /// </summary>
         public override bool CanWrite
         {
@@ -296,7 +296,7 @@ namespace Cave.Compression.Streams
         }
 
         /// <summary>
-        /// Gets get current length of stream
+        /// Gets get current length of stream.
         /// </summary>
         public override long Length
         {
@@ -309,7 +309,7 @@ namespace Cave.Compression.Streams
         /// <summary>
         /// Gets or sets the current position within the stream.
         /// </summary>
-        /// <exception cref="NotSupportedException">Any attempt to set position</exception>
+        /// <exception cref="NotSupportedException">Any attempt to set position.</exception>
         public override long Position
         {
             get
@@ -324,45 +324,45 @@ namespace Cave.Compression.Streams
         }
 
         /// <summary>
-        /// Sets the current position of this stream to the given value. Not supported by this class!
+        /// Sets the current position of this stream to the given value. Not supported by this class!.
         /// </summary>
         /// <param name="offset">The offset relative to the <paramref name="origin"/> to seek.</param>
         /// <param name="origin">The <see cref="SeekOrigin"/> to seek from.</param>
         /// <returns>The new position in the stream.</returns>
-        /// <exception cref="NotSupportedException">Any access</exception>
+        /// <exception cref="NotSupportedException">Any access.</exception>
         public override long Seek(long offset, SeekOrigin origin)
         {
             throw new NotSupportedException("DeflaterOutputStream Seek not supported");
         }
 
         /// <summary>
-        /// Sets the length of this stream to the given value. Not supported by this class!
+        /// Sets the length of this stream to the given value. Not supported by this class!.
         /// </summary>
         /// <param name="value">The new stream length.</param>
-        /// <exception cref="NotSupportedException">Any access</exception>
+        /// <exception cref="NotSupportedException">Any access.</exception>
         public override void SetLength(long value)
         {
             throw new NotSupportedException("DeflaterOutputStream SetLength not supported");
         }
 
         /// <summary>
-        /// Read a byte from stream advancing position by one
+        /// Read a byte from stream advancing position by one.
         /// </summary>
         /// <returns>The byte read cast to an int.  THe value is -1 if at the end of the stream.</returns>
-        /// <exception cref="NotSupportedException">Any access</exception>
+        /// <exception cref="NotSupportedException">Any access.</exception>
         public override int ReadByte()
         {
             throw new NotSupportedException("DeflaterOutputStream ReadByte not supported");
         }
 
         /// <summary>
-        /// Read a block of bytes from stream
+        /// Read a block of bytes from stream.
         /// </summary>
         /// <param name="buffer">The buffer to store read data in.</param>
         /// <param name="offset">The offset to start storing at.</param>
         /// <param name="count">The maximum number of bytes to read.</param>
         /// <returns>The actual number of bytes read.  Zero if end of stream is detected.</returns>
-        /// <exception cref="NotSupportedException">Any access</exception>
+        /// <exception cref="NotSupportedException">Any access.</exception>
         public override int Read(byte[] buffer, int offset, int count)
         {
             throw new NotSupportedException("DeflaterOutputStream Read not supported");
@@ -426,7 +426,7 @@ namespace Cave.Compression.Streams
         /// Writes bytes from an array to the compressed stream.
         /// </summary>
         /// <param name="buffer">
-        /// The byte array
+        /// The byte array.
         /// </param>
         /// <param name="offset">
         /// The offset into the byte array where to start.

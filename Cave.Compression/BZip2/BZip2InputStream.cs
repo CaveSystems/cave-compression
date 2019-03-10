@@ -5,7 +5,7 @@ using Cave.Compression.Checksum;
 namespace Cave.Compression.BZip2
 {
     /// <summary>
-    /// An input stream that decompresses files in the BZip2 format
+    /// An input stream that decompresses files in the BZip2 format.
     /// </summary>
     public class BZip2InputStream : Stream
     {
@@ -169,7 +169,7 @@ namespace Cave.Compression.BZip2
         /// <summary>
         /// Initializes a new instance of the <see cref="BZip2InputStream"/> class.
         /// </summary>
-        /// <param name="stream">Data source</param>
+        /// <param name="stream">Data source.</param>
         public BZip2InputStream(Stream stream)
         {
             // init arrays
@@ -219,7 +219,7 @@ namespace Cave.Compression.BZip2
 
         /// <summary>
         /// Gets a value indicating whether the current stream supports writing.
-        /// This property always returns false
+        /// This property always returns false.
         /// </summary>
         public override bool CanWrite
         {
@@ -267,12 +267,12 @@ namespace Cave.Compression.BZip2
         }
 
         /// <summary>
-        /// Set the streams position.  This operation is not supported and will throw a NotSupportedException
+        /// Set the streams position.  This operation is not supported and will throw a NotSupportedException.
         /// </summary>
         /// <param name="offset">A byte offset relative to the <paramref name="origin"/> parameter.</param>
         /// <param name="origin">A value of type <see cref="SeekOrigin"/> indicating the reference point used to obtain the new position.</param>
         /// <returns>The new position of the stream.</returns>
-        /// <exception cref="NotSupportedException">Any access</exception>
+        /// <exception cref="NotSupportedException">Any access.</exception>
         public override long Seek(long offset, SeekOrigin origin)
         {
             throw new NotSupportedException("BZip2InputStream Seek not supported");
@@ -280,10 +280,10 @@ namespace Cave.Compression.BZip2
 
         /// <summary>
         /// Sets the length of this stream to the given value.
-        /// This operation is not supported and will throw a NotSupportedExceptionortedException
+        /// This operation is not supported and will throw a NotSupportedExceptionortedException.
         /// </summary>
         /// <param name="value">The new length for the stream.</param>
-        /// <exception cref="NotSupportedException">Any access</exception>
+        /// <exception cref="NotSupportedException">Any access.</exception>
         public override void SetLength(long value)
         {
             throw new NotSupportedException("BZip2InputStream SetLength not supported");
@@ -291,12 +291,12 @@ namespace Cave.Compression.BZip2
 
         /// <summary>
         /// Writes a block of bytes to this stream using data from a buffer.
-        /// This operation is not supported and will throw a NotSupportedException
+        /// This operation is not supported and will throw a NotSupportedException.
         /// </summary>
         /// <param name="buffer">The buffer to source data from.</param>
         /// <param name="offset">The offset to start obtaining data from.</param>
         /// <param name="count">The number of bytes of data to write.</param>
-        /// <exception cref="NotSupportedException">Any access</exception>
+        /// <exception cref="NotSupportedException">Any access.</exception>
         public override void Write(byte[] buffer, int offset, int count)
         {
             throw new NotSupportedException("BZip2InputStream Write not supported");
@@ -304,10 +304,10 @@ namespace Cave.Compression.BZip2
 
         /// <summary>
         /// Writes a byte to the current position in the file stream.
-        /// This operation is not supported and will throw a NotSupportedException
+        /// This operation is not supported and will throw a NotSupportedException.
         /// </summary>
         /// <param name="value">The value to write.</param>
-        /// <exception cref="NotSupportedException">Any access</exception>
+        /// <exception cref="NotSupportedException">Any access.</exception>
         public override void WriteByte(byte value)
         {
             throw new NotSupportedException("BZip2InputStream WriteByte not supported");
@@ -316,9 +316,9 @@ namespace Cave.Compression.BZip2
         /// <summary>
         /// Read a sequence of bytes and advances the read position by one byte.
         /// </summary>
-        /// <param name="buffer">Array of bytes to store values in</param>
-        /// <param name="offset">Offset in array to begin storing data</param>
-        /// <param name="count">The maximum number of bytes to read</param>
+        /// <param name="buffer">Array of bytes to store values in.</param>
+        /// <param name="offset">Offset in array to begin storing data.</param>
+        /// <param name="count">The maximum number of bytes to read.</param>
         /// <returns>The total number of bytes read into the buffer. This might be less
         /// than the number of bytes requested if that number of bytes are not
         /// currently available or zero if the end of the stream is reached.
@@ -357,9 +357,9 @@ namespace Cave.Compression.BZip2
         }
 
         /// <summary>
-        /// Read a byte from stream advancing position
+        /// Read a byte from stream advancing position.
         /// </summary>
-        /// <returns>byte read or -1 on end of stream</returns>
+        /// <returns>byte read or -1 on end of stream.</returns>
         public override int ReadByte()
         {
             if (streamEnd)

@@ -1,7 +1,7 @@
 ﻿namespace Cave.Compression.Tar
 {
     /// <summary>
-    /// Provides available tar entry types
+    /// Provides available tar entry types.
     /// </summary>
     public enum TarEntryType : byte
     {

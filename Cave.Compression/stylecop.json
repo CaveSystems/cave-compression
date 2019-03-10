@@ -2,14 +2,16 @@
   "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
   "settings": {
     "documentationRules": {
-      "documentPrivateElements": false,
       "documentPrivateFields": false,
-      "documentInternalElements": false
+      "documentInternalElements": false,
+      "documentPrivateElements": false
     },
     "indentation": {
       "useTabs": false
     },
-    "layoutRules": { "newlineAtEndOfFile": "require" },
+    "layoutRules": {
+      "newlineAtEndOfFile": "require"
+    },
     "maintainabilityRules": {
       "topLevelTypes": [ "class", "delegate", "enum", "interface", "struct" ]
     },
@@ -21,8 +23,6 @@
     },
     "namingRules": {
       "allowCommonHungarianPrefixes": false
-    },
-    "readabilityRules": { "allowBuiltInTypeAliases": false },
-    "spacingRules": {}
+    }
   }
 }

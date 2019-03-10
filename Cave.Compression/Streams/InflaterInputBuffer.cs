@@ -6,7 +6,7 @@ using Cave.Compression.Core;
 namespace Cave.Compression.Streams
 {
     /// <summary>
-    /// An input buffer customised for use by <see cref="InflaterInputStream"/>
+    /// An input buffer customised for use by <see cref="InflaterInputStream"/>.
     /// </summary>
     /// <remarks>
     /// The buffer supports decryption of incoming data.
@@ -28,7 +28,7 @@ namespace Cave.Compression.Streams
         /// Initializes a new instance of the <see cref="InflaterInputBuffer"/> class.
         /// </summary>
         /// <param name="stream">The stream to buffer.</param>
-        /// <param name="bufferSize">The size to use for the buffer</param>
+        /// <param name="bufferSize">The size to use for the buffer.</param>
         /// <remarks>A minimum buffer size of 1KB is permitted.  Lower sizes are treated as 1KB.</remarks>
         public InflaterInputBuffer(Stream stream, int bufferSize)
         {
@@ -44,7 +44,7 @@ namespace Cave.Compression.Streams
         #endregion
 
         /// <summary>
-        /// Gets or sets the length of bytes bytes in the <see cref="RawData"/>
+        /// Gets or sets the length of bytes bytes in the <see cref="RawData"/>.
         /// </summary>
         public int RawLength { get; set; }
 
@@ -55,7 +55,7 @@ namespace Cave.Compression.Streams
         public byte[] RawData { get; set; }
 
         /// <summary>
-        /// Gets the number of useable bytes in <see cref="ClearText"/>
+        /// Gets the number of useable bytes in <see cref="ClearText"/>.
         /// </summary>
         public int ClearTextLength
         {
@@ -71,7 +71,7 @@ namespace Cave.Compression.Streams
         public byte[] ClearText { get; set; }
 
         /// <summary>
-        /// Gets or sets the number of bytes available
+        /// Gets or sets the number of bytes available.
         /// </summary>
         public int Available { get; set; }
 
@@ -121,9 +121,9 @@ namespace Cave.Compression.Streams
         }
 
         /// <summary>
-        /// Read a buffer directly from the input stream
+        /// Read a buffer directly from the input stream.
         /// </summary>
-        /// <param name="buffer">The buffer to fill</param>
+        /// <param name="buffer">The buffer to fill.</param>
         /// <returns>Returns the number of bytes read.</returns>
         public int ReadRawBuffer(byte[] buffer)
         {
@@ -131,9 +131,9 @@ namespace Cave.Compression.Streams
         }
 
         /// <summary>
-        /// Read a buffer directly from the input stream
+        /// Read a buffer directly from the input stream.
         /// </summary>
-        /// <param name="outBuffer">The buffer to read into</param>
+        /// <param name="outBuffer">The buffer to read into.</param>
         /// <param name="offset">The offset to start reading data into.</param>
         /// <param name="length">The number of bytes to read.</param>
         /// <returns>Returns the number of bytes read.</returns>

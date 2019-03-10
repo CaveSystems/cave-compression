@@ -98,10 +98,10 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// Create TarArchive for reading setting block factor
+        /// Create TarArchive for reading setting block factor.
         /// </summary>
-        /// <param name="inputStream">A stream containing the tar archive contents</param>
-        /// <param name="blockFactor">The blocking factor to apply</param>
+        /// <param name="inputStream">A stream containing the tar archive contents.</param>
+        /// <param name="blockFactor">The blocking factor to apply.</param>
         /// <returns>Returns a <see cref="TarArchive"/> suitable for reading.</returns>
         public static TarArchive CreateInputTarArchive(Stream inputStream, int blockFactor)
         {
@@ -119,9 +119,9 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// Create a TarArchive for writing to, using the default blocking factor
+        /// Create a TarArchive for writing to, using the default blocking factor.
         /// </summary>
-        /// <param name="outputStream">The <see cref="Stream"/> to write to</param>
+        /// <param name="outputStream">The <see cref="Stream"/> to write to.</param>
         /// <returns>Returns a <see cref="TarArchive"/> suitable for writing.</returns>
         public static TarArchive CreateOutputTarArchive(Stream outputStream)
         {
@@ -146,7 +146,7 @@ namespace Cave.Compression.Tar
         /// <summary>
         /// Create a <see cref="TarArchive">tar archive</see> for writing.
         /// </summary>
-        /// <param name="outputStream">The stream to write to</param>
+        /// <param name="outputStream">The stream to write to.</param>
         /// <param name="blockFactor">The blocking factor to use for buffering.</param>
         /// <returns>Returns a <see cref="TarArchive"/> suitable for writing.</returns>
         public static TarArchive CreateOutputTarArchive(Stream outputStream, int blockFactor)
@@ -218,9 +218,9 @@ namespace Cave.Compression.Tar
         public event EventHandler<TarEntryEventArgs> ProcessEntry;
 
         /// <summary>
-        /// Calls the <see cref="ProcessEntry"/> event
+        /// Calls the <see cref="ProcessEntry"/> event.
         /// </summary>
-        /// <param name="e">The event arguments</param>
+        /// <param name="e">The event arguments.</param>
         protected virtual void OnProcessEntry(TarEntryEventArgs e) => ProcessEntry?.Invoke(this, e);
 
         /// <summary>
@@ -274,7 +274,7 @@ namespace Cave.Compression.Tar
 
         /// <summary>
         /// Gets or sets pathPrefix to be added to entry names as they are written.
-        /// A slash character is appended after PathPrefix
+        /// A slash character is appended after PathPrefix.
         /// </summary>
         public string PathPrefix
         {
@@ -524,7 +524,7 @@ namespace Cave.Compression.Tar
         /// Perform the "list" command for the archive contents.
         ///
         /// NOTE That this method uses the <see cref="ProcessEntry"/> event to actually list
-        /// the contents. If the progress display event is not set, nothing will be listed!
+        /// the contents. If the progress display event is not set, nothing will be listed!.
         /// </summary>
         public void ListContents()
         {
@@ -595,7 +595,7 @@ namespace Cave.Compression.Tar
         /// <param name="entry">
         /// The TarEntry returned by tarIn.GetNextEntry().
         /// </param>
-        /// <returns>Returns whether operation may continue or not</returns>
+        /// <returns>Returns whether operation may continue or not.</returns>
         bool ExtractEntry(string destDir, TarEntry entry)
         {
             {
@@ -720,7 +720,7 @@ namespace Cave.Compression.Tar
         /// <param name="recurse">
         /// If true, process the children of directory entries.
         /// </param>
-        /// <returns>Returns whether the operation may continue or not</returns>
+        /// <returns>Returns whether the operation may continue or not.</returns>
         public bool WriteEntry(TarEntry sourceEntry, bool recurse)
         {
             if (sourceEntry == null)
@@ -764,7 +764,7 @@ namespace Cave.Compression.Tar
         /// <param name="recurse">
         /// If true, process the children of directory entries.
         /// </param>
-        /// <returns>Returns whether the operation may continue</returns>
+        /// <returns>Returns whether the operation may continue.</returns>
         bool WriteEntryCore(TarEntry sourceEntry, bool recurse)
         {
             string tempFileName = null;

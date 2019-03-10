@@ -3,7 +3,7 @@ using System;
 namespace Cave.Compression.Checksum
 {
     /// <summary>
-    /// CRC-32 with unreversed data and reversed output
+    /// CRC-32 with unreversed data and reversed output.
     /// </summary>
     /// <remarks>
     /// Generate a table for a byte-wise 32-bit CRC calculation on the polynomial:
@@ -127,7 +127,7 @@ namespace Cave.Compression.Checksum
         /// <summary>
         /// Gets the CRC data checksum computed so far.
         /// </summary>
-        /// <remarks>Reversed Out = true</remarks>
+        /// <remarks>Reversed Out = true.</remarks>
         public long Value
         {
             get
@@ -144,9 +144,9 @@ namespace Cave.Compression.Checksum
         /// Updates the checksum with the int bval.
         /// </summary>
         /// <param name = "bval">
-        /// the byte is taken as the lower 8 bits of bval
+        /// the byte is taken as the lower 8 bits of bval.
         /// </param>
-        /// <remarks>Reversed Data = false</remarks>
+        /// <remarks>Reversed Data = false.</remarks>
         public void Update(int bval)
         {
             checkValue = unchecked(Table[(byte)(((checkValue >> 24) & 0xFF) ^ bval)] ^ (checkValue << 8));
@@ -168,10 +168,10 @@ namespace Cave.Compression.Checksum
         }
 
         /// <summary>
-        /// Update CRC data checksum based on a portion of a block of data
+        /// Update CRC data checksum based on a portion of a block of data.
         /// </summary>
         /// <param name = "buffer">Contains the data to update the CRC with.</param>
-        /// <param name = "offset">The offset into the buffer where the data starts</param>
+        /// <param name = "offset">The offset into the buffer where the data starts.</param>
         /// <param name = "count">The number of data bytes to update the CRC with.</param>
         public void Update(byte[] buffer, int offset, int count)
         {

@@ -5,19 +5,19 @@ using Cave.Compression.Streams;
 namespace Cave.Compression.Core
 {
     /// <summary>
-    /// Huffman tree used for inflation
+    /// Huffman tree used for inflation.
     /// </summary>
     class InflaterHuffmanTree
     {
         #region static class
 
         /// <summary>
-        /// Gets the literal length tree
+        /// Gets the literal length tree.
         /// </summary>
         internal static InflaterHuffmanTree DefLitLenTree { get; }
 
         /// <summary>
-        /// Gets the distance tree
+        /// Gets the distance tree.
         /// </summary>
         internal static InflaterHuffmanTree DefDistTree { get; }
 
@@ -80,7 +80,7 @@ namespace Cave.Compression.Core
         /// Initializes a new instance of the <see cref="InflaterHuffmanTree"/> class.
         /// </summary>
         /// <param name = "codeLengths">
-        /// the array of code lengths
+        /// the array of code lengths.
         /// </param>
         public InflaterHuffmanTree(byte[] codeLengths)
         {

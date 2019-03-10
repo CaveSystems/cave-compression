@@ -9,7 +9,7 @@ namespace Cave.Compression.Core
     /// This class is <i>not</i> thread safe.  This is inherent in the API, due
     /// to the split of Deflate and SetInput.
     ///
-    /// author of the original java version : Jochen Hoenicke
+    /// author of the original java version : Jochen Hoenicke.
     /// </summary>
     class DeflaterHuffman
     {
@@ -19,27 +19,27 @@ namespace Cave.Compression.Core
         const int LiteralCount = 286;
 
         /// <summary>
-        /// Number of distance codes
+        /// Number of distance codes.
         /// </summary>
         const int DistanceCount = 30;
 
         /// <summary>
-        /// Number of codes used to transfer bit lengths
+        /// Number of codes used to transfer bit lengths.
         /// </summary>
         const int BitLengthCount = 19;
 
         /// <summary>
-        /// repeat previous bit length 3-6 times (2 bits of repeat count)
+        /// repeat previous bit length 3-6 times (2 bits of repeat count).
         /// </summary>
         const int Repeat3to6 = 16;
 
         /// <summary>
-        /// repeat a zero length 3-10 times  (3 bits of repeat count)
+        /// repeat a zero length 3-10 times  (3 bits of repeat count).
         /// </summary>
         const int Repeat3to10 = 17;
 
         /// <summary>
-        /// repeat a zero length 11-138 times  (7 bits of repeat count)
+        /// repeat a zero length 11-138 times  (7 bits of repeat count).
         /// </summary>
         const int Repeat11to138 = 18;
 
@@ -76,8 +76,8 @@ namespace Cave.Compression.Core
         /// <summary>
         /// Reverse the bits of a 16 bit value.
         /// </summary>
-        /// <param name="toReverse">Value to reverse bits</param>
-        /// <returns>Value with bits reversed</returns>
+        /// <param name="toReverse">Value to reverse bits.</param>
+        /// <returns>Value with bits reversed.</returns>
         public static short BitReverse(int toReverse)
         {
             return (short)(
@@ -193,7 +193,7 @@ namespace Cave.Compression.Core
             #endregion
 
             /// <summary>
-            /// Resets the internal state of the tree
+            /// Resets the internal state of the tree.
             /// </summary>
             public void Reset()
             {
@@ -216,10 +216,10 @@ namespace Cave.Compression.Core
             }
 
             /// <summary>
-            /// Check that all frequencies are zero
+            /// Check that all frequencies are zero.
             /// </summary>
             /// <exception cref="InvalidDataException">
-            /// At least one frequency is non-zero
+            /// At least one frequency is non-zero.
             /// </exception>
             public void CheckEmpty()
             {
@@ -236,10 +236,10 @@ namespace Cave.Compression.Core
             }
 
             /// <summary>
-            /// Set static codes and length
+            /// Set static codes and length.
             /// </summary>
-            /// <param name="staticCodes">new codes</param>
-            /// <param name="staticLengths">length for new codes</param>
+            /// <param name="staticCodes">new codes.</param>
+            /// <param name="staticLengths">length for new codes.</param>
             public void SetStaticCodes(short[] staticCodes, byte[] staticLengths)
             {
                 codes = staticCodes;
@@ -247,7 +247,7 @@ namespace Cave.Compression.Core
             }
 
             /// <summary>
-            /// Build dynamic codes and lengths
+            /// Build dynamic codes and lengths.
             /// </summary>
             public void BuildCodes()
             {
@@ -432,9 +432,9 @@ namespace Cave.Compression.Core
             }
 
             /// <summary>
-            /// Get encoded length
+            /// Get encoded length.
             /// </summary>
-            /// <returns>Encoded length, the sum of frequencies * lengths</returns>
+            /// <returns>Encoded length, the sum of frequencies * lengths.</returns>
             public int GetEncodedLength()
             {
                 int len = 0;
@@ -450,7 +450,7 @@ namespace Cave.Compression.Core
             /// Scan a literal or distance tree to determine the frequencies of the codes
             /// in the bit length tree.
             /// </summary>
-            /// <param name="blTree">Bit length tree</param>
+            /// <param name="blTree">Bit length tree.</param>
             public void CalcBLFreq(Tree blTree)
             {
                 int max_count;               /* max repeat count */
@@ -511,9 +511,9 @@ namespace Cave.Compression.Core
             }
 
             /// <summary>
-            /// Write tree values
+            /// Write tree values.
             /// </summary>
-            /// <param name="blTree">Tree to write</param>
+            /// <param name="blTree">Tree to write.</param>
             public void WriteTree(Tree blTree)
             {
                 int max_count;               // max repeat count
@@ -694,13 +694,13 @@ namespace Cave.Compression.Core
         #region Instance Fields
 
         /// <summary>
-        /// Buffer for distances
+        /// Buffer for distances.
         /// </summary>
         readonly short[] distanceBuffer;
         readonly byte[] literalBuffer;
 
         /// <summary>
-        /// Pending buffer to use
+        /// Pending buffer to use.
         /// </summary>
         DeflaterPending pending;
 
@@ -716,7 +716,7 @@ namespace Cave.Compression.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="DeflaterHuffman"/> class.
         /// </summary>
-        /// <param name="pending">Pending buffer to use</param>
+        /// <param name="pending">Pending buffer to use.</param>
         public DeflaterHuffman(DeflaterPending pending)
         {
             this.pending = pending;
@@ -730,7 +730,7 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Reset internal state
+        /// Reset internal state.
         /// </summary>
         public void Reset()
         {
@@ -742,7 +742,7 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Write all trees to pending buffer
+        /// Write all trees to pending buffer.
         /// </summary>
         /// <param name="blTreeCodes">The number/rank of treecodes to send.</param>
         public void SendAllTrees(int blTreeCodes)
@@ -769,7 +769,7 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Compress current buffer writing data to pending buffer
+        /// Compress current buffer writing data to pending buffer.
         /// </summary>
         public void CompressBlock()
         {
@@ -829,12 +829,12 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Flush block to output with no compression
+        /// Flush block to output with no compression.
         /// </summary>
-        /// <param name="stored">Data to write</param>
-        /// <param name="storedOffset">Index of first byte to write</param>
-        /// <param name="storedLength">Count of bytes to write</param>
-        /// <param name="lastBlock">True if this is the last block</param>
+        /// <param name="stored">Data to write.</param>
+        /// <param name="storedOffset">Index of first byte to write.</param>
+        /// <param name="storedLength">Count of bytes to write.</param>
+        /// <param name="lastBlock">True if this is the last block.</param>
         public void FlushStoredBlock(byte[] stored, int storedOffset, int storedLength, bool lastBlock)
         {
 #if DebugDeflation
@@ -851,12 +851,12 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Flush block to output with compression
+        /// Flush block to output with compression.
         /// </summary>
-        /// <param name="stored">Data to flush</param>
-        /// <param name="storedOffset">Index of first byte to flush</param>
-        /// <param name="storedLength">Count of bytes to flush</param>
-        /// <param name="lastBlock">True if this is the last block</param>
+        /// <param name="stored">Data to flush.</param>
+        /// <param name="storedOffset">Index of first byte to flush.</param>
+        /// <param name="storedLength">Count of bytes to flush.</param>
+        /// <param name="lastBlock">True if this is the last block.</param>
         public void FlushBlock(byte[] stored, int storedOffset, int storedLength, bool lastBlock)
         {
             literalTree.Freqs[EndOfFileSymbol]++;
@@ -932,19 +932,19 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Get value indicating if internal buffer is full
+        /// Get value indicating if internal buffer is full.
         /// </summary>
-        /// <returns>true if buffer is full</returns>
+        /// <returns>true if buffer is full.</returns>
         public bool IsFull()
         {
             return lastLiteral >= BufferSize;
         }
 
         /// <summary>
-        /// Add literal to buffer
+        /// Add literal to buffer.
         /// </summary>
         /// <param name="literal">Literal value to add to buffer.</param>
-        /// <returns>Value indicating internal buffer is full</returns>
+        /// <returns>Value indicating internal buffer is full.</returns>
         public bool TallyLit(int literal)
         {
             distanceBuffer[lastLiteral] = 0;
@@ -954,11 +954,11 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Add distance code and length to literal and distance trees
+        /// Add distance code and length to literal and distance trees.
         /// </summary>
-        /// <param name="distance">Distance code</param>
-        /// <param name="length">Length</param>
-        /// <returns>Value indicating if internal buffer is full</returns>
+        /// <param name="distance">Distance code.</param>
+        /// <param name="length">Length.</param>
+        /// <returns>Value indicating if internal buffer is full.</returns>
         public bool TallyDist(int distance, int length)
         {
             distanceBuffer[lastLiteral] = (short)distance;

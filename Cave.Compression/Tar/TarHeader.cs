@@ -36,19 +36,19 @@ namespace Cave.Compression.Tar
     ///     char t_devminor[8];        // 337 Minor for devices
     ///     char t_prefix[155];        // 345 Prefix for t_name
     ///     char t_mfill[12];          // 500 Filler up to 512
-    /// };
+    /// };.
     /// </remarks>
     public class TarHeader
     {
         #region Constants
 
         /// <summary>
-        /// The magic tag representing a POSIX tar archive.  (would be written with a trailing NULL)
+        /// The magic tag representing a POSIX tar archive.  (would be written with a trailing NULL).
         /// </summary>
         public const string MAGIC = "ustar";
 
         /// <summary>
-        /// 1 tick == 100 nanoseconds
+        /// 1 tick == 100 nanoseconds.
         /// </summary>
         public const long TimeConversionFactor = 10000000L;
 
@@ -281,14 +281,14 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// Add <paramref name="name">name</paramref> to the buffer as a collection of bytes
+        /// Add <paramref name="name">name</paramref> to the buffer as a collection of bytes.
         /// </summary>
-        /// <param name="name">The name to add</param>
-        /// <param name="nameOffset">The offset of the first character</param>
-        /// <param name="buffer">The buffer to add to</param>
-        /// <param name="bufferOffset">The index of the first byte to add</param>
-        /// <param name="length">The number of characters/bytes to add</param>
-        /// <returns>The next free index in the <paramref name="buffer"/></returns>
+        /// <param name="name">The name to add.</param>
+        /// <param name="nameOffset">The offset of the first character.</param>
+        /// <param name="buffer">The buffer to add to.</param>
+        /// <param name="bufferOffset">The index of the first byte to add.</param>
+        /// <param name="length">The number of characters/bytes to add.</param>
+        /// <returns>The next free index in the <paramref name="buffer"/>.</returns>
         public static int GetNameBytes(StringBuilder name, int nameOffset, byte[] buffer, int bufferOffset, int length)
         {
             if (name == null)
@@ -305,14 +305,14 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// Add <paramref name="name">name</paramref> to the buffer as a collection of bytes
+        /// Add <paramref name="name">name</paramref> to the buffer as a collection of bytes.
         /// </summary>
-        /// <param name="name">The name to add</param>
-        /// <param name="nameOffset">The offset of the first character</param>
-        /// <param name="buffer">The buffer to add to</param>
-        /// <param name="bufferOffset">The index of the first byte to add</param>
-        /// <param name="length">The number of characters/bytes to add</param>
-        /// <returns>The next free index in the <paramref name="buffer"/></returns>
+        /// <param name="name">The name to add.</param>
+        /// <param name="nameOffset">The offset of the first character.</param>
+        /// <param name="buffer">The buffer to add to.</param>
+        /// <param name="bufferOffset">The index of the first byte to add.</param>
+        /// <param name="length">The number of characters/bytes to add.</param>
+        /// <returns>The next free index in the <paramref name="buffer"/>.</returns>
         public static int GetNameBytes(string name, int nameOffset, byte[] buffer, int bufferOffset, int length)
         {
             if (name == null)
@@ -341,22 +341,22 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// Add an entry name to the buffer
+        /// Add an entry name to the buffer.
         /// </summary>
         /// <param name="name">
-        /// The name to add
+        /// The name to add.
         /// </param>
         /// <param name="buffer">
-        /// The buffer to add to
+        /// The buffer to add to.
         /// </param>
         /// <param name="offset">
-        /// The offset into the buffer from which to start adding
+        /// The offset into the buffer from which to start adding.
         /// </param>
         /// <param name="length">
-        /// The number of header bytes to add
+        /// The number of header bytes to add.
         /// </param>
         /// <returns>
-        /// The index of the next free byte in the buffer
+        /// The index of the next free byte in the buffer.
         /// </returns>
         public static int GetNameBytes(StringBuilder name, byte[] buffer, int offset, int length)
         {
@@ -374,13 +374,13 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// Add an entry name to the buffer
+        /// Add an entry name to the buffer.
         /// </summary>
-        /// <param name="name">The name to add</param>
-        /// <param name="buffer">The buffer to add to</param>
-        /// <param name="offset">The offset into the buffer from which to start adding</param>
-        /// <param name="length">The number of header bytes to add</param>
-        /// <returns>The index of the next free byte in the buffer</returns>
+        /// <param name="name">The name to add.</param>
+        /// <param name="buffer">The buffer to add to.</param>
+        /// <param name="offset">The offset into the buffer from which to start adding.</param>
+        /// <param name="length">The number of header bytes to add.</param>
+        /// <returns>The index of the next free byte in the buffer.</returns>
         public static int GetNameBytes(string name, byte[] buffer, int offset, int length)
         {
             if (name == null)
@@ -399,7 +399,7 @@ namespace Cave.Compression.Tar
         /// <summary>
         /// Add a string to a buffer as a collection of ascii bytes.
         /// </summary>
-        /// <param name="toAdd">The string to add</param>
+        /// <param name="toAdd">The string to add.</param>
         /// <param name="nameOffset">The offset of the first character to add.</param>
         /// <param name="buffer">The buffer to add to.</param>
         /// <param name="bufferOffset">The offset to start adding at.</param>
@@ -433,22 +433,22 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// Put an octal representation of a value into a buffer
+        /// Put an octal representation of a value into a buffer.
         /// </summary>
         /// <param name = "value">
-        /// the value to be converted to octal
+        /// the value to be converted to octal.
         /// </param>
         /// <param name = "buffer">
-        /// buffer to store the octal string
+        /// buffer to store the octal string.
         /// </param>
         /// <param name = "offset">
-        /// The offset into the buffer where the value starts
+        /// The offset into the buffer where the value starts.
         /// </param>
         /// <param name = "length">
-        /// The length of the octal string to create
+        /// The length of the octal string to create.
         /// </param>
         /// <returns>
-        /// The offset of the character next byte after the octal string
+        /// The offset of the character next byte after the octal string.
         /// </returns>
         public static int GetOctalBytes(long value, byte[] buffer, int offset, int length)
         {
@@ -481,13 +481,13 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// Put an octal or binary representation of a value into a buffer
+        /// Put an octal or binary representation of a value into a buffer.
         /// </summary>
-        /// <param name = "value">Value to be convert to octal</param>
-        /// <param name = "buffer">The buffer to update</param>
-        /// <param name = "offset">The offset into the buffer to store the value</param>
+        /// <param name = "value">Value to be convert to octal.</param>
+        /// <param name = "buffer">The buffer to update.</param>
+        /// <param name = "offset">The offset into the buffer to store the value.</param>
         /// <param name = "length">The length of the octal string. Must be 12.</param>
-        /// <returns>Index of next byte</returns>
+        /// <returns>Index of next byte.</returns>
         static int GetBinaryOrOctalBytes(long value, byte[] buffer, int offset, int length)
         {
             if (value > 0x1FFFFFFFF)
@@ -509,13 +509,13 @@ namespace Cave.Compression.Tar
         /// <summary>
         /// Add the checksum integer to header buffer.
         /// </summary>
-        /// <param name = "value">The checksum value</param>
-        /// <param name = "buffer">The header buffer to set the checksum for</param>
-        /// <param name = "offset">The offset into the buffer for the checksum</param>
+        /// <param name = "value">The checksum value.</param>
+        /// <param name = "buffer">The header buffer to set the checksum for.</param>
+        /// <param name = "offset">The offset into the buffer for the checksum.</param>
         /// <param name = "length">The number of header bytes to update.
         /// It's formatted differently from the other fields: it has 6 digits, a
         /// null, then a space -- rather than digits, a space, then a null.
-        /// The final space is already there, from checksumming
+        /// The final space is already there, from checksumming.
         /// </param>
         static void GetCheckSumOctalBytes(long value, byte[] buffer, int offset, int length)
         {
@@ -524,7 +524,7 @@ namespace Cave.Compression.Tar
 
         /// <summary>
         /// Compute the checksum for a tar entry header.
-        /// The checksum field must be all spaces prior to this happening
+        /// The checksum field must be all spaces prior to this happening.
         /// </summary>
         /// <param name = "buffer">The tar entry's header buffer.</param>
         /// <returns>The computed checksum.</returns>
@@ -543,7 +543,7 @@ namespace Cave.Compression.Tar
         /// Make a checksum for a tar entry ignoring the checksum contents.
         /// </summary>
         /// <param name = "buffer">The tar entry's header buffer.</param>
-        /// <returns>The checksum for the buffer</returns>
+        /// <returns>The checksum for the buffer.</returns>
         static int MakeCheckSum(byte[] buffer)
         {
             int sum = 0;
@@ -885,7 +885,7 @@ namespace Cave.Compression.Tar
         /// <summary>
         /// 'Write' header information to buffer provided, updating the <see cref="Checksum">check sum</see>.
         /// </summary>
-        /// <param name="outBuffer">output buffer for header information</param>
+        /// <param name="outBuffer">output buffer for header information.</param>
         public void WriteHeader(byte[] outBuffer)
         {
             if (outBuffer == null)

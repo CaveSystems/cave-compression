@@ -380,7 +380,7 @@ namespace Cave.Compression.BZip2
         public bool IsStreamOwner { get; set; } = true;
 
         /// <summary>
-        /// Gets a value indicating whether the current stream supports reading
+        /// Gets a value indicating whether the current stream supports reading.
         /// </summary>
         public override bool CanRead
         {
@@ -391,7 +391,7 @@ namespace Cave.Compression.BZip2
         }
 
         /// <summary>
-        /// Gets a value indicating whether the current stream supports seeking
+        /// Gets a value indicating whether the current stream supports seeking.
         /// </summary>
         public override bool CanSeek
         {
@@ -402,7 +402,7 @@ namespace Cave.Compression.BZip2
         }
 
         /// <summary>
-        /// Gets a value indicating whether the current stream supports writing
+        /// Gets a value indicating whether the current stream supports writing.
         /// </summary>
         public override bool CanWrite
         {
@@ -413,7 +413,7 @@ namespace Cave.Compression.BZip2
         }
 
         /// <summary>
-        /// Gets the length in bytes of the stream
+        /// Gets the length in bytes of the stream.
         /// </summary>
         public override long Length
         {
@@ -469,7 +469,7 @@ namespace Cave.Compression.BZip2
         }
 
         /// <summary>
-        /// Read a block of bytes
+        /// Read a block of bytes.
         /// </summary>
         /// <param name="buffer">The buffer to read into.</param>
         /// <param name="offset">The offset in the buffer to start storing data at.</param>
@@ -483,7 +483,7 @@ namespace Cave.Compression.BZip2
         }
 
         /// <summary>
-        /// Write a block of bytes to the stream
+        /// Write a block of bytes to the stream.
         /// </summary>
         /// <param name="buffer">The buffer containing data to write.</param>
         /// <param name="offset">The offset of the first byte to write.</param>
@@ -667,7 +667,7 @@ namespace Cave.Compression.BZip2
         }
 
         /// <summary>
-        /// Flush output buffers
+        /// Flush output buffers.
         /// </summary>
         public override void Flush()
         {
@@ -1393,8 +1393,8 @@ namespace Cave.Compression.BZip2
 
                 med = Med3(
                     block[zptr[lo] + d + 1],
-                           block[zptr[hi] + d + 1],
-                           block[zptr[(lo + hi) >> 1] + d + 1]);
+                    block[zptr[hi] + d + 1],
+                    block[zptr[(lo + hi) >> 1] + d + 1]);
 
                 unLo = ltLo = lo;
                 unHi = gtHi = hi;

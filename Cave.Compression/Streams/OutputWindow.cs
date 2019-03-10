@@ -6,7 +6,7 @@ namespace Cave.Compression.Streams
     /// Contains the output from the Inflation process.
     /// We need to have a window so that we can refer backwards into the output stream
     /// to repeat stuff.<br/>
-    /// Author of the original java version : John Leuner
+    /// Author of the original java version : John Leuner.
     /// </summary>
     class OutputWindow
     {
@@ -22,11 +22,11 @@ namespace Cave.Compression.Streams
         #endregion
 
         /// <summary>
-        /// Write a byte to this output window
+        /// Write a byte to this output window.
         /// </summary>
-        /// <param name="value">value to write</param>
+        /// <param name="value">value to write.</param>
         /// <exception cref="InvalidOperationException">
-        /// if window is full
+        /// if window is full.
         /// </exception>
         public void Write(int value)
         {
@@ -50,12 +50,12 @@ namespace Cave.Compression.Streams
         }
 
         /// <summary>
-        /// Append a byte pattern already in the window itself
+        /// Append a byte pattern already in the window itself.
         /// </summary>
-        /// <param name="length">length of pattern to copy</param>
-        /// <param name="distance">distance from end of window pattern occurs</param>
+        /// <param name="length">length of pattern to copy.</param>
+        /// <param name="distance">distance from end of window pattern occurs.</param>
         /// <exception cref="InvalidOperationException">
-        /// If the repeated data overflows the window
+        /// If the repeated data overflows the window.
         /// </exception>
         public void Repeat(int length, int distance)
         {
@@ -89,11 +89,11 @@ namespace Cave.Compression.Streams
         }
 
         /// <summary>
-        /// Copy from input manipulator to internal window
+        /// Copy from input manipulator to internal window.
         /// </summary>
-        /// <param name="input">source of data</param>
-        /// <param name="length">length of data to copy</param>
-        /// <returns>the number of bytes copied</returns>
+        /// <param name="input">source of data.</param>
+        /// <param name="length">length of data to copy.</param>
+        /// <returns>the number of bytes copied.</returns>
         public int CopyStored(StreamManipulator input, int length)
         {
             length = Math.Min(Math.Min(length, WindowSize - windowFilled), input.AvailableBytes);
@@ -119,13 +119,13 @@ namespace Cave.Compression.Streams
         }
 
         /// <summary>
-        /// Copy dictionary to window
+        /// Copy dictionary to window.
         /// </summary>
-        /// <param name="dictionary">source dictionary</param>
-        /// <param name="offset">offset of start in source dictionary</param>
-        /// <param name="length">length of dictionary</param>
+        /// <param name="dictionary">source dictionary.</param>
+        /// <param name="offset">offset of start in source dictionary.</param>
+        /// <param name="length">length of dictionary.</param>
         /// <exception cref="InvalidOperationException">
-        /// If window isnt empty
+        /// If window isnt empty.
         /// </exception>
         public void CopyDict(byte[] dictionary, int offset, int length)
         {
@@ -150,32 +150,32 @@ namespace Cave.Compression.Streams
         }
 
         /// <summary>
-        /// Get remaining unfilled space in window
+        /// Get remaining unfilled space in window.
         /// </summary>
-        /// <returns>Number of bytes left in window</returns>
+        /// <returns>Number of bytes left in window.</returns>
         public int GetFreeSpace()
         {
             return WindowSize - windowFilled;
         }
 
         /// <summary>
-        /// Get bytes available for output in window
+        /// Get bytes available for output in window.
         /// </summary>
-        /// <returns>Number of bytes filled</returns>
+        /// <returns>Number of bytes filled.</returns>
         public int GetAvailable()
         {
             return windowFilled;
         }
 
         /// <summary>
-        /// Copy contents of window to output
+        /// Copy contents of window to output.
         /// </summary>
-        /// <param name="output">buffer to copy to</param>
-        /// <param name="offset">offset to start at</param>
-        /// <param name="len">number of bytes to count</param>
-        /// <returns>The number of bytes copied</returns>
+        /// <param name="output">buffer to copy to.</param>
+        /// <param name="offset">offset to start at.</param>
+        /// <param name="len">number of bytes to count.</param>
+        /// <returns>The number of bytes copied.</returns>
         /// <exception cref="InvalidOperationException">
-        /// If a window underflow occurs
+        /// If a window underflow occurs.
         /// </exception>
         public int CopyOutput(byte[] output, int offset, int len)
         {
@@ -210,7 +210,7 @@ namespace Cave.Compression.Streams
         }
 
         /// <summary>
-        /// Reset by clearing window so <see cref="GetAvailable">GetAvailable</see> returns 0
+        /// Reset by clearing window so <see cref="GetAvailable">GetAvailable</see> returns 0.
         /// </summary>
         public void Reset()
         {

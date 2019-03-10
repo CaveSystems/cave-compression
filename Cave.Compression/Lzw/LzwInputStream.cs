@@ -17,7 +17,7 @@ namespace Cave.Compression.Lzw
     /// Based on Java code by Ronald Tschalar, which in turn was based on the unlzw.c
     /// code in the gzip package.
     /// </summary>
-    /// <example> This sample shows how to unzip a compressed file
+    /// <example> This sample shows how to unzip a compressed file.
     /// <code>
     /// using System;
     /// using System.IO;
@@ -94,7 +94,7 @@ namespace Cave.Compression.Lzw
         /// Initializes a new instance of the <see cref="LzwInputStream"/> class.
         /// </summary>
         /// <param name="baseInputStream">
-        /// The stream to read compressed data from (baseInputStream LZW format)
+        /// The stream to read compressed data from (baseInputStream LZW format).
         /// </param>
         public LzwInputStream(Stream baseInputStream)
         {
@@ -102,9 +102,9 @@ namespace Cave.Compression.Lzw
         }
 
         /// <summary>
-        /// See <see cref="Stream.ReadByte"/>
+        /// See <see cref="Stream.ReadByte"/>.
         /// </summary>
-        /// <returns>Returns the byte read (0..255) or -1 at end of stream</returns>
+        /// <returns>Returns the byte read (0..255) or -1 at end of stream.</returns>
         public override int ReadByte()
         {
             int b = Read(one, 0, 1);
@@ -117,18 +117,18 @@ namespace Cave.Compression.Lzw
         }
 
         /// <summary>
-        /// Reads decompressed data into the provided buffer byte array
+        /// Reads decompressed data into the provided buffer byte array.
         /// </summary>
         /// <param name ="buffer">
-        /// The array to read and decompress data into
+        /// The array to read and decompress data into.
         /// </param>
         /// <param name ="offset">
-        /// The offset indicating where the data should be placed
+        /// The offset indicating where the data should be placed.
         /// </param>
         /// <param name ="count">
-        /// The number of bytes to decompress
+        /// The number of bytes to decompress.
         /// </param>
-        /// <returns>The number of bytes read. Zero signals the end of stream</returns>
+        /// <returns>The number of bytes read. Zero signals the end of stream.</returns>
         public override int Read(byte[] buffer, int offset, int count)
         {
             if (!headerParsed)
@@ -357,8 +357,8 @@ namespace Cave.Compression.Lzw
         /// Moves the unread data in the buffer to the beginning and resets
         /// the pointers.
         /// </summary>
-        /// <param name="bitPosition">bit position</param>
-        /// <returns>Returns 0</returns>
+        /// <param name="bitPosition">bit position.</param>
+        /// <returns>Returns 0.</returns>
         int ResetBuf(int bitPosition)
         {
             int pos = bitPosition >> 3;
@@ -434,7 +434,7 @@ namespace Cave.Compression.Lzw
         #region Stream Overrides
 
         /// <summary>
-        /// Gets a value indicating whether the current stream supports reading
+        /// Gets a value indicating whether the current stream supports reading.
         /// </summary>
         public override bool CanRead
         {
@@ -445,7 +445,7 @@ namespace Cave.Compression.Lzw
         }
 
         /// <summary>
-        /// Gets a value indicating whether seeking is supported for this stream. (false)
+        /// Gets a value indicating whether seeking is supported for this stream. (false).
         /// </summary>
         public override bool CanSeek
         {
@@ -456,7 +456,7 @@ namespace Cave.Compression.Lzw
         }
 
         /// <summary>
-        /// Gets a value indicating whether this stream is writeable. (false)
+        /// Gets a value indicating whether this stream is writeable. (false).
         /// </summary>
         public override bool CanWrite
         {
@@ -479,9 +479,9 @@ namespace Cave.Compression.Lzw
 
         /// <summary>
         /// Gets or sets the current position within the stream.
-        /// Throws a NotSupportedException when attempting to set the position
+        /// Throws a NotSupportedException when attempting to set the position.
         /// </summary>
-        /// <exception cref="NotSupportedException">Attempting to set the position</exception>
+        /// <exception cref="NotSupportedException">Attempting to set the position.</exception>
         public override long Position
         {
             get
@@ -496,7 +496,7 @@ namespace Cave.Compression.Lzw
         }
 
         /// <summary>
-        /// Flushes the baseInputStream
+        /// Flushes the baseInputStream.
         /// </summary>
         public override void Flush()
         {
@@ -505,12 +505,12 @@ namespace Cave.Compression.Lzw
 
         /// <summary>
         /// Sets the position within the current stream
-        /// Always throws a NotSupportedException
+        /// Always throws a NotSupportedException.
         /// </summary>
         /// <param name="offset">The relative offset to seek to.</param>
         /// <param name="origin">The <see cref="SeekOrigin"/> defining where to seek from.</param>
         /// <returns>The new position in the stream.</returns>
-        /// <exception cref="NotSupportedException">Any access</exception>
+        /// <exception cref="NotSupportedException">Any access.</exception>
         public override long Seek(long offset, SeekOrigin origin)
         {
             throw new NotSupportedException("Seek not supported");
@@ -518,10 +518,10 @@ namespace Cave.Compression.Lzw
 
         /// <summary>
         /// Set the length of the current stream
-        /// Always throws a NotSupportedException
+        /// Always throws a NotSupportedException.
         /// </summary>
         /// <param name="value">The new length value for the stream.</param>
-        /// <exception cref="NotSupportedException">Any access</exception>
+        /// <exception cref="NotSupportedException">Any access.</exception>
         public override void SetLength(long value)
         {
             throw new NotSupportedException("InflaterInputStream SetLength not supported");
@@ -529,12 +529,12 @@ namespace Cave.Compression.Lzw
 
         /// <summary>
         /// Writes a sequence of bytes to stream and advances the current position
-        /// This method always throws a NotSupportedException
+        /// This method always throws a NotSupportedException.
         /// </summary>
         /// <param name="buffer">Thew buffer containing data to write.</param>
         /// <param name="offset">The offset of the first byte to write.</param>
         /// <param name="count">The number of bytes to write.</param>
-        /// <exception cref="NotSupportedException">Any access</exception>
+        /// <exception cref="NotSupportedException">Any access.</exception>
         public override void Write(byte[] buffer, int offset, int count)
         {
             throw new NotSupportedException("InflaterInputStream Write not supported");
@@ -542,10 +542,10 @@ namespace Cave.Compression.Lzw
 
         /// <summary>
         /// Writes one byte to the current stream and advances the current position
-        /// Always throws a NotSupportedException
+        /// Always throws a NotSupportedException.
         /// </summary>
         /// <param name="value">The byte to write.</param>
-        /// <exception cref="NotSupportedException">Any access</exception>
+        /// <exception cref="NotSupportedException">Any access.</exception>
         public override void WriteByte(byte value)
         {
             throw new NotSupportedException("InflaterInputStream WriteByte not supported");

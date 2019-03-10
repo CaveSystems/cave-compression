@@ -33,7 +33,7 @@ namespace Cave.Compression.Core
         /// Initializes a new instance of the <see cref="DeflaterEngine"/> class.
         /// </summary>
         /// <param name="pending">
-        /// Pending buffer to use
+        /// Pending buffer to use.
         /// </param>>
         public DeflaterEngine(DeflaterPending pending)
         {
@@ -53,9 +53,9 @@ namespace Cave.Compression.Core
         #endregion
 
         /// <summary>
-        /// Deflate drives actual compression of data
+        /// Deflate drives actual compression of data.
         /// </summary>
-        /// <param name="flush">True to flush input buffers</param>
+        /// <param name="flush">True to flush input buffers.</param>
         /// <param name="finish">Finish deflation with the current input.</param>
         /// <returns>Returns true if progress has been made.</returns>
         public bool Deflate(bool flush, bool finish)
@@ -92,8 +92,8 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Sets input data to be deflated.  Should only be called when <code>NeedsInput()</code>
-        /// returns true
+        /// Sets input data to be deflated.  Should only be called when. <code>NeedsInput()</code>
+        /// returns true.
         /// </summary>
         /// <param name="buffer">The buffer containing input data.</param>
         /// <param name="offset">The offset of the first byte of data.</param>
@@ -138,17 +138,17 @@ namespace Cave.Compression.Core
         /// <summary>
         /// Determines if more <see cref="SetInput">input</see> is needed.
         /// </summary>
-        /// <returns>Return true if input is needed via <see cref="SetInput">SetInput</see></returns>
+        /// <returns>Return true if input is needed via <see cref="SetInput">SetInput</see>.</returns>
         public bool NeedsInput()
         {
             return inputEnd == inputOff;
         }
 
         /// <summary>
-        /// Set compression dictionary
+        /// Set compression dictionary.
         /// </summary>
-        /// <param name="buffer">The buffer containing the dictionary data</param>
-        /// <param name="offset">The offset in the buffer for the first byte of data</param>
+        /// <param name="buffer">The buffer containing the dictionary data.</param>
+        /// <param name="offset">The offset in the buffer for the first byte of data.</param>
         /// <param name="length">The length of the dictionary data.</param>
         public void SetDictionary(byte[] buffer, int offset, int length)
         {
@@ -185,7 +185,7 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Reset internal state
+        /// Reset internal state.
         /// </summary>
         public void Reset()
         {
@@ -209,7 +209,7 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Reset Adler checksum
+        /// Reset Adler checksum.
         /// </summary>
         public void ResetAdler()
         {
@@ -217,7 +217,7 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Gets current value of Adler checksum
+        /// Gets current value of Adler checksum.
         /// </summary>
         public int Adler
         {
@@ -228,17 +228,17 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Gets or sets total data processed
+        /// Gets or sets total data processed.
         /// </summary>
         public long TotalIn { get; set; }
 
         /// <summary>
-        /// Gets or sets the <see cref="DeflateStrategy">deflate strategy</see>
+        /// Gets or sets the <see cref="DeflateStrategy">deflate strategy</see>.
         /// </summary>
         public DeflateStrategy Strategy { get; set; }
 
         /// <summary>
-        /// Gets or sets the <see cref="CompressionStrength"/>
+        /// Gets or sets the <see cref="CompressionStrength"/>.
         /// </summary>
         public CompressionStrength Strength
         {
@@ -310,7 +310,7 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Fill the window
+        /// Fill the window.
         /// </summary>
         public void FillWindow()
         {
@@ -362,7 +362,7 @@ namespace Cave.Compression.Core
         /// Inserts the current string in the head hash and returns the previous
         /// value for this hash.
         /// </summary>
-        /// <returns>The previous hash value</returns>
+        /// <returns>The previous hash value.</returns>
         int InsertString()
         {
             short match;
@@ -418,8 +418,8 @@ namespace Cave.Compression.Core
         /// <code>
         /// strstart + DeflaterConstants.MAX_MATCH &lt;= window.length.</code>
         /// </summary>
-        /// <param name="curMatch">current match</param>
-        /// <returns>True if a match greater than the minimum length is found</returns>
+        /// <param name="curMatch">current match.</param>
+        /// <returns>True if a match greater than the minimum length is found.</returns>
         bool FindLongestMatch(int curMatch)
         {
             int match;
@@ -868,19 +868,19 @@ namespace Cave.Compression.Core
         readonly byte[] window;
 
         /// <summary>
-        /// ins_h: Hash index of string to be inserted
+        /// ins_h: Hash index of string to be inserted.
         /// </summary>
         int hashIndex;
 
         int matchStart;
 
         /// <summary>
-        /// Length of best match
+        /// Length of best match.
         /// </summary>
         int matchLen;
 
         /// <summary>
-        /// Set if previous match exists
+        /// Set if previous match exists.
         /// </summary>
         bool prevAvailable;
 
@@ -928,7 +928,7 @@ namespace Cave.Compression.Core
         DeflaterHuffman huffman;
 
         /// <summary>
-        /// The adler checksum
+        /// The adler checksum.
         /// </summary>
         Adler32 adler;
 

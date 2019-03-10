@@ -1,7 +1,7 @@
 namespace Cave.Compression.BZip2
 {
     /// <summary>
-    /// Defines internal values for both compression and decompression
+    /// Defines internal values for both compression and decompression.
     /// </summary>
     static class BZip2Constants
     {
@@ -12,52 +12,52 @@ namespace Cave.Compression.BZip2
         public const int BlockSize = 100000;
 
         /// <summary>
-        /// Backend constant
+        /// Backend constant.
         /// </summary>
         public const int MaximumAlphaSize = 258;
 
         /// <summary>
-        /// Backend constant
+        /// Backend constant.
         /// </summary>
         public const int MaximumCodeLength = 23;
 
         /// <summary>
-        /// Backend constant
+        /// Backend constant.
         /// </summary>
         public const int RunA = 0;
 
         /// <summary>
-        /// Backend constant
+        /// Backend constant.
         /// </summary>
         public const int RunB = 1;
 
         /// <summary>
-        /// Backend constant
+        /// Backend constant.
         /// </summary>
         public const int GroupCount = 6;
 
         /// <summary>
-        /// Backend constant
+        /// Backend constant.
         /// </summary>
         public const int GroupSize = 50;
 
         /// <summary>
-        /// Backend constant
+        /// Backend constant.
         /// </summary>
         public const int NumberOfIterations = 4;
 
         /// <summary>
-        /// Backend constant
+        /// Backend constant.
         /// </summary>
         public const int MaximumSelectors = 2 + (900000 / GroupSize);
 
         /// <summary>
-        /// Backend constant
+        /// Backend constant.
         /// </summary>
         public const int OvershootBytes = 20;
 
         /// <summary>
-        /// Random numbers used to randomise repetitive blocks
+        /// Random numbers used to randomise repetitive blocks.
         /// </summary>
         public static readonly int[] RandomNumbers =
         {
@@ -69,12 +69,12 @@ namespace Cave.Compression.BZip2
             862, 687, 507, 283, 482, 129, 807, 591, 733, 623,
             150, 238,  59, 379, 684, 877, 625, 169, 643, 105,
             170, 607, 520, 932, 727, 476, 693, 425, 174, 647,
-             73, 122, 335, 530, 442, 853, 695, 249, 445, 515,
+            73, 122, 335, 530, 442, 853, 695, 249, 445, 515,
             909, 545, 703, 919, 874, 474, 882, 500, 594, 612,
             641, 801, 220, 162, 819, 984, 589, 513, 495, 799,
             161, 604, 958, 533, 221, 400, 386, 867, 600, 782,
             382, 596, 414, 171, 516, 375, 682, 485, 911, 276,
-             98, 553, 163, 354, 666, 933, 424, 341, 533, 870,
+            98, 553, 163, 354, 666, 933, 424, 341, 533, 870,
             227, 730, 475, 186, 263, 647, 537, 686, 600, 224,
             469,  68, 770, 919, 190, 373, 294, 822, 808, 206,
             184, 943, 795, 384, 383, 461, 404, 758, 839, 887,
@@ -107,7 +107,7 @@ namespace Cave.Compression.BZip2
             896, 831, 547, 261, 524, 462, 293, 465, 502,  56,
             661, 821, 976, 991, 658, 869, 905, 758, 745, 193,
             768, 550, 608, 933, 378, 286, 215, 979, 792, 961,
-             61, 688, 793, 644, 986, 403, 106, 366, 905, 644,
+            61, 688, 793, 644, 986, 403, 106, 366, 905, 644,
             372, 567, 466, 434, 645, 210, 389, 550, 919, 135,
             780, 773, 635, 389, 707, 100, 626, 958, 165, 504,
             920, 176, 193, 713, 857, 265, 203,  50, 668, 108,

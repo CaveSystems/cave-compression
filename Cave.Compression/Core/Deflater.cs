@@ -10,7 +10,7 @@ namespace Cave.Compression.Core
     /// This class is <i>not</i> thread safe.  This is inherent in the API, due
     /// to the split of deflate and setInput.
     ///
-    /// author of the original java version : Jochen Hoenicke
+    /// author of the original java version : Jochen Hoenicke.
     /// </summary>
     public class Deflater
     {
@@ -219,7 +219,7 @@ namespace Cave.Compression.Core
         /// previous input that is still pending will be thrown away.
         /// The given byte array should not be changed, before needsInput() returns
         /// true again.
-        /// This call is equivalent to <code>setInput(input, 0, input.length)</code>.
+        /// This call is equivalent to. <code>setInput(input, 0, input.length)</code>.
         /// </summary>
         /// <param name="input">
         /// the buffer containing the input data.
@@ -284,7 +284,7 @@ namespace Cave.Compression.Core
         /// Deflates the current input block with to the given array.
         /// </summary>
         /// <param name="output">
-        /// The buffer where compressed data is stored
+        /// The buffer where compressed data is stored.
         /// </param>
         /// <returns>
         /// The number of compressed bytes added to the output, or 0 if either
@@ -419,7 +419,7 @@ namespace Cave.Compression.Core
 
         /// <summary>
         /// Sets the dictionary which should be used in the deflate process.
-        /// This call is equivalent to <code>setDictionary(dict, 0, dict.Length)</code>.
+        /// This call is equivalent to. <code>setDictionary(dict, 0, dict.Length)</code>.
         /// </summary>
         /// <param name="dictionary">
         /// the dictionary.
@@ -441,7 +441,7 @@ namespace Cave.Compression.Core
         /// dictionary again.
         /// </summary>
         /// <param name="dictionary">
-        /// The dictionary data
+        /// The dictionary data.
         /// </param>
         /// <param name="index">
         /// The index where dictionary information commences.
@@ -466,7 +466,7 @@ namespace Cave.Compression.Core
         #region Instance Fields
 
         /// <summary>
-        /// If true no Zlib/RFC1950 headers or footers are generated
+        /// If true no Zlib/RFC1950 headers or footers are generated.
         /// </summary>
         readonly bool noZlibHeaderOrFooter;
 

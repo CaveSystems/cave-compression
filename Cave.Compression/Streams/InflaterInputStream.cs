@@ -31,7 +31,7 @@ namespace Cave.Compression.Streams
         #endregion
 
         /// <summary>
-        /// Gets or sets the decompressor for this stream
+        /// Gets or sets the decompressor for this stream.
         /// </summary>
         protected Inflater Inflater { get; set; }
 
@@ -41,7 +41,7 @@ namespace Cave.Compression.Streams
         protected InflaterInputBuffer InputBuffer { get; set; }
 
         /// <summary>
-        /// Gets or sets the compressed size
+        /// Gets or sets the compressed size.
         /// </summary>
         protected long CompressedSize { get; set; }
 
@@ -52,7 +52,7 @@ namespace Cave.Compression.Streams
         /// </summary>
         /// <remarks>Creates an InflaterInputStream with the default decompressor
         /// and a default buffer size of 4KB.</remarks>
-        /// <param name = "baseInputStream">The InputStream to read bytes from</param>
+        /// <param name = "baseInputStream">The InputStream to read bytes from.</param>
         public InflaterInputStream(Stream baseInputStream)
             : this(baseInputStream, new Inflater(), 4096)
         {
@@ -66,10 +66,10 @@ namespace Cave.Compression.Streams
         /// and a default buffer size of 4KB.
         /// </remarks>
         /// <param name = "baseInputStream">
-        /// The source of input data
+        /// The source of input data.
         /// </param>
         /// <param name = "inf">
-        /// The decompressor used to decompress data read from baseInputStream
+        /// The decompressor used to decompress data read from baseInputStream.
         /// </param>
         public InflaterInputStream(Stream baseInputStream, Inflater inf)
             : this(baseInputStream, inf, 4096)
@@ -84,13 +84,13 @@ namespace Cave.Compression.Streams
         /// and the specified buffer size.
         /// </remarks>
         /// <param name = "baseInputStream">
-        /// The InputStream to read bytes from
+        /// The InputStream to read bytes from.
         /// </param>
         /// <param name = "inflater">
-        /// The decompressor to use
+        /// The decompressor to use.
         /// </param>
         /// <param name = "bufferSize">
-        /// Size of the buffer to use
+        /// Size of the buffer to use.
         /// </param>
         public InflaterInputStream(Stream baseInputStream, Inflater inflater, int bufferSize)
         {
@@ -114,14 +114,14 @@ namespace Cave.Compression.Streams
         public bool IsStreamOwner { get; set; } = true;
 
         /// <summary>
-        /// Skip specified number of bytes of uncompressed data
+        /// Skip specified number of bytes of uncompressed data.
         /// </summary>
         /// <param name ="count">
-        /// Number of bytes to skip
+        /// Number of bytes to skip.
         /// </param>
         /// <returns>
         /// The number of bytes skipped, zero if the end of
-        /// stream has been reached
+        /// stream has been reached.
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="count">The number of bytes</paramref> to skip is less than or equal to zero.
@@ -190,7 +190,7 @@ namespace Cave.Compression.Streams
         /// Fills the buffer with more data to decompress.
         /// </summary>
         /// <exception cref="InvalidDataException">
-        /// Stream ends early
+        /// Stream ends early.
         /// </exception>
         protected void Fill()
         {
@@ -210,7 +210,7 @@ namespace Cave.Compression.Streams
         #region Stream Overrides
 
         /// <summary>
-        /// Gets a value indicating whether the current stream supports reading
+        /// Gets a value indicating whether the current stream supports reading.
         /// </summary>
         public override bool CanRead
         {
@@ -256,9 +256,9 @@ namespace Cave.Compression.Streams
 
         /// <summary>
         /// Gets or sets the current position within the stream.
-        /// Throws a NotSupportedException when attempting to set the position
+        /// Throws a NotSupportedException when attempting to set the position.
         /// </summary>
-        /// <exception cref="NotSupportedException">Attempting to set the position</exception>
+        /// <exception cref="NotSupportedException">Attempting to set the position.</exception>
         public override long Position
         {
             get
@@ -272,7 +272,7 @@ namespace Cave.Compression.Streams
         }
 
         /// <summary>
-        /// Flushes the baseInputStream
+        /// Flushes the baseInputStream.
         /// </summary>
         public override void Flush()
         {
@@ -281,12 +281,12 @@ namespace Cave.Compression.Streams
 
         /// <summary>
         /// Sets the position within the current stream
-        /// Always throws a NotSupportedException
+        /// Always throws a NotSupportedException.
         /// </summary>
         /// <param name="offset">The relative offset to seek to.</param>
         /// <param name="origin">The <see cref="SeekOrigin"/> defining where to seek from.</param>
         /// <returns>The new position in the stream.</returns>
-        /// <exception cref="NotSupportedException">Any access</exception>
+        /// <exception cref="NotSupportedException">Any access.</exception>
         public override long Seek(long offset, SeekOrigin origin)
         {
             throw new NotSupportedException("Seek not supported");
@@ -294,10 +294,10 @@ namespace Cave.Compression.Streams
 
         /// <summary>
         /// Set the length of the current stream
-        /// Always throws a NotSupportedException
+        /// Always throws a NotSupportedException.
         /// </summary>
         /// <param name="value">The new length value for the stream.</param>
-        /// <exception cref="NotSupportedException">Any access</exception>
+        /// <exception cref="NotSupportedException">Any access.</exception>
         public override void SetLength(long value)
         {
             throw new NotSupportedException("InflaterInputStream SetLength not supported");
@@ -305,12 +305,12 @@ namespace Cave.Compression.Streams
 
         /// <summary>
         /// Writes a sequence of bytes to stream and advances the current position
-        /// This method always throws a NotSupportedException
+        /// This method always throws a NotSupportedException.
         /// </summary>
         /// <param name="buffer">Thew buffer containing data to write.</param>
         /// <param name="offset">The offset of the first byte to write.</param>
         /// <param name="count">The number of bytes to write.</param>
-        /// <exception cref="NotSupportedException">Any access</exception>
+        /// <exception cref="NotSupportedException">Any access.</exception>
         public override void Write(byte[] buffer, int offset, int count)
         {
             throw new NotSupportedException("InflaterInputStream Write not supported");
@@ -318,10 +318,10 @@ namespace Cave.Compression.Streams
 
         /// <summary>
         /// Writes one byte to the current stream and advances the current position
-        /// Always throws a NotSupportedException
+        /// Always throws a NotSupportedException.
         /// </summary>
         /// <param name="value">The byte to write.</param>
-        /// <exception cref="NotSupportedException">Any access</exception>
+        /// <exception cref="NotSupportedException">Any access.</exception>
         public override void WriteByte(byte value)
         {
             throw new NotSupportedException("InflaterInputStream WriteByte not supported");
@@ -345,20 +345,20 @@ namespace Cave.Compression.Streams
         }
 
         /// <summary>
-        /// Reads decompressed data into the provided buffer byte array
+        /// Reads decompressed data into the provided buffer byte array.
         /// </summary>
         /// <param name ="buffer">
-        /// The array to read and decompress data into
+        /// The array to read and decompress data into.
         /// </param>
         /// <param name ="offset">
-        /// The offset indicating where the data should be placed
+        /// The offset indicating where the data should be placed.
         /// </param>
         /// <param name ="count">
-        /// The number of bytes to decompress
+        /// The number of bytes to decompress.
         /// </param>
-        /// <returns>The number of bytes read.  Zero signals the end of stream</returns>
+        /// <returns>The number of bytes read.  Zero signals the end of stream.</returns>
         /// <exception cref="InvalidDataException">
-        /// Inflater needs a dictionary
+        /// Inflater needs a dictionary.
         /// </exception>
         public override int Read(byte[] buffer, int offset, int count)
         {

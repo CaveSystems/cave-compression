@@ -5,12 +5,12 @@ using System.Text;
 namespace Cave.Compression
 {
     /// <summary>
-    /// provides access to a ar file header
+    /// provides access to a ar file header.
     /// </summary>
     public class ArHeader
     {
         /// <summary>
-        /// Reads a <see cref="ArHeader"/> from the specified stream
+        /// Reads a <see cref="ArHeader"/> from the specified stream.
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
@@ -42,7 +42,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// Creates a new <see cref="ArHeader"/> for the specified file name. (Name may not contain subdirectories)
+        /// Creates a new <see cref="ArHeader"/> for the specified file name. (Name may not contain subdirectories).
         /// </summary>
         /// <param name="name"></param>
         /// <param name="size"></param>
@@ -53,7 +53,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// Creates a new <see cref="ArHeader"/> for the specified file name. (Name may not contain subdirectories)
+        /// Creates a new <see cref="ArHeader"/> for the specified file name. (Name may not contain subdirectories).
         /// </summary>
         /// <param name="name"></param>
         /// <param name="size"></param>
@@ -65,7 +65,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// Creates a new <see cref="ArHeader"/> for the specified file name. (Name may not contain subdirectories)
+        /// Creates a new <see cref="ArHeader"/> for the specified file name. (Name may not contain subdirectories).
         /// </summary>
         /// <param name="name"></param>
         /// <param name="size"></param>
@@ -79,7 +79,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// Creates a new <see cref="ArHeader"/> for the specified file name. (Name may not contain subdirectories)
+        /// Creates a new <see cref="ArHeader"/> for the specified file name. (Name may not contain subdirectories).
         /// </summary>
         /// <param name="name"></param>
         /// <param name="size"></param>
@@ -98,14 +98,14 @@ namespace Cave.Compression
         #region constructors
 
         /// <summary>
-        /// Creates a new empty <see cref="ArHeader"/>
+        /// Creates a new empty <see cref="ArHeader"/>.
         /// </summary>
         private ArHeader()
         {
         }
 
         /// <summary>
-        /// Creates a new <see cref="ArHeader"/> with the specified data
+        /// Creates a new <see cref="ArHeader"/> with the specified data.
         /// </summary>
         /// <param name="data"></param>
         private ArHeader(byte[] data)
@@ -123,21 +123,21 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// creates a new ar file header block with default owner, group, FileType and filemode (root:root 644 type dir or file)
+        /// creates a new ar file header block with default owner, group, FileType and filemode (root:root 644 type dir or file).
         /// </summary>
-        /// <param name="file">Name and path of the file/directory at the local system</param>
+        /// <param name="file">Name and path of the file/directory at the local system.</param>
         public ArHeader(string file)
             : this(file, 644, 0, 0)
         {
         }
 
         /// <summary>
-        /// creates a new ar file header block with specified owner, group, and filemode (root:root 644) type is selected automatically
+        /// creates a new ar file header block with specified owner, group, and filemode (root:root 644) type is selected automatically.
         /// </summary>
-        /// <param name="file">FileName and path of the file at the local system</param>
-        /// <param name="fileMode">the unix filemode to use</param>
-        /// <param name="owner">the unix owner</param>
-        /// <param name="group">the unix group</param>
+        /// <param name="file">FileName and path of the file at the local system.</param>
+        /// <param name="fileMode">the unix filemode to use.</param>
+        /// <param name="owner">the unix owner.</param>
+        /// <param name="group">the unix group.</param>
         public ArHeader(string file, int fileMode, int owner, int group)
         {
             if (File.Exists(file))
@@ -338,7 +338,7 @@ namespace Cave.Compression
         byte[] data = new byte[60];
 
         /// <summary>
-        /// retrieves a copy of the header data
+        /// retrieves a copy of the header data.
         /// </summary>
         public byte[] Data
         {
@@ -346,7 +346,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// retrieves the unix FileName
+        /// retrieves the unix FileName.
         /// </summary>
         public string FileName
         {
@@ -358,7 +358,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// retrieves the unix file mode (ugo) default = 640
+        /// retrieves the unix file mode (ugo) default = 640.
         /// </summary>
         public int FileMode
         {
@@ -369,7 +369,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// retrieves the unix owner id
+        /// retrieves the unix owner id.
         /// </summary>
         public int Owner
         {
@@ -380,7 +380,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// retrieves the unix group id
+        /// retrieves the unix group id.
         /// </summary>
         public int Group
         {
@@ -391,7 +391,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// retrieves the file size
+        /// retrieves the file size.
         /// </summary>
         public int FileSize
         {
@@ -402,7 +402,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// retrieves the last modification date (utc)
+        /// retrieves the last modification date (utc).
         /// </summary>
         public DateTime LastWriteTime
         {
@@ -413,7 +413,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// retrieves a summary of the header
+        /// retrieves a summary of the header.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

@@ -10,9 +10,9 @@ namespace Cave.Compression.GZip
     /// This filter stream is used to compress a stream into a "GZIP" stream.
     /// The "GZIP" format is described in RFC 1952.
     ///
-    /// author of the original java version : John Leuner
+    /// author of the original java version : John Leuner.
     /// </summary>
-    /// <example> This sample shows how to gzip a file
+    /// <example> This sample shows how to gzip a file.
     /// <code>
     /// using System;
     /// using System.IO;
@@ -47,7 +47,7 @@ namespace Cave.Compression.GZip
         #region Instance Fields
 
         /// <summary>
-        /// CRC-32 value for uncompressed data
+        /// CRC-32 value for uncompressed data.
         /// </summary>
         ZipCrc32 crc = new ZipCrc32();
 
@@ -59,9 +59,9 @@ namespace Cave.Compression.GZip
         /// <summary>
         /// Initializes a new instance of the <see cref="GZipOutputStream"/> class.
         /// </summary>
-        /// <param name="baseOutputStream">The stream to read data (to be compressed) from</param>
+        /// <param name="baseOutputStream">The stream to read data (to be compressed) from.</param>
         /// <param name="level">The level.</param>
-        /// <param name="size">Size of the buffer to use</param>
+        /// <param name="size">Size of the buffer to use.</param>
         public GZipOutputStream(Stream baseOutputStream, CompressionStrength level = CompressionStrength.Best, int size = 4096)
             : base(baseOutputStream, new Deflater(level, true), size)
         {
@@ -89,11 +89,11 @@ namespace Cave.Compression.GZip
         #region Stream overrides
 
         /// <summary>
-        /// Write given buffer to output updating crc
+        /// Write given buffer to output updating crc.
         /// </summary>
-        /// <param name="buffer">Buffer to write</param>
-        /// <param name="offset">Offset of first byte in buf to write</param>
-        /// <param name="count">Number of bytes to write</param>
+        /// <param name="buffer">Buffer to write.</param>
+        /// <param name="offset">Offset of first byte in buf to write.</param>
+        /// <param name="count">Number of bytes to write.</param>
         public override void Write(byte[] buffer, int offset, int count)
         {
             if (state == OutputState.Header)
@@ -138,7 +138,7 @@ namespace Cave.Compression.GZip
         #region DeflaterOutputStream overrides
 
         /// <summary>
-        /// Finish compression and write any footer information required to stream
+        /// Finish compression and write any footer information required to stream.
         /// </summary>
         public override void Finish()
         {
@@ -191,14 +191,14 @@ namespace Cave.Compression.GZip
                      Deflater.DEFLATED,
 
                     // The flags (not set)
-                    0,
+                     0,
 
                     // The modification time
-                    (byte)mod_time, (byte)(mod_time >> 8),
-                    (byte)(mod_time >> 16), (byte)(mod_time >> 24),
+                     (byte)mod_time, (byte)(mod_time >> 8),
+                     (byte)(mod_time >> 16), (byte)(mod_time >> 24),
 
                     // The extra flags
-                    0,
+                     0,
 
                     // The OS type (unknown)
                      255

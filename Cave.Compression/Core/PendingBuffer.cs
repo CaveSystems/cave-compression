@@ -8,14 +8,14 @@ namespace Cave.Compression.Core
     /// It allows you to write bits as well as bytes
     /// Based on DeflaterPending.java
     ///
-    /// author of the original java version : Jochen Hoenicke
+    /// author of the original java version : Jochen Hoenicke.
     /// </summary>
     class PendingBuffer
     {
         #region Instance Fields
 
         /// <summary>
-        /// Internal work buffer
+        /// Internal work buffer.
         /// </summary>
         readonly byte[] buffer;
 
@@ -39,7 +39,7 @@ namespace Cave.Compression.Core
         /// Initializes a new instance of the <see cref="PendingBuffer"/> class.
         /// </summary>
         /// <param name="bufferSize">
-        /// size to use for internal buffer
+        /// size to use for internal buffer.
         /// </param>
         public PendingBuffer(int bufferSize)
         {
@@ -49,7 +49,7 @@ namespace Cave.Compression.Core
         #endregion
 
         /// <summary>
-        /// Clear internal state/buffers
+        /// Clear internal state/buffers.
         /// </summary>
         public void Reset()
         {
@@ -57,10 +57,10 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Write a byte to buffer
+        /// Write a byte to buffer.
         /// </summary>
         /// <param name="value">
-        /// The value to write
+        /// The value to write.
         /// </param>
         public void WriteByte(int value)
         {
@@ -74,7 +74,7 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Write a short value to buffer LSB first
+        /// Write a short value to buffer LSB first.
         /// </summary>
         /// <param name="value">
         /// The value to write.
@@ -92,7 +92,7 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// write an integer LSB first
+        /// write an integer LSB first.
         /// </summary>
         /// <param name="value">The value to write.</param>
         public void WriteInt(int value)
@@ -110,11 +110,11 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Write a block of data to buffer
+        /// Write a block of data to buffer.
         /// </summary>
-        /// <param name="block">data to write</param>
-        /// <param name="offset">offset of first byte to write</param>
-        /// <param name="length">number of bytes to write</param>
+        /// <param name="block">data to write.</param>
+        /// <param name="offset">offset of first byte to write.</param>
+        /// <param name="length">number of bytes to write.</param>
         public void WriteBlock(byte[] block, int offset, int length)
         {
 #if DebugDeflation
@@ -128,12 +128,12 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Gets or sets the number of bits written to the buffer
+        /// Gets or sets the number of bits written to the buffer.
         /// </summary>
         public int BitCount { get; set; }
 
         /// <summary>
-        /// Align internal buffer on a byte boundary
+        /// Align internal buffer on a byte boundary.
         /// </summary>
         public void AlignToByte()
         {
@@ -157,10 +157,10 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Write bits to internal buffer
+        /// Write bits to internal buffer.
         /// </summary>
-        /// <param name="b">source of bits</param>
-        /// <param name="count">number of bits to write</param>
+        /// <param name="b">source of bits.</param>
+        /// <param name="count">number of bits to write.</param>
         public void WriteBits(int b, int count)
         {
 #if DebugDeflation
@@ -185,9 +185,9 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Write a short value to internal buffer most significant byte first
+        /// Write a short value to internal buffer most significant byte first.
         /// </summary>
-        /// <param name="s">value to write</param>
+        /// <param name="s">value to write.</param>
         public void WriteShortMSB(int s)
         {
 #if DebugDeflation
@@ -201,7 +201,7 @@ namespace Cave.Compression.Core
         }
 
         /// <summary>
-        /// Gets a value indicating whether the buffer has been flushed
+        /// Gets a value indicating whether the buffer has been flushed.
         /// </summary>
         public bool IsFlushed
         {
@@ -246,7 +246,7 @@ namespace Cave.Compression.Core
 
         /// <summary>
         /// Convert internal buffer to byte array.
-        /// Buffer is empty on completion
+        /// Buffer is empty on completion.
         /// </summary>
         /// <returns>
         /// The internal buffer contents converted to a byte array.

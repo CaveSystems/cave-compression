@@ -10,9 +10,9 @@ namespace Cave.Compression.GZip
     /// This filter stream is used to decompress a "GZIP" format stream.
     /// The "GZIP" format is described baseInputStream RFC 1952.
     ///
-    /// author of the original java version : John Leuner
+    /// author of the original java version : John Leuner.
     /// </summary>
-    /// <example> This sample shows how to unzip a gzipped file
+    /// <example> This sample shows how to unzip a gzipped file.
     /// <code>
     /// using System;
     /// using System.IO;
@@ -38,7 +38,7 @@ namespace Cave.Compression.GZip
         #region Instance Fields
 
         /// <summary>
-        /// CRC-32 value for uncompressed data
+        /// CRC-32 value for uncompressed data.
         /// </summary>
         ZipCrc32 crc;
 
@@ -61,7 +61,7 @@ namespace Cave.Compression.GZip
         /// Initializes a new instance of the <see cref="GZipInputStream"/> class.
         /// </summary>
         /// <param name="baseInputStream">
-        /// The stream to read compressed data from (baseInputStream GZIP format)
+        /// The stream to read compressed data from (baseInputStream GZIP format).
         /// </param>
         public GZipInputStream(Stream baseInputStream)
             : this(baseInputStream, 4096)
@@ -72,10 +72,10 @@ namespace Cave.Compression.GZip
         /// Initializes a new instance of the <see cref="GZipInputStream"/> class.
         /// </summary>
         /// <param name="baseInputStream">
-        /// The stream to read compressed data from (baseInputStream GZIP format)
+        /// The stream to read compressed data from (baseInputStream GZIP format).
         /// </param>
         /// <param name="size">
-        /// Size of the buffer to use
+        /// Size of the buffer to use.
         /// </param>
         public GZipInputStream(Stream baseInputStream, int size)
             : base(baseInputStream, new Inflater(true), size)
@@ -86,16 +86,16 @@ namespace Cave.Compression.GZip
         #region Stream overrides
 
         /// <summary>
-        /// Reads uncompressed data into an array of bytes
+        /// Reads uncompressed data into an array of bytes.
         /// </summary>
         /// <param name="buffer">
-        /// The buffer to read uncompressed data into
+        /// The buffer to read uncompressed data into.
         /// </param>
         /// <param name="offset">
-        /// The offset indicating where the data should be placed
+        /// The offset indicating where the data should be placed.
         /// </param>
         /// <param name="count">
-        /// The number of uncompressed bytes to be read
+        /// The number of uncompressed bytes to be read.
         /// </param>
         /// <returns>Returns the number of bytes actually read.</returns>
         public override int Read(byte[] buffer, int offset, int count)

@@ -10,20 +10,20 @@ namespace Cave.Compression.Tar
     public class TarReader : IDisposable
     {
         /// <summary>
-        /// Reads an existing gzip compressed tar file (.tgz/.tar.gz)
+        /// Reads an existing gzip compressed tar file (.tgz/.tar.gz).
         /// </summary>
-        /// <param name="fileName">Name of the file to read</param>
-        /// <returns>Returns a new <see cref="TarReader"/> instance</returns>
+        /// <param name="fileName">Name of the file to read.</param>
+        /// <returns>Returns a new <see cref="TarReader"/> instance.</returns>
         public static TarReader ReadTGZ(string fileName)
         {
             return new TarReader(File.Create(fileName), true);
         }
 
         /// <summary>
-        /// Reads an existing uncompressed tar file (.tar)
+        /// Reads an existing uncompressed tar file (.tar).
         /// </summary>
-        /// <param name="fileName">Name of the file to read</param>
-        /// <returns>Returns a new <see cref="TarReader"/> instance</returns>
+        /// <param name="fileName">Name of the file to read.</param>
+        /// <returns>Returns a new <see cref="TarReader"/> instance.</returns>
         public static TarReader ReadTar(string fileName)
         {
             return new TarReader(File.Create(fileName), false);
@@ -34,13 +34,13 @@ namespace Cave.Compression.Tar
         /// <see cref="ReadNext(GetStreamForEntry, Completed, ProgressCallback, object)"/> functions to acquire
         /// the target stream to write to.
         /// </summary>
-        /// <param name="entry">The entry to be written</param>
+        /// <param name="entry">The entry to be written.</param>
         /// <returns>Returns the target stream to write to.</returns>
         public delegate Stream GetStreamForEntry(TarEntry entry);
 
         /// <summary>
         /// Completed callback for <see cref="ReadAll(GetStreamForEntry, Completed, ProgressCallback, object)"/> and
-        /// <see cref="ReadNext(GetStreamForEntry, Completed, ProgressCallback, object)"/> functions
+        /// <see cref="ReadNext(GetStreamForEntry, Completed, ProgressCallback, object)"/> functions.
         /// </summary>
         /// <param name="entry">Completed entry.</param>
         /// <param name="stream">Stream the entry was written to.</param>
@@ -52,8 +52,8 @@ namespace Cave.Compression.Tar
         /// <summary>
         /// Initializes a new instance of the <see cref="TarReader"/> class.
         /// </summary>
-        /// <param name="source">Source stream to read from</param>
-        /// <param name="gunzip">Use gunzip decompression</param>
+        /// <param name="source">Source stream to read from.</param>
+        /// <param name="gunzip">Use gunzip decompression.</param>
         public TarReader(Stream source, bool gunzip)
         {
             var s = baseStream = source;
@@ -68,10 +68,10 @@ namespace Cave.Compression.Tar
         /// <summary>
         /// Reads the next file.
         /// </summary>
-        /// <param name="tarEntry">The read entry (null if no more entries available)</param>
-        /// <param name="content">The read content (null if no more entries available)</param>
-        /// <param name="callback">The callback used during stream copy</param>
-        /// <param name="userItem">A user item for the callback</param>
+        /// <param name="tarEntry">The read entry (null if no more entries available).</param>
+        /// <param name="content">The read content (null if no more entries available).</param>
+        /// <param name="callback">The callback used during stream copy.</param>
+        /// <param name="userItem">A user item for the callback.</param>
         /// <returns>Returns true if the operation completed, false if the callback used <see cref="ProgressEventArgs.Break"/>.</returns>
         public bool ReadNext(out TarEntry tarEntry, out byte[] content, ProgressCallback callback = null, object userItem = null)
         {
@@ -100,12 +100,12 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// Reads the next file using callback functions to acquire and close per entry target streams
+        /// Reads the next file using callback functions to acquire and close per entry target streams.
         /// </summary>
-        /// <param name="streamForEntry">Callback for aquiring a target stream for the specified entry</param>
-        /// <param name="complete">Callback after stream was written and may be closed</param>
-        /// <param name="callback">The callback used during stream copy</param>
-        /// <param name="userItem">A user item for the callback</param>
+        /// <param name="streamForEntry">Callback for aquiring a target stream for the specified entry.</param>
+        /// <param name="complete">Callback after stream was written and may be closed.</param>
+        /// <param name="callback">The callback used during stream copy.</param>
+        /// <param name="userItem">A user item for the callback.</param>
         /// <returns>Returns true if the operation completed, false if the callback used <see cref="ProgressEventArgs.Break"/>.</returns>
         public bool ReadNext(GetStreamForEntry streamForEntry, Completed complete, ProgressCallback callback = null, object userItem = null)
         {
@@ -131,12 +131,12 @@ namespace Cave.Compression.Tar
         }
 
         /// <summary>
-        /// Reads all entries using callback functions to acquire and close per entry target streams
+        /// Reads all entries using callback functions to acquire and close per entry target streams.
         /// </summary>
-        /// <param name="streamForEntry">Callback for aquiring a target stream for the specified entry</param>
-        /// <param name="complete">Callback after stream was written and may be closed</param>
-        /// <param name="callback">The callback used during stream copy</param>
-        /// <param name="userItem">A user item for the callback</param>
+        /// <param name="streamForEntry">Callback for aquiring a target stream for the specified entry.</param>
+        /// <param name="complete">Callback after stream was written and may be closed.</param>
+        /// <param name="callback">The callback used during stream copy.</param>
+        /// <param name="userItem">A user item for the callback.</param>
         /// <returns>Returns true if the operation completed, false if the callback used <see cref="ProgressEventArgs.Break"/>.</returns>
         public bool ReadAll(GetStreamForEntry streamForEntry, Completed complete, ProgressCallback callback = null, object userItem = null)
         {
@@ -165,9 +165,9 @@ namespace Cave.Compression.Tar
         /// <summary>
         /// Unpacks all entries to the specified path.
         /// </summary>
-        /// <param name="path">The target path to write to</param>
-        /// <param name="callback">The callback used during stream copy</param>
-        /// <param name="userItem">A user item for the callback</param>
+        /// <param name="path">The target path to write to.</param>
+        /// <param name="callback">The callback used during stream copy.</param>
+        /// <param name="userItem">A user item for the callback.</param>
         /// <returns>Returns true if the operation completed, false if the callback used <see cref="ProgressEventArgs.Break"/>.</returns>
         public bool UnpackTo(string path, ProgressCallback callback = null, object userItem = null)
         {
