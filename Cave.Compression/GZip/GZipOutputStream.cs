@@ -165,7 +165,7 @@ namespace Cave.Compression.GZip
                         (byte)crcval, (byte)(crcval >> 8),
                         (byte)(crcval >> 16), (byte)(crcval >> 24),
                         (byte)totalin, (byte)(totalin >> 8),
-                        (byte)(totalin >> 16), (byte)(totalin >> 24)
+                        (byte)(totalin >> 16), (byte)(totalin >> 24),
                     };
                 }
 
@@ -201,7 +201,7 @@ namespace Cave.Compression.GZip
                      0,
 
                     // The OS type (unknown)
-                     255
+                     255,
                 };
                 BaseOutputStream.Write(gzipHeader, 0, gzipHeader.Length);
             }

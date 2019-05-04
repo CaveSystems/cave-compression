@@ -94,7 +94,7 @@ namespace Cave.Compression
         #region constructors
 
         /// <summary>
-        /// creates a new ar file from a stream.
+        /// Initializes a new instance of the <see cref="ArFile"/> class.
         /// </summary>
         /// <param name="topStream">top stream that is read / written.</param>
         /// <param name="bottomStream">underlying compression / file stream.</param>
@@ -226,9 +226,9 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// reads a file from the ar file.
+        /// Reads a file from the ar file.
         /// </summary>
-        /// <param name="fileData"></param>
+        /// <param name="fileData">Contents of the file.</param>
         /// <returns>the header of the file read on success and null when no more files exist in the ar file.</returns>
         public ArHeader ReadFile(out byte[] fileData)
         {
@@ -248,9 +248,9 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// reads a file from the ar file and saves it at the specified output directory.
+        /// Reads a file from the ar file and saves it at the specified output directory.
         /// </summary>
-        /// <param name="outputDirectory"></param>
+        /// <param name="outputDirectory">The output directory to copy the file to.</param>
         /// <returns>fileName and path on success and null when no more files exist in the ar file.</returns>
         public string ReadFile(string outputDirectory)
         {
@@ -273,8 +273,8 @@ namespace Cave.Compression
         /// <summary>
         /// reads data from the ar file.
         /// </summary>
-        /// <param name="size"></param>
-        /// <returns></returns>
+        /// <param name="size">Size in bytes.</param>
+        /// <returns>Returns a new byte array.</returns>
         public byte[] ReadData(int size)
         {
             StartOperation(Operation.ReadData);
@@ -308,10 +308,10 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// reads data from the ar file to a specific specified FileName.
+        /// Reads data from the ar file to a specific specified FileName.
         /// </summary>
         /// <param name="fileName">Name of the file.</param>
-        /// <param name="size"></param>
+        /// <param name="size">Size of the file in bytes.</param>
         public void ReadDataTo(string fileName, int size)
         {
             StartOperation(Operation.ReadData);
@@ -349,7 +349,7 @@ namespace Cave.Compression
         /// <summary>
         /// skips reading of data from the ar file.
         /// </summary>
-        /// <param name="size"></param>
+        /// <param name="size">Number of bytes to skip.</param>
         public void SkipData(int size)
         {
             StartOperation(Operation.ReadData);
@@ -377,7 +377,7 @@ namespace Cave.Compression
         /// <summary>
         /// writes a file header to the ar file.
         /// </summary>
-        /// <param name="header"></param>
+        /// <param name="header">Header to write.</param>
         public void WriteHeader(ArHeader header)
         {
             if (header == null)
@@ -438,7 +438,7 @@ namespace Cave.Compression
         /// <summary>
         /// writes the specified data to the ar file.
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="data">Byte array to write.</param>
         public void WriteData(byte[] data)
         {
             if (data == null)
@@ -472,7 +472,7 @@ namespace Cave.Compression
         /// <summary>
         /// lists all entries in the ar file.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns all headers.</returns>
         public ArHeader[] GetAllEntries()
         {
             List<ArHeader> headers = new List<ArHeader>();
@@ -517,7 +517,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// obtain a simple progress on read operations.
+        /// Gets a simple progress on read operations.
         /// </summary>
         public double Progress
         {
@@ -526,7 +526,6 @@ namespace Cave.Compression
                 return bottomStream.Position / (double)bottomStream.Length;
             }
         }
-
 #endregion
     }
 }

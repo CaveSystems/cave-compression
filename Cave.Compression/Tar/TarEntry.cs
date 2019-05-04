@@ -167,7 +167,7 @@ namespace Cave.Compression.Tar
             {
                 fileName = fileName,
                 TarHeader = (TarHeader)TarHeader.Clone(),
-                Name = Name
+                Name = Name,
             };
             return entry;
         }

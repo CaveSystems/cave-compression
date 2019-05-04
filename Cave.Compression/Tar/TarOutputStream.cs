@@ -227,7 +227,7 @@ namespace Cave.Compression.Tar
             {
                 var longHeader = new TarHeader
                 {
-                    TypeFlag = TarEntryType.LongName
+                    TypeFlag = TarEntryType.LongName,
                 };
                 longHeader.Name = longHeader.Name + "././@LongLink";
                 longHeader.Mode = 420; // 644 by default

@@ -72,7 +72,7 @@ namespace Cave.Compression.Tar
             var tarBuffer = new TarBuffer
             {
                 inputStream = inputStream ?? throw new ArgumentNullException(nameof(inputStream)),
-                outputStream = null
+                outputStream = null,
             };
             tarBuffer.Initialize(blockFactor);
 
@@ -110,7 +110,7 @@ namespace Cave.Compression.Tar
             var tarBuffer = new TarBuffer
             {
                 inputStream = null,
-                outputStream = outputStream ?? throw new ArgumentNullException(nameof(outputStream))
+                outputStream = outputStream ?? throw new ArgumentNullException(nameof(outputStream)),
             };
             tarBuffer.Initialize(blockFactor);
 

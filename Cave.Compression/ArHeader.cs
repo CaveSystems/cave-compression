@@ -12,8 +12,8 @@ namespace Cave.Compression
         /// <summary>
         /// Reads a <see cref="ArHeader"/> from the specified stream.
         /// </summary>
-        /// <param name="stream"></param>
-        /// <returns></returns>
+        /// <param name="stream">The stream to read the header from.</param>
+        /// <returns>Returns a new header instance.</returns>
         public static ArHeader FromStream(Stream stream)
         {
             if (stream == null)
@@ -33,8 +33,8 @@ namespace Cave.Compression
         /// <summary>
         /// Creates a new <see cref="ArHeader"/> for the specified file.
         /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
+        /// <param name="file">The file to create the header for.</param>
+        /// <returns>Returns a new header instance.</returns>
         public static ArHeader Create(string file)
         {
             FileInfo info = new FileInfo(file);
@@ -44,9 +44,9 @@ namespace Cave.Compression
         /// <summary>
         /// Creates a new <see cref="ArHeader"/> for the specified file name. (Name may not contain subdirectories).
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="size"></param>
-        /// <returns></returns>
+        /// <param name="name">The name of the file.</param>
+        /// <param name="size">The size of the file in bytes.</param>
+        /// <returns>Returns a new header instance.</returns>
         public static ArHeader CreateFile(string name, long size)
         {
             return CreateFile(name, size, 644, 0, 0, DateTime.Now);
@@ -55,10 +55,10 @@ namespace Cave.Compression
         /// <summary>
         /// Creates a new <see cref="ArHeader"/> for the specified file name. (Name may not contain subdirectories).
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="size"></param>
-        /// <param name="fileMode"></param>
-        /// <returns></returns>
+        /// <param name="name">The name of the file.</param>
+        /// <param name="size">The size of the file in bytes.</param>
+        /// <param name="fileMode">the unix filemode to use.</param>
+        /// <returns>Returns a new header instance.</returns>
         public static ArHeader CreateFile(string name, long size, int fileMode)
         {
             return CreateFile(name, size, fileMode, 0, 0, DateTime.Now);
@@ -67,12 +67,12 @@ namespace Cave.Compression
         /// <summary>
         /// Creates a new <see cref="ArHeader"/> for the specified file name. (Name may not contain subdirectories).
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="size"></param>
-        /// <param name="fileMode"></param>
-        /// <param name="owner"></param>
-        /// <param name="group"></param>
-        /// <returns></returns>
+        /// <param name="name">The name of the file.</param>
+        /// <param name="size">The size of the file in bytes.</param>
+        /// <param name="fileMode">the unix filemode to use.</param>
+        /// <param name="owner">the unix owner.</param>
+        /// <param name="group">the unix group.</param>
+        /// <returns>Returns a new header instance.</returns>
         public static ArHeader CreateFile(string name, long size, int fileMode, int owner, int group)
         {
             return CreateFile(name, size, fileMode, owner, group, DateTime.Now);
@@ -81,13 +81,13 @@ namespace Cave.Compression
         /// <summary>
         /// Creates a new <see cref="ArHeader"/> for the specified file name. (Name may not contain subdirectories).
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="size"></param>
-        /// <param name="fileMode"></param>
-        /// <param name="owner"></param>
-        /// <param name="group"></param>
-        /// <param name="modificationTime"></param>
-        /// <returns></returns>
+        /// <param name="name">The name of the file.</param>
+        /// <param name="size">The size of the file in bytes.</param>
+        /// <param name="fileMode">the unix filemode to use.</param>
+        /// <param name="owner">the unix owner.</param>
+        /// <param name="group">the unix group.</param>
+        /// <param name="modificationTime">The last modification time.</param>
+        /// <returns>Returns a new header instance.</returns>
         public static ArHeader CreateFile(string name, long size, int fileMode, int owner, int group, DateTime modificationTime)
         {
             ArHeader result = new ArHeader();
@@ -98,16 +98,16 @@ namespace Cave.Compression
         #region constructors
 
         /// <summary>
-        /// Creates a new empty <see cref="ArHeader"/>.
+        /// Initializes a new instance of the <see cref="ArHeader"/> class.
         /// </summary>
         private ArHeader()
         {
         }
 
         /// <summary>
-        /// Creates a new <see cref="ArHeader"/> with the specified data.
+        /// Initializes a new instance of the <see cref="ArHeader"/> class.
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="data">The header data.</param>
         private ArHeader(byte[] data)
         {
             this.data = data;
@@ -123,7 +123,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// creates a new ar file header block with default owner, group, FileType and filemode (root:root 644 type dir or file).
+        /// Initializes a new instance of the <see cref="ArHeader"/> class.
         /// </summary>
         /// <param name="file">Name and path of the file/directory at the local system.</param>
         public ArHeader(string file)
@@ -132,7 +132,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// creates a new ar file header block with specified owner, group, and filemode (root:root 644) type is selected automatically.
+        /// Initializes a new instance of the <see cref="ArHeader"/> class.
         /// </summary>
         /// <param name="file">FileName and path of the file at the local system.</param>
         /// <param name="fileMode">the unix filemode to use.</param>
@@ -338,7 +338,7 @@ namespace Cave.Compression
         byte[] data = new byte[60];
 
         /// <summary>
-        /// retrieves a copy of the header data.
+        /// Gets a copy of the header data.
         /// </summary>
         public byte[] Data
         {
@@ -346,7 +346,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// retrieves the unix FileName.
+        /// Gets the unix FileName.
         /// </summary>
         public string FileName
         {
@@ -358,7 +358,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// retrieves the unix file mode (ugo) default = 640.
+        /// Gets the unix file mode (ugo) default = 640.
         /// </summary>
         public int FileMode
         {
@@ -369,7 +369,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// retrieves the unix owner id.
+        /// Gets the unix owner id.
         /// </summary>
         public int Owner
         {
@@ -380,7 +380,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// retrieves the unix group id.
+        /// Gets the unix group id.
         /// </summary>
         public int Group
         {
@@ -391,7 +391,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// retrieves the file size.
+        /// Gets the file size.
         /// </summary>
         public int FileSize
         {
@@ -402,7 +402,7 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// retrieves the last modification date (utc).
+        /// Gets the last modification date (utc).
         /// </summary>
         public DateTime LastWriteTime
         {
@@ -413,12 +413,12 @@ namespace Cave.Compression
         }
 
         /// <summary>
-        /// retrieves a summary of the header.
+        /// Gets a summary of the header.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>File: {FileName} {FileMode} {Owner} {Group} {FileSize}.</returns>
         public override string ToString()
         {
-            return string.Format("File:") + FileName + " " + FileMode + " " + Owner + ":" + Group + " " + FileSize;
+            return $"File: {FileName} {FileMode} {Owner} {Group} {FileSize}";
         }
         #endregion
     }

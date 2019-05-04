@@ -21,6 +21,6 @@
         /// only encodes with Huffman trees (which means, that more common
         /// characters get a smaller encoding.
         /// </summary>
-        HuffmanOnly = 2
+        HuffmanOnly = 2,
     }
 }

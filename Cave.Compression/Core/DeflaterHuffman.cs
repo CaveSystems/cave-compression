@@ -67,7 +67,7 @@ namespace Cave.Compression.Core
             3,
             11,
             7,
-            15
+            15,
         };
         #endregion
 

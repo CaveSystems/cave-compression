@@ -147,7 +147,7 @@ namespace Cave.Compression.Tar
             }
 
             bool result = true;
-            void callbackOverride(object s, ProgressEventArgs e)
+            void CallbackOverride(object s, ProgressEventArgs e)
             {
                 callback?.Invoke(s, e);
                 if (e.Break)
@@ -156,7 +156,7 @@ namespace Cave.Compression.Tar
                 }
             }
 
-            while (ReadNext(streamForEntry, complete, callbackOverride, userItem))
+            while (ReadNext(streamForEntry, complete, CallbackOverride, userItem))
             {
             }
 
@@ -179,7 +179,7 @@ namespace Cave.Compression.Tar
 
             path = Path.GetFullPath(path);
 
-            Stream streamForEntry(TarEntry t)
+            Stream StreamForEntry(TarEntry t)
             {
                 var name = t.Name;
                 if (Path.IsPathRooted(name))
@@ -198,7 +198,7 @@ namespace Cave.Compression.Tar
                 return File.Create(fullpath);
             }
 
-            void complete(TarEntry t, Stream s)
+            void Complete(TarEntry t, Stream s)
             {
 #if NETSTANDARD13
                 s.Flush();
@@ -208,7 +208,7 @@ namespace Cave.Compression.Tar
 #endif
             }
 
-            return ReadAll(streamForEntry, complete, callback, userItem);
+            return ReadAll(StreamForEntry, Complete, callback, userItem);
         }
 
         /// <summary>

@@ -30,7 +30,7 @@ namespace Cave.Compression
 
             DeflaterOutputStream compressStream = new DeflaterOutputStream(targetStream)
             {
-                IsStreamOwner = false
+                IsStreamOwner = false,
             };
             if (count > 0)
             {
@@ -72,7 +72,7 @@ namespace Cave.Compression
 
             InflaterInputStream decompressStream = new InflaterInputStream(sourceStream)
             {
-                IsStreamOwner = false
+                IsStreamOwner = false,
             };
             if (count > 0)
             {
