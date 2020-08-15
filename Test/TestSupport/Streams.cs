@@ -271,22 +271,33 @@ namespace Cave.Compression.Tests.TestSupport
 	/// </summary>
 	public class WindowedStream : Stream
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="WindowedStream"/> class.
-		/// </summary>
-		/// <param name="size">The size.</param>
-		public WindowedStream(int size, CancellationToken? token = null)
+#if !(NET20 || NET35)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WindowedStream"/> class.
+        /// </summary>
+        /// <param name="size">The size.</param>
+        public WindowedStream(int size, CancellationToken? token = null)
 		{
 			ringBuffer = new ReadWriteRingBuffer(size, token);
 		}
+#else
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WindowedStream"/> class.
+        /// </summary>
+        /// <param name="size">The size.</param>
+        public WindowedStream(int size)
+		{
+			ringBuffer = new ReadWriteRingBuffer(size);
+		}
+#endif
 
-		/// <summary>
-		/// When overridden in a derived class, gets a value indicating whether the current stream supports reading.
-		/// </summary>
-		/// <value></value>
-		/// <returns>true if the stream is not closed.</returns>
-		/// <remarks>If the stream is closed, this property returns false.</remarks>
-		public override bool CanRead => !ringBuffer.IsClosed;
+        /// <summary>
+        /// When overridden in a derived class, gets a value indicating whether the current stream supports reading.
+        /// </summary>
+        /// <value></value>
+        /// <returns>true if the stream is not closed.</returns>
+        /// <remarks>If the stream is closed, this property returns false.</remarks>
+        public override bool CanRead => !ringBuffer.IsClosed;
 
 		/// <summary>
 		/// Gets a value indicating whether the current stream supports seeking.
@@ -447,10 +458,10 @@ namespace Cave.Compression.Tests.TestSupport
 		/// <value>The bytes read.</value>
 		public long BytesRead => ringBuffer.BytesRead;
 
-		#region Instance Fields
+#region Instance Fields
 
 		readonly ReadWriteRingBuffer ringBuffer;
 
-		#endregion Instance Fields
+#endregion Instance Fields
 	}
 }

@@ -15,25 +15,31 @@ namespace Cave.Compression.Tests.TestSupport
 	/// </summary>
 	public class ReadWriteRingBuffer
 	{
-		#region Constructors
+        #region Constructors
 
-		/// <summary>
-		/// Create a new RingBuffer with a specified size.
-		/// </summary>
-		/// <param name="size">The size of the ring buffer to create.</param>
-		public ReadWriteRingBuffer(int size, CancellationToken? token = null)
-		{
-			if (size <= 0)
+        /// <summary>
+        /// Create a new RingBuffer with a specified size.
+        /// </summary>
+        /// <param name="size">The size of the ring buffer to create.</param>
+#if !(NET20 || NET35)
+        public ReadWriteRingBuffer(int size, CancellationToken? token = null)
+#else
+        public ReadWriteRingBuffer(int size)
+#endif
+        {
+            if (size <= 0)
 			{
 				throw new ArgumentOutOfRangeException(nameof(size));
 			}
 
 			array_ = new byte[size];
 			lockObject_ = new object();
-			token_ = token;
+#if !(NET20 || NET35)
+            token_ = token;
+#endif
 
 #if SimpleSynch
-			waitSpan_ = TimeSpan.FromMilliseconds(1);
+            waitSpan_ = TimeSpan.FromMilliseconds(1);
 #else
 			notEmptyEvent_ = new ManualResetEvent(false);
 			notFullEvent_ = new ManualResetEvent(true);
@@ -86,8 +92,10 @@ namespace Cave.Compression.Tests.TestSupport
 			while (IsFull)
 			{
 				Thread.Sleep(waitSpan_);
-				token_?.ThrowIfCancellationRequested();
-			}
+#if !(NET20 || NET35)
+                token_?.ThrowIfCancellationRequested();
+#endif
+            }
 #else
 			notFullEvent_.WaitOne();
 #endif
@@ -132,8 +140,10 @@ namespace Cave.Compression.Tests.TestSupport
 				while (IsFull)
 				{
 					Thread.Sleep(waitSpan_);
-					token_?.ThrowIfCancellationRequested();
-				}
+#if !(NET20 || NET35)
+                    token_?.ThrowIfCancellationRequested();
+#endif
+                }
 #else
 				notFullEvent_.WaitOne();
 #endif
@@ -192,8 +202,10 @@ namespace Cave.Compression.Tests.TestSupport
 			while (!isClosed_ && IsEmpty)
 			{
 				Thread.Sleep(waitSpan_);
-				token_?.ThrowIfCancellationRequested();
-			}
+#if !(NET20 || NET35)
+                token_?.ThrowIfCancellationRequested();
+#endif
+            }
 #else
 			notEmptyEvent_.WaitOne();
 #endif
@@ -237,8 +249,10 @@ namespace Cave.Compression.Tests.TestSupport
 				while (!isClosed_ && IsEmpty)
 				{
 					Thread.Sleep(waitSpan_);
-					token_?.ThrowIfCancellationRequested();
-				}
+#if !(NET20 || NET35)
+                    token_?.ThrowIfCancellationRequested();
+#endif
+                }
 #else
 				notEmptyEvent_.WaitOne();
 #endif
@@ -393,7 +407,9 @@ namespace Cave.Compression.Tests.TestSupport
 		long bytesRead_;
 
 		object lockObject_;
-		CancellationToken? token_;
+#if !(NET20 || NET35)
+        CancellationToken? token_;
+#endif
 		TimeSpan waitSpan_;
 
 #if !SimpleSynch
@@ -401,7 +417,7 @@ namespace Cave.Compression.Tests.TestSupport
 		ManualResetEvent notFullEvent_;
 #endif
 
-		#endregion Instance Variables
+#endregion Instance Variables
 	}
 
 	[TestFixture]

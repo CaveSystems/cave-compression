@@ -3,8 +3,10 @@ using NUnit.Framework;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.ExceptionServices;
 using System.Threading;
+#if !(NET20 || NET35)
+using System.Runtime.ExceptionServices;
+#endif
 
 namespace Cave.Compression.Tests.TestSupport
 {
@@ -21,22 +23,31 @@ namespace Cave.Compression.Tests.TestSupport
 
 		public static void TestReadWrite(int size, Func<Stream, Stream> input, Func<Stream, Stream> output, Action<Stream> outputClose = null)
 		{
-			var cts = new CancellationTokenSource(TimeSpan.FromMinutes(1));
-			var window = new WindowedStream(size, cts.Token);
+#if !(NET20 || NET35 || NET40)
+            var cts = new CancellationTokenSource(TimeSpan.FromMinutes(1));
+            var window = new WindowedStream(size, cts.Token);
+#else
+            var window = new WindowedStream(size);
+#endif
 
-			var readerState = new PerfWorkerState()
+
+            var readerState = new PerfWorkerState()
 			{
 				bytesLeft = size,
-				token = cts.Token,
-				baseStream = window,
+#if !(NET20 || NET35 || NET40)
+                token = cts.Token,
+#endif
+                baseStream = window,
 				streamCtr = input,
 			};
 
 			var writerState = new PerfWorkerState()
 			{
 				bytesLeft = size,
-				token = cts.Token,
-				baseStream = window,
+#if !(NET20 || NET35 || NET40)
+                token = cts.Token,
+#endif
+                baseStream = window,
 				streamCtr = output,
 				streamCls = outputClose
 			};
@@ -52,8 +63,10 @@ namespace Cave.Compression.Tests.TestSupport
 					// Main read loop
 					ReadTargetBytes(ref state);
 
-					if (!state.token.IsCancellationRequested)
-					{
+#if !(NET20 || NET35)
+                    if (!state.token.IsCancellationRequested)
+#endif
+                    {
 						Assert.IsFalse(state.baseStream.CanRead, "Base Stream should be closed");
 
 						// This shouldnt read any data but should read the footer
@@ -112,41 +125,52 @@ namespace Cave.Compression.Tests.TestSupport
 				writerJoined = writer.Join(timeout);
 				if (writerJoined && writerState.exception != null)
                 {
+#if !(NET20 || NET35 || NET40)
                     ExceptionDispatchInfo.Capture(writerState.exception).Throw();
+#endif
                 }
 
                 readerJoined = reader.Join(timeout);
 				if (readerJoined && readerState.exception != null)
                 {
+#if !(NET20 || NET35 || NET40)
                     ExceptionDispatchInfo.Capture(readerState.exception).Throw();
+#endif
                 }
 
+#if !(NET20 || NET35 || NET40)
                 if (cts.IsCancellationRequested)
                 {
                     break;
                 }
+#endif
             }
 
-			//Assert.IsTrue(writerJoined, "Timed out waiting for reader thread to join");
-			//Assert.IsTrue(readerJoined, "Timed out waiting for writer thread to join");
+            //Assert.IsTrue(writerJoined, "Timed out waiting for reader thread to join");
+            //Assert.IsTrue(readerJoined, "Timed out waiting for writer thread to join");
 
-			Assert.IsFalse(cts.IsCancellationRequested, "Threads were cancelled before completing execution");
+#if !(NET20 || NET35 || NET40)
+            Assert.IsFalse(cts.IsCancellationRequested, "Threads were cancelled before completing execution");
+#endif
 
-			var elapsed = sw.Elapsed;
+            var elapsed = sw.Elapsed;
 			var testSize = size / ByteToMB;
 			Console.WriteLine($"Time {elapsed:mm\\:ss\\.fff} throughput {testSize / elapsed.TotalSeconds:f2} MB/s (using test size: {testSize:f2} MB)");
 		}
 
 		public static void TestWrite(int size, Func<Stream, Stream> output, Action<Stream> outputClose = null)
 		{
-			var cts = new CancellationTokenSource(TimeSpan.FromMinutes(1));
-
-			var sw = Stopwatch.StartNew();
+#if !(NET20 || NET35 || NET40)
+            var cts = new CancellationTokenSource(TimeSpan.FromMinutes(1));
+#endif
+            var sw = Stopwatch.StartNew();
 			var writerState = new PerfWorkerState()
 			{
 				bytesLeft = size,
-				token = cts.Token,
-				baseStream = new NullStream(),
+#if !(NET20 || NET35 || NET40)
+                token = cts.Token,
+#endif
+                baseStream = new NullStream(),
 				streamCtr = output,
 			};
 
@@ -168,7 +192,11 @@ namespace Cave.Compression.Tests.TestSupport
 			byte[] buffer = new byte[bufferSize];
 			int bytesToWrite = bufferSize;
 
-			while (state.bytesLeft > 0 && !state.token.IsCancellationRequested)
+			while (state.bytesLeft > 0
+#if !(NET20 || NET35)
+                && !state.token.IsCancellationRequested
+#endif
+                )
 			{
 				if (state.bytesLeft < bufferSize)
                 {
@@ -188,7 +216,11 @@ namespace Cave.Compression.Tests.TestSupport
 
 			int pacifierLevel = state.bytesLeft - PacifierOffset;
 
-			while ((state.bytesLeft > 0) && !state.token.IsCancellationRequested)
+			while ((state.bytesLeft > 0)
+#if !(NET20 || NET35)
+                && !state.token.IsCancellationRequested
+#endif
+                )
 			{
 				if (state.bytesLeft < bufferSize)
                 {
@@ -218,11 +250,13 @@ namespace Cave.Compression.Tests.TestSupport
 		public Stream baseStream;
 		public int bytesLeft;
 		public Exception exception;
-		public CancellationToken token;
 		public Func<Stream, Stream> streamCtr;
 		public Action<Stream> streamCls;
+#if !(NET20 || NET35)
+        public CancellationToken token;
+#endif
 
-		public void InitStream()
+        public void InitStream()
 		{
 			stream = streamCtr(baseStream);
 		}
