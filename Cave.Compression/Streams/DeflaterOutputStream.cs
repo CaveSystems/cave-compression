@@ -221,7 +221,7 @@ namespace Cave.Compression.Streams
         /// </param>
         protected void EncryptBlock(byte[] buffer, int offset, int length)
         {
-            CryptoTransform.TransformBlock(buffer, 0, length, buffer, 0);
+            CryptoTransform.TransformBlock(buffer, offset, length, buffer, 0);
         }
 
         #endregion
