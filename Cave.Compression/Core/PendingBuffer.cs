@@ -255,7 +255,7 @@ namespace Cave.Compression.Core
         {
             AlignToByte();
 
-            byte[] result = new byte[end - start];
+            var result = new byte[end - start];
             Array.Copy(buffer, start, result, 0, result.Length);
             start = 0;
             end = 0;

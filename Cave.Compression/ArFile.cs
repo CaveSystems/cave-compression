@@ -104,10 +104,10 @@ namespace Cave.Compression
         {
             this.topStream = topStream;
             this.bottomStream = bottomStream;
-            byte[] arHeader = ASCII.GetBytes("!<arch>\n");
+            var arHeader = ASCII.GetBytes("!<arch>\n");
             if (openRead)
             {
-                byte[] header = new byte[8];
+                var header = new byte[8];
                 if ((this.topStream.Read(header, 0, header.Length) != arHeader.Length) || (!Equals(header, arHeader)))
                 {
                     throw new FormatException("ArFile header invalid!");
@@ -146,9 +146,9 @@ namespace Cave.Compression
                 case Operation.Seek: lastOperation = Operation.None; break;
             }
 
-            bool valid = false;
-            string requirements = string.Empty;
-            string state = string.Empty;
+            var valid = false;
+            var requirements = string.Empty;
+            var state = string.Empty;
             switch (operation)
             {
                 case Operation.ReadHeader:
@@ -264,8 +264,8 @@ namespace Cave.Compression
                 return null;
             }
 
-            string fileName = header.FileName;
-            string fullPath = Path.Combine(outputDirectory, fileName);
+            var fileName = header.FileName;
+            var fullPath = Path.Combine(outputDirectory, fileName);
             ReadDataTo(fullPath, header.FileSize);
             return fullPath;
         }
@@ -278,12 +278,12 @@ namespace Cave.Compression
         public byte[] ReadData(int size)
         {
             StartOperation(Operation.ReadData);
-            byte[] result = new byte[size];
-            int bytesLeft = size;
-            int pos = 0;
+            var result = new byte[size];
+            var bytesLeft = size;
+            var pos = 0;
             while (bytesLeft > 0)
             {
-                int block = 1024 * 1024;
+                var block = 1024 * 1024;
                 if (block > bytesLeft)
                 {
                     block = bytesLeft;
@@ -294,7 +294,7 @@ namespace Cave.Compression
                 bytesLeft -= block;
             }
 
-            int paddingBytes = size % 2;
+            var paddingBytes = size % 2;
             while (paddingBytes > 0)
             {
                 paddingBytes -= topStream.Read(new byte[paddingBytes], 0, paddingBytes);
@@ -315,13 +315,13 @@ namespace Cave.Compression
         public void ReadDataTo(string fileName, int size)
         {
             StartOperation(Operation.ReadData);
-            using (FileStream stream = File.OpenWrite(fileName))
+            using (var stream = File.OpenWrite(fileName))
             {
-                byte[] buffer = new byte[1024 * 1024];
-                int bytesLeft = size;
+                var buffer = new byte[1024 * 1024];
+                var bytesLeft = size;
                 while (bytesLeft > 0)
                 {
-                    int block = 1024 * 1024;
+                    var block = 1024 * 1024;
                     if (block > bytesLeft)
                     {
                         block = bytesLeft;
@@ -332,7 +332,7 @@ namespace Cave.Compression
                     bytesLeft -= block;
                 }
 
-                int paddingBytes = size % 2;
+                var paddingBytes = size % 2;
                 while (paddingBytes > 0)
                 {
                     paddingBytes -= topStream.Read(new byte[paddingBytes], 0, paddingBytes);
@@ -359,11 +359,11 @@ namespace Cave.Compression
             }
             else
             {
-                byte[] buffer = new byte[1024 * 1024];
-                int bytesLeft = size + (size % 2);
+                var buffer = new byte[1024 * 1024];
+                var bytesLeft = size + (size % 2);
                 while (bytesLeft > 0)
                 {
-                    int block = 1024 * 1024;
+                    var block = 1024 * 1024;
                     if (block > bytesLeft)
                     {
                         block = bytesLeft;
@@ -382,7 +382,7 @@ namespace Cave.Compression
         {
             if (header == null)
             {
-                throw new ArgumentNullException("header");
+                throw new ArgumentNullException(nameof(header));
             }
 
             StartOperation(Operation.WriteHeader);
@@ -397,7 +397,7 @@ namespace Cave.Compression
         {
             if (file == null)
             {
-                throw new ArgumentNullException("file");
+                throw new ArgumentNullException(nameof(file));
             }
 
             WriteHeader(new ArHeader(file));
@@ -412,16 +412,16 @@ namespace Cave.Compression
         {
             if (file == null)
             {
-                throw new ArgumentNullException("file");
+                throw new ArgumentNullException(nameof(file));
             }
 
             StartOperation(Operation.WriteData);
-            using (FileStream stream = File.OpenRead(file))
+            using (var stream = File.OpenRead(file))
             {
-                byte[] buffer = new byte[1024 * 1024];
+                var buffer = new byte[1024 * 1024];
                 while (stream.Position < stream.Length)
                 {
-                    int size = stream.Read(buffer, 0, buffer.Length);
+                    var size = stream.Read(buffer, 0, buffer.Length);
                     topStream.Write(buffer, 0, size);
                 }
 
@@ -443,15 +443,15 @@ namespace Cave.Compression
         {
             if (data == null)
             {
-                throw new ArgumentNullException("data");
+                throw new ArgumentNullException(nameof(data));
             }
 
             StartOperation(Operation.WriteData);
-            int bytesLeft = data.Length;
-            int pos = 0;
+            var bytesLeft = data.Length;
+            var pos = 0;
             while (bytesLeft > 0)
             {
-                int blockSize = 1024 * 1024;
+                var blockSize = 1024 * 1024;
                 if (blockSize > bytesLeft)
                 {
                     blockSize = bytesLeft;
@@ -475,13 +475,13 @@ namespace Cave.Compression
         /// <returns>Returns all headers.</returns>
         public ArHeader[] GetAllEntries()
         {
-            List<ArHeader> headers = new List<ArHeader>();
-            bool unexpectedError = false;
+            var headers = new List<ArHeader>();
+            var unexpectedError = false;
             try
             {
                 while (true)
                 {
-                    ArHeader header = ReadHeader();
+                    var header = ReadHeader();
                     headers.Add(header);
                     unexpectedError = true;
                     SkipData(header.FileSize);
@@ -526,6 +526,6 @@ namespace Cave.Compression
                 return bottomStream.Position / (double)bottomStream.Length;
             }
         }
-#endregion
+        #endregion
     }
 }

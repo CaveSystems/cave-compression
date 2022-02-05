@@ -101,8 +101,8 @@ namespace Cave.Compression.Checksum
         {
             // We could make a length 1 byte array and call update again, but I
             // would rather not have that overhead
-            uint s1 = checkValue & 0xFFFF;
-            uint s2 = checkValue >> 16;
+            var s1 = checkValue & 0xFFFF;
+            var s2 = checkValue >> 16;
 
             s1 = (s1 + ((uint)bval & 0xFF)) % BASE;
             s2 = (s1 + s2) % BASE;
@@ -159,15 +159,15 @@ namespace Cave.Compression.Checksum
             }
 
             // (By Per Bothner)
-            uint s1 = checkValue & 0xFFFF;
-            uint s2 = checkValue >> 16;
+            var s1 = checkValue & 0xFFFF;
+            var s2 = checkValue >> 16;
 
             while (count > 0)
             {
                 // We can defer the modulo operation:
                 // s1 maximally grows from 65521 to 65521 + 255 * 3800
                 // s2 maximally grows by 3800 * median(s1) = 2090079800 < 2^31
-                int n = 3800;
+                var n = 3800;
                 if (n > count)
                 {
                     n = count;

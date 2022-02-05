@@ -22,8 +22,8 @@ namespace Cave.Compression.Core
 
         public bool Decode(StreamManipulator input)
         {
-            decode_loop:
-            for (; ;)
+        decode_loop:
+            for (; ; )
             {
                 switch (mode)
                 {
@@ -73,7 +73,7 @@ namespace Cave.Compression.Core
                     case BLLENS:
                         while (ptr < blnum)
                         {
-                            int len = input.PeekBits(3);
+                            var len = input.PeekBits(3);
                             if (len < 0)
                             {
                                 return false;
@@ -92,7 +92,7 @@ namespace Cave.Compression.Core
                         mode = LENS;
                         goto case LENS; // fall through
                     case LENS:
-                        {
+                    {
                         int symbol;
                         while (((symbol = blTree.GetSymbol(input)) & ~15) == 0)
                         {
@@ -132,12 +132,12 @@ namespace Cave.Compression.Core
                         repSymbol = symbol - 16;
                     }
 
-                        mode = REPS;
-                        goto case REPS; // fall through
+                    mode = REPS;
+                    goto case REPS; // fall through
                     case REPS:
-                        {
-                        int bits = RepeatBits[repSymbol];
-                        int count = input.PeekBits(bits);
+                    {
+                        var bits = RepeatBits[repSymbol];
+                        var count = input.PeekBits(bits);
                         if (count < 0)
                         {
                             return false;
@@ -164,22 +164,22 @@ namespace Cave.Compression.Core
                         }
                     }
 
-                        mode = LENS;
-                        goto decode_loop;
+                    mode = LENS;
+                    goto decode_loop;
                 }
             }
         }
 
         public InflaterHuffmanTree BuildLitLenTree()
         {
-            byte[] litlenLens = new byte[lnum];
+            var litlenLens = new byte[lnum];
             Array.Copy(litdistLens, 0, litlenLens, 0, lnum);
             return new InflaterHuffmanTree(litlenLens);
         }
 
         public InflaterHuffmanTree BuildDistTree()
         {
-            byte[] distLens = new byte[dnum];
+            var distLens = new byte[dnum];
             Array.Copy(litdistLens, lnum, distLens, 0, dnum);
             return new InflaterHuffmanTree(distLens);
         }

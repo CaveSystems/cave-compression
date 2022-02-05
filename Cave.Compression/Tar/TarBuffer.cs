@@ -138,7 +138,7 @@ namespace Cave.Compression.Tar
                 throw new ArgumentException("block length is invalid");
             }
 
-            for (int i = 0; i < BlockSize; ++i)
+            for (var i = 0; i < BlockSize; ++i)
             {
                 if (block[i] != 0)
                 {
@@ -260,7 +260,7 @@ namespace Cave.Compression.Tar
                 }
             }
 
-            byte[] result = new byte[BlockSize];
+            var result = new byte[BlockSize];
 
             Array.Copy(recordBuffer, CurrentBlock * BlockSize, result, 0, BlockSize);
             CurrentBlock++;
@@ -282,8 +282,8 @@ namespace Cave.Compression.Tar
 
             CurrentBlock = 0;
 
-            int offset = 0;
-            int bytesNeeded = RecordSize;
+            var offset = 0;
+            var bytesNeeded = RecordSize;
 
             while (bytesNeeded > 0)
             {
@@ -357,7 +357,7 @@ namespace Cave.Compression.Tar
 
             if (block.Length != BlockSize)
             {
-                string errorText = string.Format("TarBuffer.WriteBlock - block to write has length '{0}' which is not the block size of '{1}'", block.Length, BlockSize);
+                var errorText = string.Format("TarBuffer.WriteBlock - block to write has length '{0}' which is not the block size of '{1}'", block.Length, BlockSize);
                 throw new InvalidDataException(errorText);
             }
 
@@ -400,7 +400,7 @@ namespace Cave.Compression.Tar
 
             if ((offset + BlockSize) > buffer.Length)
             {
-                string errorText = string.Format("TarBuffer.WriteBlock - record has length '{0}' with offset '{1}' which is less than the record size of '{2}'", buffer.Length, offset, RecordSize);
+                var errorText = string.Format("TarBuffer.WriteBlock - record has length '{0}' with offset '{1}' which is less than the record size of '{2}'", buffer.Length, offset, RecordSize);
                 throw new InvalidDataException(errorText);
             }
 
@@ -445,7 +445,7 @@ namespace Cave.Compression.Tar
 
             if (CurrentBlock > 0)
             {
-                int dataBytes = CurrentBlock * BlockSize;
+                var dataBytes = CurrentBlock * BlockSize;
                 Array.Clear(recordBuffer, dataBytes, RecordSize - dataBytes);
                 WriteRecord();
             }

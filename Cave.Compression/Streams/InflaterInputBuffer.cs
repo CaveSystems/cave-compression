@@ -94,11 +94,11 @@ namespace Cave.Compression.Streams
         public void Fill()
         {
             RawLength = 0;
-            int toRead = RawData.Length;
+            var toRead = RawData.Length;
 
             while (toRead > 0)
             {
-                int count = inputStream.Read(RawData, RawLength, toRead);
+                var count = inputStream.Read(RawData, RawLength, toRead);
                 if (count <= 0)
                 {
                     break;
@@ -144,8 +144,8 @@ namespace Cave.Compression.Streams
                 throw new ArgumentOutOfRangeException(nameof(length));
             }
 
-            int currentOffset = offset;
-            int currentLength = length;
+            var currentOffset = offset;
+            var currentLength = length;
 
             while (currentLength > 0)
             {
@@ -158,7 +158,7 @@ namespace Cave.Compression.Streams
                     }
                 }
 
-                int toCopy = Math.Min(currentLength, Available);
+                var toCopy = Math.Min(currentLength, Available);
                 Array.Copy(RawData, RawLength - Available, outBuffer, currentOffset, toCopy);
                 currentOffset += toCopy;
                 currentLength -= toCopy;
@@ -182,8 +182,8 @@ namespace Cave.Compression.Streams
                 throw new ArgumentOutOfRangeException(nameof(length));
             }
 
-            int currentOffset = offset;
-            int currentLength = length;
+            var currentOffset = offset;
+            var currentLength = length;
 
             while (currentLength > 0)
             {
@@ -196,7 +196,7 @@ namespace Cave.Compression.Streams
                     }
                 }
 
-                int toCopy = Math.Min(currentLength, Available);
+                var toCopy = Math.Min(currentLength, Available);
                 Array.Copy(ClearText, clearTextLength - Available, outBuffer, currentOffset, toCopy);
                 currentOffset += toCopy;
                 currentLength -= toCopy;
@@ -221,7 +221,7 @@ namespace Cave.Compression.Streams
                 }
             }
 
-            byte result = RawData[RawLength - Available];
+            var result = RawData[RawLength - Available];
             Available -= 1;
             return result;
         }

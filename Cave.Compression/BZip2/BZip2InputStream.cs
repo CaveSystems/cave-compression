@@ -33,11 +33,11 @@ namespace Cave.Compression.BZip2
 
         static void HbCreateDecodeTables(int[] limit, int[] baseArray, int[] perm, char[] length, int minLen, int maxLen, int alphaSize)
         {
-            int pp = 0;
+            var pp = 0;
 
-            for (int i = minLen; i <= maxLen; ++i)
+            for (var i = minLen; i <= maxLen; ++i)
             {
-                for (int j = 0; j < alphaSize; ++j)
+                for (var j = 0; j < alphaSize; ++j)
                 {
                     if (length[j] == i)
                     {
@@ -47,36 +47,36 @@ namespace Cave.Compression.BZip2
                 }
             }
 
-            for (int i = 0; i < BZip2Constants.MaximumCodeLength; i++)
+            for (var i = 0; i < BZip2Constants.MaximumCodeLength; i++)
             {
                 baseArray[i] = 0;
             }
 
-            for (int i = 0; i < alphaSize; i++)
+            for (var i = 0; i < alphaSize; i++)
             {
                 ++baseArray[length[i] + 1];
             }
 
-            for (int i = 1; i < BZip2Constants.MaximumCodeLength; i++)
+            for (var i = 1; i < BZip2Constants.MaximumCodeLength; i++)
             {
                 baseArray[i] += baseArray[i - 1];
             }
 
-            for (int i = 0; i < BZip2Constants.MaximumCodeLength; i++)
+            for (var i = 0; i < BZip2Constants.MaximumCodeLength; i++)
             {
                 limit[i] = 0;
             }
 
-            int vec = 0;
+            var vec = 0;
 
-            for (int i = minLen; i <= maxLen; i++)
+            for (var i = minLen; i <= maxLen; i++)
             {
                 vec += baseArray[i + 1] - baseArray[i];
                 limit[i] = vec - 1;
                 vec <<= 1;
             }
 
-            for (int i = minLen + 1; i <= maxLen; i++)
+            for (var i = minLen + 1; i <= maxLen; i++)
             {
                 baseArray[i] = ((limit[i - 1] + 1) << 1) - baseArray[i];
             }
@@ -173,7 +173,7 @@ namespace Cave.Compression.BZip2
         public BZip2InputStream(Stream stream)
         {
             // init arrays
-            for (int i = 0; i < BZip2Constants.GroupCount; ++i)
+            for (var i = 0; i < BZip2Constants.GroupCount; ++i)
             {
                 limit[i] = new int[BZip2Constants.MaximumAlphaSize];
                 baseArray[i] = new int[BZip2Constants.MaximumAlphaSize];
@@ -330,9 +330,9 @@ namespace Cave.Compression.BZip2
                 throw new ArgumentNullException(nameof(buffer));
             }
 
-            for (int i = 0; i < count; ++i)
+            for (var i = 0; i < count; ++i)
             {
-                int rb = ReadByte();
+                var rb = ReadByte();
                 if (rb == -1)
                 {
                     return i;
@@ -367,7 +367,7 @@ namespace Cave.Compression.BZip2
                 return -1; // ok
             }
 
-            int retChar = currentChar;
+            var retChar = currentChar;
             switch (currentState)
             {
                 case State.RandPartB:
@@ -396,7 +396,7 @@ namespace Cave.Compression.BZip2
         void MakeMaps()
         {
             nInUse = 0;
-            for (int i = 0; i < 256; ++i)
+            for (var i = 0; i < 256; ++i)
             {
                 if (inUse[i])
                 {
@@ -409,11 +409,11 @@ namespace Cave.Compression.BZip2
 
         void Initialize()
         {
-            char magic1 = BsGetUChar();
-            char magic2 = BsGetUChar();
+            var magic1 = BsGetUChar();
+            var magic2 = BsGetUChar();
 
-            char magic3 = BsGetUChar();
-            char magic4 = BsGetUChar();
+            var magic3 = BsGetUChar();
+            var magic4 = BsGetUChar();
 
             if (magic1 != 'B' || magic2 != 'Z' || magic3 != 'h' || magic4 < '1' || magic4 > '9')
             {
@@ -427,12 +427,12 @@ namespace Cave.Compression.BZip2
 
         void InitBlock()
         {
-            char magic1 = BsGetUChar();
-            char magic2 = BsGetUChar();
-            char magic3 = BsGetUChar();
-            char magic4 = BsGetUChar();
-            char magic5 = BsGetUChar();
-            char magic6 = BsGetUChar();
+            var magic1 = BsGetUChar();
+            var magic2 = BsGetUChar();
+            var magic3 = BsGetUChar();
+            var magic4 = BsGetUChar();
+            var magic5 = BsGetUChar();
+            var magic6 = BsGetUChar();
 
             if (magic1 == 0x17 && magic2 == 0x72 && magic3 == 0x45 && magic4 == 0x38 && magic5 == 0x50 && magic6 == 0x90)
             {
@@ -485,7 +485,7 @@ namespace Cave.Compression.BZip2
 
         void FillBuffer()
         {
-            int thech = 0;
+            var thech = 0;
 
             try
             {
@@ -512,7 +512,7 @@ namespace Cave.Compression.BZip2
                 FillBuffer();
             }
 
-            int v = (bsBuff >> (bsLive - n)) & ((1 << n) - 1);
+            var v = (bsBuff >> (bsLive - n)) & ((1 << n) - 1);
             bsLive -= n;
             return v;
         }
@@ -529,7 +529,7 @@ namespace Cave.Compression.BZip2
 
         int BsGetInt32()
         {
-            int result = BsR(8);
+            var result = BsR(8);
             result = (result << 8) | BsR(8);
             result = (result << 8) | BsR(8);
             result = (result << 8) | BsR(8);
@@ -538,32 +538,32 @@ namespace Cave.Compression.BZip2
 
         void RecvDecodingTables()
         {
-            char[][] len = new char[BZip2Constants.GroupCount][];
-            for (int i = 0; i < BZip2Constants.GroupCount; ++i)
+            var len = new char[BZip2Constants.GroupCount][];
+            for (var i = 0; i < BZip2Constants.GroupCount; ++i)
             {
                 len[i] = new char[BZip2Constants.MaximumAlphaSize];
             }
 
-            bool[] inUse16 = new bool[16];
+            var inUse16 = new bool[16];
 
             //--- Receive the mapping table ---
-            for (int i = 0; i < 16; i++)
+            for (var i = 0; i < 16; i++)
             {
                 inUse16[i] = BsR(1) == 1;
             }
 
-            for (int i = 0; i < 16; i++)
+            for (var i = 0; i < 16; i++)
             {
                 if (inUse16[i])
                 {
-                    for (int j = 0; j < 16; j++)
+                    for (var j = 0; j < 16; j++)
                     {
                         inUse[(i * 16) + j] = BsR(1) == 1;
                     }
                 }
                 else
                 {
-                    for (int j = 0; j < 16; j++)
+                    for (var j = 0; j < 16; j++)
                     {
                         inUse[(i * 16) + j] = false;
                     }
@@ -571,15 +571,15 @@ namespace Cave.Compression.BZip2
             }
 
             MakeMaps();
-            int alphaSize = nInUse + 2;
+            var alphaSize = nInUse + 2;
 
             //--- Now the selectors ---
-            int nGroups = BsR(3);
-            int nSelectors = BsR(15);
+            var nGroups = BsR(3);
+            var nSelectors = BsR(15);
 
-            for (int i = 0; i < nSelectors; i++)
+            for (var i = 0; i < nSelectors; i++)
             {
-                int j = 0;
+                var j = 0;
                 while (BsR(1) == 1)
                 {
                     j++;
@@ -589,16 +589,16 @@ namespace Cave.Compression.BZip2
             }
 
             //--- Undo the MTF values for the selectors. ---
-            byte[] pos = new byte[BZip2Constants.GroupCount];
-            for (int v = 0; v < nGroups; v++)
+            var pos = new byte[BZip2Constants.GroupCount];
+            for (var v = 0; v < nGroups; v++)
             {
                 pos[v] = (byte)v;
             }
 
-            for (int i = 0; i < nSelectors; i++)
+            for (var i = 0; i < nSelectors; i++)
             {
                 int v = selectorMtf[i];
-                byte tmp = pos[v];
+                var tmp = pos[v];
                 while (v > 0)
                 {
                     pos[v] = pos[v - 1];
@@ -610,10 +610,10 @@ namespace Cave.Compression.BZip2
             }
 
             //--- Now the coding tables ---
-            for (int t = 0; t < nGroups; t++)
+            for (var t = 0; t < nGroups; t++)
             {
-                int curr = BsR(5);
-                for (int i = 0; i < alphaSize; i++)
+                var curr = BsR(5);
+                for (var i = 0; i < alphaSize; i++)
                 {
                     while (BsR(1) == 1)
                     {
@@ -632,11 +632,11 @@ namespace Cave.Compression.BZip2
             }
 
             //--- Create the Huffman decoding tables ---
-            for (int t = 0; t < nGroups; t++)
+            for (var t = 0; t < nGroups; t++)
             {
-                int minLen = 32;
-                int maxLen = 0;
-                for (int i = 0; i < alphaSize; i++)
+                var minLen = 32;
+                var maxLen = 0;
+                for (var i = 0; i < alphaSize; i++)
                 {
                     maxLen = Math.Max(maxLen, len[t][i]);
                     minLen = Math.Min(minLen, len[t][i]);
@@ -649,16 +649,16 @@ namespace Cave.Compression.BZip2
 
         void GetAndMoveToFrontDecode()
         {
-            byte[] yy = new byte[256];
+            var yy = new byte[256];
             int nextSym;
 
-            int limitLast = BZip2Constants.BlockSize * blockSize100k;
+            var limitLast = BZip2Constants.BlockSize * blockSize100k;
             origPtr = BsGetIntVS(24);
 
             RecvDecodingTables();
-            int endOfBlock = nInUse + 1;
-            int groupNo = -1;
-            int groupPos = 0;
+            var endOfBlock = nInUse + 1;
+            var groupNo = -1;
+            var groupPos = 0;
 
             /*--
             Setting up the unzftab entries here is not strictly
@@ -666,12 +666,12 @@ namespace Cave.Compression.BZip2
             in a separate pass, and so saves a block's worth of
             cache misses.
             --*/
-            for (int i = 0; i <= 255; i++)
+            for (var i = 0; i <= 255; i++)
             {
                 unzftab[i] = 0;
             }
 
-            for (int i = 0; i <= 255; i++)
+            for (var i = 0; i <= 255; i++)
             {
                 yy[i] = (byte)i;
             }
@@ -686,8 +686,8 @@ namespace Cave.Compression.BZip2
 
             groupPos--;
             int zt = selector[groupNo];
-            int zn = minLens[zt];
-            int zvec = BsR(zn);
+            var zn = minLens[zt];
+            var zvec = BsR(zn);
             int zj;
 
             while (zvec > limit[zt][zn])
@@ -724,8 +724,8 @@ namespace Cave.Compression.BZip2
 
                 if (nextSym == BZip2Constants.RunA || nextSym == BZip2Constants.RunB)
                 {
-                    int s = -1;
-                    int n = 1;
+                    var s = -1;
+                    var n = 1;
                     do
                     {
                         if (nextSym == BZip2Constants.RunA)
@@ -769,7 +769,7 @@ namespace Cave.Compression.BZip2
                     while (nextSym == BZip2Constants.RunA || nextSym == BZip2Constants.RunB);
 
                     s++;
-                    byte ch = seqToUnseq[yy[0]];
+                    var ch = seqToUnseq[yy[0]];
                     unzftab[ch] += s;
 
                     while (s > 0)
@@ -794,11 +794,11 @@ namespace Cave.Compression.BZip2
                         BlockOverrun();
                     }
 
-                    byte tmp = yy[nextSym - 1];
+                    var tmp = yy[nextSym - 1];
                     unzftab[seqToUnseq[tmp]]++;
                     ll8[last] = seqToUnseq[tmp];
 
-                    for (int j = nextSym - 1; j > 0; --j)
+                    for (var j = nextSym - 1; j > 0; --j)
                     {
                         yy[j] = yy[j - 1];
                     }
@@ -836,19 +836,19 @@ namespace Cave.Compression.BZip2
 
         void SetupBlock()
         {
-            int[] cftab = new int[257];
+            var cftab = new int[257];
 
             cftab[0] = 0;
             Array.Copy(unzftab, 0, cftab, 1, 256);
 
-            for (int i = 1; i <= 256; i++)
+            for (var i = 1; i <= 256; i++)
             {
                 cftab[i] += cftab[i - 1];
             }
 
-            for (int i = 0; i <= last; i++)
+            for (var i = 0; i <= last; i++)
             {
-                byte ch = ll8[i];
+                var ch = ll8[i];
                 tt[cftab[ch]] = i;
                 cftab[ch]++;
             }
@@ -1041,7 +1041,7 @@ namespace Cave.Compression.BZip2
                 return;
             }
 
-            int n = BZip2Constants.BlockSize * newSize100k;
+            var n = BZip2Constants.BlockSize * newSize100k;
             ll8 = new byte[n];
             tt = new int[n];
         }

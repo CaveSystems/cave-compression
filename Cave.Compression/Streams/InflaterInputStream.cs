@@ -141,15 +141,15 @@ namespace Cave.Compression.Streams
             }
             else
             {
-                int length = 2048;
+                var length = 2048;
                 if (count < length)
                 {
                     length = (int)count;
                 }
 
-                byte[] tmp = new byte[length];
-                int readCount = 1;
-                long toSkip = count;
+                var tmp = new byte[length];
+                var readCount = 1;
+                var toSkip = count;
 
                 while ((toSkip > 0) && (readCount > 0))
                 {
@@ -367,10 +367,10 @@ namespace Cave.Compression.Streams
                 throw new InvalidDataException("Need a dictionary");
             }
 
-            int remainingBytes = count;
+            var remainingBytes = count;
             while (true)
             {
-                int bytesRead = Inflater.Inflate(buffer, offset, remainingBytes);
+                var bytesRead = Inflater.Inflate(buffer, offset, remainingBytes);
                 offset += bytesRead;
                 remainingBytes -= bytesRead;
 

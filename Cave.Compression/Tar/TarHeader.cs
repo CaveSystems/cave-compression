@@ -45,7 +45,7 @@ namespace Cave.Compression.Tar
         /// <summary>
         /// The magic tag representing a POSIX tar archive.  (would be written with a trailing NULL).
         /// </summary>
-        public const string MAGIC = "ustar";
+        public const string DefaultMagic = "ustar";
 
         /// <summary>
         /// 1 tick == 100 nanoseconds.
@@ -171,7 +171,7 @@ namespace Cave.Compression.Tar
             {
                 // File sizes over 8GB are stored in 8 right-justified bytes of binary indicated by setting the high-order bit of the leftmost byte of a numeric field.
                 long result = 0;
-                for (int pos = length - 8; pos < length; pos++)
+                for (var pos = length - 8; pos < length; pos++)
                 {
                     result = result << 8 | header[offset + pos];
                 }
@@ -197,10 +197,10 @@ namespace Cave.Compression.Tar
             }
 
             long result = 0;
-            bool stillPadding = true;
+            var stillPadding = true;
 
-            int end = offset + length;
-            for (int i = offset; i < end; ++i)
+            var end = offset + length;
+            for (var i = offset; i < end; ++i)
             {
                 if (header[i] == 0)
                 {
@@ -267,7 +267,7 @@ namespace Cave.Compression.Tar
 
             var result = new StringBuilder(length);
 
-            for (int i = offset; i < offset + length; ++i)
+            for (var i = offset; i < offset + length; ++i)
             {
                 if (header[i] == 0)
                 {
@@ -457,7 +457,7 @@ namespace Cave.Compression.Tar
                 throw new ArgumentNullException(nameof(buffer));
             }
 
-            int localIndex = length - 1;
+            var localIndex = length - 1;
 
             // Either a space or null is valid here.  We use NULL as per GNUTar
             buffer[offset + localIndex] = 0;
@@ -465,7 +465,7 @@ namespace Cave.Compression.Tar
 
             if (value > 0)
             {
-                for (long v = value; (localIndex >= 0) && (v > 0); --localIndex)
+                for (var v = value; (localIndex >= 0) && (v > 0); --localIndex)
                 {
                     buffer[offset + localIndex] = (byte)((byte)'0' + (byte)(v & 7));
                     v >>= 3;
@@ -493,7 +493,7 @@ namespace Cave.Compression.Tar
             if (value > 0x1FFFFFFFF)
             { // Octal 77777777777 (11 digits)
               // Put value as binary, right-justified into the buffer. Set high order bit of left-most byte.
-                for (int pos = length - 1; pos > 0; pos--)
+                for (var pos = length - 1; pos > 0; pos--)
                 {
                     buffer[offset + pos] = (byte)value;
                     value = value >> 8;
@@ -530,8 +530,8 @@ namespace Cave.Compression.Tar
         /// <returns>The computed checksum.</returns>
         static int ComputeCheckSum(byte[] buffer)
         {
-            int sum = 0;
-            for (int i = 0; i < buffer.Length; ++i)
+            var sum = 0;
+            for (var i = 0; i < buffer.Length; ++i)
             {
                 sum += buffer[i];
             }
@@ -546,18 +546,18 @@ namespace Cave.Compression.Tar
         /// <returns>The checksum for the buffer.</returns>
         static int MakeCheckSum(byte[] buffer)
         {
-            int sum = 0;
-            for (int i = 0; i < ChecksumOffset; ++i)
+            var sum = 0;
+            for (var i = 0; i < ChecksumOffset; ++i)
             {
                 sum += buffer[i];
             }
 
-            for (int i = 0; i < ChecksumLength; ++i)
+            for (var i = 0; i < ChecksumLength; ++i)
             {
                 sum += (byte)' ';
             }
 
-            for (int i = ChecksumOffset + ChecksumLength; i < buffer.Length; ++i)
+            for (var i = ChecksumOffset + ChecksumLength; i < buffer.Length; ++i)
             {
                 sum += buffer[i];
             }
@@ -594,7 +594,7 @@ namespace Cave.Compression.Tar
         /// </summary>
         public TarHeader()
         {
-            Magic = MAGIC;
+            Magic = DefaultMagic;
             Version = " ";
 
             Name = string.Empty;
@@ -750,7 +750,7 @@ namespace Cave.Compression.Tar
                 }
                 else
                 {
-                    string currentUser = "user";
+                    var currentUser = "user";
                     if (currentUser.Length > UsernameLength)
                     {
                         currentUser = currentUser.Substring(0, UsernameLength);
@@ -824,7 +824,7 @@ namespace Cave.Compression.Tar
                 throw new ArgumentNullException(nameof(header));
             }
 
-            int offset = 0;
+            var offset = 0;
 
             name = ParseName(header, offset, NameLength).ToString();
             offset += NameLength;
@@ -872,7 +872,7 @@ namespace Cave.Compression.Tar
                 DevMinor = (int)ParseOctal(header, offset, DeviceLength);
                 offset += DeviceLength;
 
-                string prefix = ParseName(header, offset, PrefixLength).ToString();
+                var prefix = ParseName(header, offset, PrefixLength).ToString();
                 if (!string.IsNullOrEmpty(prefix))
                 {
                     Name = prefix + '/' + Name;
@@ -893,7 +893,7 @@ namespace Cave.Compression.Tar
                 throw new ArgumentNullException(nameof(outBuffer));
             }
 
-            int offset = 0;
+            var offset = 0;
 
             offset = GetNameBytes(Name, outBuffer, offset, NameLength);
             offset = GetOctalBytes(Mode, outBuffer, offset, ModeLength);
@@ -903,8 +903,8 @@ namespace Cave.Compression.Tar
             offset = GetBinaryOrOctalBytes(Size, outBuffer, offset, FileSizeLength);
             offset = GetOctalBytes(GetCTime(ModTime), outBuffer, offset, ModificationTimeLength);
 
-            int csOffset = offset;
-            for (int c = 0; c < ChecksumLength; ++c)
+            var csOffset = offset;
+            for (var c = 0; c < ChecksumLength; ++c)
             {
                 outBuffer[offset++] = (byte)' ';
             }

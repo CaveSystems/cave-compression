@@ -25,7 +25,7 @@ namespace Cave.Compression.GZip
 
             try
             {
-                using (GZipInputStream bzipInput = new GZipInputStream(inStream))
+                using (var bzipInput = new GZipInputStream(inStream))
                 {
                     bzipInput.IsStreamOwner = isStreamOwner;
                     StreamUtils.Copy(bzipInput, outStream, new byte[4096]);
@@ -59,7 +59,7 @@ namespace Cave.Compression.GZip
 
             try
             {
-                using (GZipOutputStream bzipOutput = new GZipOutputStream(outStream, level, 4096))
+                using (var bzipOutput = new GZipOutputStream(outStream, level, 4096))
                 {
                     bzipOutput.IsStreamOwner = isStreamOwner;
                     StreamUtils.Copy(inStream, bzipOutput, new byte[4096]);

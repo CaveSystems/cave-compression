@@ -17,16 +17,16 @@ namespace Cave.Compression.Tests.Tar
         [Category("Tar")]
         public void TarReaderWriter()
         {
-            Dictionary<string, byte[]> checks = new Dictionary<string, byte[]>();
-            Random random = new Random();
+            var checks = new Dictionary<string, byte[]>();
+            var random = new Random();
             byte[] data;
-            using (MemoryStream stream = new MemoryStream())
+            using (var stream = new MemoryStream())
             {
-                using (TarWriter writer = new TarWriter(stream, true))
+                using (var writer = new TarWriter(stream, true))
                 {
-                    for (int i = 0; i < 1000; i++)
+                    for (var i = 0; i < 1000; i++)
                     {
-                        byte[] buffer = new byte[random.Next(64 * 1024)];
+                        var buffer = new byte[random.Next(64 * 1024)];
                         var name = $"{i % 10}/{i} {buffer.GetHashCode().ToString("x")}.txt";
                         checks.Add(name, buffer);
                         writer.AddFile(name, buffer);
@@ -34,14 +34,14 @@ namespace Cave.Compression.Tests.Tar
                 }
                 data = stream.ToArray();
             }
-            using (MemoryStream stream = new MemoryStream(data))
+            using (var stream = new MemoryStream(data))
             {
-                using (TarReader reader = new TarReader(stream, true))
+                using (var reader = new TarReader(stream, true))
                 {
                     var copy = checks.ToDictionary(i => i.Key, i => i.Value);
-                    while (reader.ReadNext(out TarEntry entry, out byte[] content))
+                    while (reader.ReadNext(out var entry, out var content))
                     {
-                        if (!copy.TryGetValue(entry.Name, out byte[] expectedContent))
+                        if (!copy.TryGetValue(entry.Name, out var expectedContent))
                         {
                             Assert.Fail("Entry name not found at source!");
                         }
@@ -71,19 +71,19 @@ namespace Cave.Compression.Tests.Tar
         public void TarReaderWriterFiles()
         {
             var tempFileName = Path.GetTempFileName();
-            Dictionary<string, byte[]> checks = new Dictionary<string, byte[]>();
-            Random random = new Random();
+            var checks = new Dictionary<string, byte[]>();
+            var random = new Random();
 
             var temp1 = GetTempDir();
             var temp2 = GetTempDir();
 
             using (var stream = File.Create(tempFileName))
             {
-                using (TarWriter writer = new TarWriter(stream, true))
+                using (var writer = new TarWriter(stream, true))
                 {
-                    for (int i = 0; i < 1000; i++)
+                    for (var i = 0; i < 1000; i++)
                     {
-                        byte[] buffer = new byte[random.Next(64 * 1024)];
+                        var buffer = new byte[random.Next(64 * 1024)];
                         var name = $"{i % 10}/{i}.txt";
                         var fullName = Path.Combine(temp1, name);
                         Directory.CreateDirectory(Path.GetDirectoryName(fullName));
@@ -96,7 +96,7 @@ namespace Cave.Compression.Tests.Tar
 
             using (var stream = File.OpenRead(tempFileName))
             {
-                using (TarReader reader = new TarReader(stream, true))
+                using (var reader = new TarReader(stream, true))
                 {
                     reader.UnpackTo(temp2);
                 }
@@ -104,13 +104,13 @@ namespace Cave.Compression.Tests.Tar
 
             using (var stream = File.OpenRead(tempFileName))
             {
-                using (TarReader reader = new TarReader(stream, true))
+                using (var reader = new TarReader(stream, true))
                 {
                     var copy = checks.ToDictionary(i => i.Key, i => i.Value);
-                    while (reader.ReadNext(out TarEntry entry, out byte[] content))
+                    while (reader.ReadNext(out var entry, out var content))
                     {
-                        string name = entry.Name.TrimStart('/');
-                        if (!copy.TryGetValue(name, out byte[] expectedContent))
+                        var name = entry.Name.TrimStart('/');
+                        if (!copy.TryGetValue(name, out var expectedContent))
                         {
                             Assert.Fail("Entry name not found at source!");
                         }

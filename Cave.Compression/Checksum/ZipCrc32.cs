@@ -196,7 +196,7 @@ namespace Cave.Compression.Checksum
                 throw new ArgumentOutOfRangeException(nameof(count), "exceeds buffer size");
             }
 
-            for (int i = 0; i < count; ++i)
+            for (var i = 0; i < count; ++i)
             {
                 Update(buffer[offset++]);
             }

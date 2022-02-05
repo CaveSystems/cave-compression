@@ -74,7 +74,7 @@ namespace Cave.Compression.Streams
         /// </returns>
         public int GetBits(int bitCount)
         {
-            int bits = PeekBits(bitCount);
+            var bits = PeekBits(bitCount);
             if (bits >= 0)
             {
                 DropBits(bitCount);
@@ -163,7 +163,7 @@ namespace Cave.Compression.Streams
                 throw new InvalidOperationException("Bit buffer is not byte aligned!");
             }
 
-            int count = 0;
+            var count = 0;
             while ((AvailableBits > 0) && (length > 0))
             {
                 output[offset++] = (byte)buffer;
@@ -178,7 +178,7 @@ namespace Cave.Compression.Streams
                 return count;
             }
 
-            int avail = windowEnd - windowStart;
+            var avail = windowEnd - windowStart;
             if (length > avail)
             {
                 length = avail;
@@ -235,7 +235,7 @@ namespace Cave.Compression.Streams
                 throw new InvalidOperationException("Old input was not completely processed");
             }
 
-            int end = offset + count;
+            var end = offset + count;
 
             // We want to throw an ArrayIndexOutOfBoundsException early.
             // Note the check also handles integer wrap around.

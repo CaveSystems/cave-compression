@@ -96,7 +96,7 @@ namespace Cave.Compression.Tar
                 throw new ArgumentNullException(nameof(name));
             }
 
-            bool isDir = name.EndsWith("/", StringComparison.Ordinal);
+            var isDir = name.EndsWith("/", StringComparison.Ordinal);
 
             header.Name = name;
             header.Mode = isDir ? 1003 : 33216;
@@ -430,7 +430,7 @@ namespace Cave.Compression.Tar
             fileName = file ?? throw new ArgumentNullException(nameof(file));
 
             // bugfix from torhovl from #D forum:
-            string name = file;
+            var name = file;
 
             // 23-Jan-2004 GnuTar allows device names in path where the name is not local to the current directory
             if (name.IndexOf(Directory.GetCurrentDirectory(), StringComparison.Ordinal) == 0)
@@ -488,10 +488,10 @@ namespace Cave.Compression.Tar
                 return new TarEntry[0];
             }
 
-            string[] list = Directory.GetFileSystemEntries(fileName);
-            TarEntry[] result = new TarEntry[list.Length];
+            var list = Directory.GetFileSystemEntries(fileName);
+            var result = new TarEntry[list.Length];
 
-            for (int i = 0; i < list.Length; ++i)
+            for (var i = 0; i < list.Length; ++i)
             {
                 result[i] = CreateEntryFromFile(list[i]);
             }

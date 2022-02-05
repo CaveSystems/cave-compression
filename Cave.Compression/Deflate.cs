@@ -20,15 +20,15 @@ namespace Cave.Compression
         {
             if (sourceStream == null)
             {
-                throw new ArgumentNullException("sourceStream");
+                throw new ArgumentNullException(nameof(sourceStream));
             }
 
             if (targetStream == null)
             {
-                throw new ArgumentNullException("targetStream");
+                throw new ArgumentNullException(nameof(targetStream));
             }
 
-            DeflaterOutputStream compressStream = new DeflaterOutputStream(targetStream)
+            var compressStream = new DeflaterOutputStream(targetStream)
             {
                 IsStreamOwner = false,
             };
@@ -62,15 +62,15 @@ namespace Cave.Compression
         {
             if (sourceStream == null)
             {
-                throw new ArgumentNullException("sourceStream");
+                throw new ArgumentNullException(nameof(sourceStream));
             }
 
             if (targetStream == null)
             {
-                throw new ArgumentNullException("targetStream");
+                throw new ArgumentNullException(nameof(targetStream));
             }
 
-            InflaterInputStream decompressStream = new InflaterInputStream(sourceStream)
+            var decompressStream = new InflaterInputStream(sourceStream)
             {
                 IsStreamOwner = false,
             };
@@ -100,12 +100,12 @@ namespace Cave.Compression
         {
             if (data == null)
             {
-                throw new ArgumentNullException("data");
+                throw new ArgumentNullException(nameof(data));
             }
 
-            using (MemoryStream source = new MemoryStream(data))
+            using (var source = new MemoryStream(data))
             {
-                using (MemoryStream target = new MemoryStream())
+                using (var target = new MemoryStream())
                 {
                     Compress(source, target, -1, true);
                     return target.ToArray();
@@ -122,12 +122,12 @@ namespace Cave.Compression
         {
             if (data == null)
             {
-                throw new ArgumentNullException("data");
+                throw new ArgumentNullException(nameof(data));
             }
 
-            using (MemoryStream source = new MemoryStream(data))
+            using (var source = new MemoryStream(data))
             {
-                using (MemoryStream target = new MemoryStream())
+                using (var target = new MemoryStream())
                 {
                     Decompress(source, target, -1, true);
                     return target.ToArray();
@@ -144,7 +144,7 @@ namespace Cave.Compression
         {
             if (fileName == null)
             {
-                throw new ArgumentNullException("fileName");
+                throw new ArgumentNullException(nameof(fileName));
             }
 
             using (Stream source = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -170,12 +170,12 @@ namespace Cave.Compression
         {
             if (fileName == null)
             {
-                throw new ArgumentNullException("fileName");
+                throw new ArgumentNullException(nameof(fileName));
             }
 
             if (Path.GetExtension(fileName) != ".deflate")
             {
-                throw new ArgumentException(string.Format(".deflate extension expected!"), "fileName");
+                throw new ArgumentException(string.Format(".deflate extension expected!"), nameof(fileName));
             }
 
             using (Stream source = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))

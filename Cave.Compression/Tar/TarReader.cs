@@ -146,7 +146,7 @@ namespace Cave.Compression.Tar
                 throw new ObjectDisposedException(nameof(TarReader));
             }
 
-            bool result = true;
+            var result = true;
             void CallbackOverride(object s, ProgressEventArgs e)
             {
                 callback?.Invoke(s, e);

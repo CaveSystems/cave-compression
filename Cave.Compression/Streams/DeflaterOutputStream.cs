@@ -128,7 +128,7 @@ namespace Cave.Compression.Streams
             Deflater.Finish();
             while (!Deflater.IsFinished)
             {
-                int len = Deflater.Deflate(buffer, 0, buffer.Length);
+                var len = Deflater.Deflate(buffer, 0, buffer.Length);
                 if (len <= 0)
                 {
                     break;
@@ -237,7 +237,7 @@ namespace Cave.Compression.Streams
         {
             while (!Deflater.IsNeedingInput)
             {
-                int deflateCount = Deflater.Deflate(buffer, 0, buffer.Length);
+                var deflateCount = Deflater.Deflate(buffer, 0, buffer.Length);
 
                 if (deflateCount <= 0)
                 {
@@ -417,7 +417,7 @@ namespace Cave.Compression.Streams
         /// </param>
         public override void WriteByte(byte value)
         {
-            byte[] b = new byte[1];
+            var b = new byte[1];
             b[0] = value;
             Write(b, 0, 1);
         }

@@ -18,10 +18,10 @@ namespace Cave.Compression
         {
             if (stream == null)
             {
-                throw new ArgumentNullException("stream");
+                throw new ArgumentNullException(nameof(stream));
             }
 
-            byte[] data = new byte[60];
+            var data = new byte[60];
             if (stream.Read(data, 0, 60) != 60)
             {
                 throw new EndOfStreamException();
@@ -37,7 +37,7 @@ namespace Cave.Compression
         /// <returns>Returns a new header instance.</returns>
         public static ArHeader Create(string file)
         {
-            FileInfo info = new FileInfo(file);
+            var info = new FileInfo(file);
             return CreateFile(Path.GetFileName(file), info.Length, 644, 0, 0, info.LastWriteTime);
         }
 
@@ -90,7 +90,7 @@ namespace Cave.Compression
         /// <returns>Returns a new header instance.</returns>
         public static ArHeader CreateFile(string name, long size, int fileMode, int owner, int group, DateTime modificationTime)
         {
-            ArHeader result = new ArHeader();
+            var result = new ArHeader();
             result.Initialize(name, size, fileMode, owner, group, modificationTime);
             return result;
         }
@@ -142,7 +142,7 @@ namespace Cave.Compression
         {
             if (File.Exists(file))
             {
-                FileInfo info = new FileInfo(file);
+                var info = new FileInfo(file);
                 Initialize(info.Name, info.Length, fileMode, owner, group, info.LastWriteTime);
             }
             else
@@ -162,12 +162,12 @@ namespace Cave.Compression
 
             if (owner < 0)
             {
-                throw new ArgumentException(string.Format("Owner may not be a value smaller than 0!"), "owner");
+                throw new ArgumentException(string.Format("Owner may not be a value smaller than 0!"), nameof(owner));
             }
 
             if (group < 0)
             {
-                throw new ArgumentException(string.Format("Group may not be a value smaller than 0!"), "group");
+                throw new ArgumentException(string.Format("Group may not be a value smaller than 0!"), nameof(group));
             }
 
             // check FileSize
@@ -177,10 +177,10 @@ namespace Cave.Compression
             }
 
             // prepare unix file path and name
-            string fileNameInAr = string.Empty;
-            for (int i = 0; i < name.Length; i++)
+            var fileNameInAr = string.Empty;
+            for (var i = 0; i < name.Length; i++)
             {
-                char c = name[i];
+                var c = name[i];
                 if (c >= 32 && c < 128)
                 {
                     if (Array.IndexOf(new char[] { '\\', '/' }, c) >= 0)
@@ -199,7 +199,7 @@ namespace Cave.Compression
             // check length
             if (fileNameInAr.Length > 15)
             {
-                throw new ArgumentException(string.Format("FileName may not exceed 15 chars!"), "name");
+                throw new ArgumentException(string.Format("FileName may not exceed 15 chars!"), nameof(name));
             }
 
             fileNameInAr += "/";
@@ -229,7 +229,7 @@ namespace Cave.Compression
 
         void SetString(int index, int count, string text)
         {
-            string result = text;
+            var result = text;
             if (result.Length < count)
             {
                 result += new string(' ', count - result.Length);
@@ -240,7 +240,7 @@ namespace Cave.Compression
                 throw new ArgumentOutOfRangeException(string.Format("String range out of bounds!"));
             }
 
-            foreach (byte b in ASCII.GetBytes(result))
+            foreach (var b in ASCII.GetBytes(result))
             {
                 data[index++] = b;
             }
@@ -253,10 +253,10 @@ namespace Cave.Compression
 
         string GetString(int index, int count)
         {
-            StringBuilder result = new StringBuilder();
-            bool nullDetected = false;
-            string str = ASCII.GetString(data, index, count);
-            foreach (char c in str)
+            var result = new StringBuilder();
+            var nullDetected = false;
+            var str = ASCII.GetString(data, index, count);
+            foreach (var c in str)
             {
                 if (c == '\0')
                 {
@@ -281,10 +281,10 @@ namespace Cave.Compression
             // 0 = no valid char found
             // 1 = at least one valid octal number
             // 2 = space after number found, there shouldn't be any more valid numbers
-            int valueDetection = 0;
-            int result = 0;
-            string str = GetString(index, count);
-            foreach (char c in str)
+            var valueDetection = 0;
+            var result = 0;
+            var str = GetString(index, count);
+            foreach (var c in str)
             {
                 switch (c)
                 {
@@ -316,7 +316,7 @@ namespace Cave.Compression
                             valueDetection = 1;
                         }
 
-                        int value = c - '0';
+                        var value = c - '0';
                         if (value >= toBase)
                         {
                             throw new FormatException(string.Format("Format of the stored number not correct ! (Value exceeds base)"));
@@ -352,7 +352,7 @@ namespace Cave.Compression
         {
             get
             {
-                string name = GetString(0, 16);
+                var name = GetString(0, 16);
                 return name.Substring(0, name.LastIndexOf('/'));
             }
         }

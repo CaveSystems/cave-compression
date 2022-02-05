@@ -187,8 +187,8 @@ namespace Cave.Compression.Tar
         /// <returns>A byte cast to an int; -1 if the at the end of the stream.</returns>
         public override int ReadByte()
         {
-            byte[] oneByteBuffer = new byte[1];
-            int num = Read(oneByteBuffer, 0, 1);
+            var oneByteBuffer = new byte[1];
+            var num = Read(oneByteBuffer, 0, 1);
             if (num <= 0)
             {
                 // return -1 to indicate that no byte was read.
@@ -223,7 +223,7 @@ namespace Cave.Compression.Tar
                 throw new ArgumentNullException(nameof(buffer));
             }
 
-            int totalRead = 0;
+            var totalRead = 0;
 
             if (entryOffset >= entrySize)
             {
@@ -239,7 +239,7 @@ namespace Cave.Compression.Tar
 
             if (readBuffer != null)
             {
-                int sz = (numToRead > readBuffer.Length) ? readBuffer.Length : (int)numToRead;
+                var sz = (numToRead > readBuffer.Length) ? readBuffer.Length : (int)numToRead;
 
                 Array.Copy(readBuffer, 0, buffer, offset, sz);
 
@@ -249,8 +249,8 @@ namespace Cave.Compression.Tar
                 }
                 else
                 {
-                    int newLen = readBuffer.Length - sz;
-                    byte[] newBuf = new byte[newLen];
+                    var newLen = readBuffer.Length - sz;
+                    var newBuf = new byte[newLen];
                     Array.Copy(readBuffer, sz, newBuf, 0, newLen);
                     readBuffer = newBuf;
                 }
@@ -262,15 +262,15 @@ namespace Cave.Compression.Tar
 
             while (numToRead > 0)
             {
-                byte[] rec = tarBuffer.ReadBlock();
+                var rec = tarBuffer.ReadBlock();
                 if (rec == null)
                 {
                     // Unexpected EOF!
                     throw new InvalidDataException("unexpected EOF with " + numToRead + " bytes unread");
                 }
 
-                int sz = (int)numToRead;
-                int recLen = rec.Length;
+                var sz = (int)numToRead;
+                var recLen = rec.Length;
 
                 if (recLen > sz)
                 {
@@ -349,12 +349,12 @@ namespace Cave.Compression.Tar
             // TODO: REVIEW efficiency of TarInputStream.Skip
             // This is horribly inefficient, but it ensures that we
             // properly skip over bytes via the TarBuffer...
-            byte[] skipBuf = new byte[8 * 1024];
+            var skipBuf = new byte[8 * 1024];
 
-            for (long num = skipCount; num > 0;)
+            for (var num = skipCount; num > 0;)
             {
-                int toRead = num > skipBuf.Length ? skipBuf.Length : (int)num;
-                int numRead = Read(skipBuf, 0, toRead);
+                var toRead = num > skipBuf.Length ? skipBuf.Length : (int)num;
+                var numRead = Read(skipBuf, 0, toRead);
 
                 if (numRead == -1)
                 {
@@ -413,7 +413,7 @@ namespace Cave.Compression.Tar
                 SkipToNextEntry();
             }
 
-            byte[] headerBuf = tarBuffer.ReadBlock();
+            var headerBuf = tarBuffer.ReadBlock();
 
             if (headerBuf == null)
             {
@@ -433,9 +433,9 @@ namespace Cave.Compression.Tar
             try
             {
                 string longName = null;
-                for (; ;)
+                for (; ; )
                 {
-                    TarHeader header = new TarHeader();
+                    var header = new TarHeader();
                     header.ParseBuffer(headerBuf);
                     if (!header.IsChecksumValid)
                     {
@@ -505,7 +505,7 @@ namespace Cave.Compression.Tar
                 entrySize = 0;
                 entryOffset = 0;
                 currentEntry = null;
-                string errorText = string.Format("Bad header in record {0} block {1} {2}", tarBuffer.CurrentRecord, tarBuffer.CurrentBlock, ex.Message);
+                var errorText = string.Format("Bad header in record {0} block {1} {2}", tarBuffer.CurrentRecord, tarBuffer.CurrentBlock, ex.Message);
                 throw new InvalidDataException(errorText);
             }
 
@@ -514,19 +514,19 @@ namespace Cave.Compression.Tar
 
         string GetExtendedHeaderName()
         {
-            string data = ReadStringData();
-            TarExtendedHeader header = TarExtendedHeader.Parse(data);
+            var data = ReadStringData();
+            var header = TarExtendedHeader.Parse(data);
             return header.Path;
         }
 
         string ReadStringData()
         {
-            StringBuilder sb = new StringBuilder();
-            byte[] nameBuffer = new byte[TarBuffer.BlockSize];
-            long numToRead = entrySize;
+            var sb = new StringBuilder();
+            var nameBuffer = new byte[TarBuffer.BlockSize];
+            var numToRead = entrySize;
             while (numToRead > 0)
             {
-                int numRead = this.Read(nameBuffer, 0, numToRead > nameBuffer.Length ? nameBuffer.Length : (int)numToRead);
+                var numRead = this.Read(nameBuffer, 0, numToRead > nameBuffer.Length ? nameBuffer.Length : (int)numToRead);
                 if (numRead == -1)
                 {
                     throw new InvalidDataException("Failed to read long name entry");
@@ -554,7 +554,7 @@ namespace Cave.Compression.Tar
 
         void SkipToNextEntry()
         {
-            long numToSkip = entrySize - entryOffset;
+            var numToSkip = entrySize - entryOffset;
 
             if (numToSkip > 0)
             {

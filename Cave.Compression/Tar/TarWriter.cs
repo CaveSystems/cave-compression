@@ -39,7 +39,7 @@ namespace Cave.Compression.Tar
         /// <param name="gzip">Use gzip compression.</param>
         public TarWriter(Stream target, bool gzip)
         {
-            Stream s = baseStream = target;
+            var s = baseStream = target;
             if (gzip)
             {
                 s = new GZipOutputStream(s);
@@ -65,17 +65,17 @@ namespace Cave.Compression.Tar
                 throw new ObjectDisposedException(nameof(TarWriter));
             }
 
-            foreach (string file in Directory.GetFiles(directory, fileMask, search))
+            foreach (var file in Directory.GetFiles(directory, fileMask, search))
             {
                 if (!file.StartsWith(directory))
                 {
                     throw new InvalidOperationException("Invalid relative path!");
                 }
 
-                string name = pathInTar + '/' + file.Substring(directory.Length);
-                using (FileStream stream = File.OpenRead(file))
+                var name = pathInTar + '/' + file.Substring(directory.Length);
+                using (var stream = File.OpenRead(file))
                 {
-                    bool result = AddFile(name, stream, (int)stream.Length, callback, userItem);
+                    var result = AddFile(name, stream, (int)stream.Length, callback, userItem);
                     if (!result)
                     {
                         return false;
@@ -96,7 +96,7 @@ namespace Cave.Compression.Tar
         /// <returns>Returns true if the operation completed, false if the callback used <see cref="ProgressEventArgs.Break"/>.</returns>
         public bool AddFile(string pathInTar, string fileName, ProgressCallback callback = null, object userItem = null)
         {
-            using (FileStream fs = File.OpenRead(fileName))
+            using (var fs = File.OpenRead(fileName))
             {
                 return AddFile(pathInTar, fs, (int)fs.Length, callback, userItem);
             }
@@ -112,7 +112,7 @@ namespace Cave.Compression.Tar
         /// <returns>Returns true if the operation completed, false if the callback used <see cref="ProgressEventArgs.Break"/>.</returns>
         public bool AddFile(string pathInTar, byte[] content, ProgressCallback callback = null, object userItem = null)
         {
-            using (MemoryStream ms = new MemoryStream(content))
+            using (var ms = new MemoryStream(content))
             {
                 return AddFile(pathInTar, ms, content.Length, callback, userItem);
             }
@@ -140,10 +140,10 @@ namespace Cave.Compression.Tar
                 pathInTar = pathInTar.Replace("//", "/");
             }
 
-            TarEntry entry = TarEntry.CreateTarEntry(pathInTar);
+            var entry = TarEntry.CreateTarEntry(pathInTar);
             entry.Size = size;
             tarStream.PutNextEntry(entry);
-            long result = source.CopyBlocksTo(tarStream, size, callback, userItem);
+            var result = source.CopyBlocksTo(tarStream, size, callback, userItem);
             if (result < size)
             {
                 Dispose();

@@ -5,17 +5,28 @@ VisualStudioVersion = 16.0.30225.117
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cave.Compression", "Cave.Compression\Cave.Compression.csproj", "{FE901C70-9364-491D-B361-1855A7284EBE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{84D5E11D-A583-4640-A675-D0B9ECF2CA7F}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2A0350A8-999C-4C5A-8912-9716120EEE64}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		azure-pipelines.yml = azure-pipelines.yml
 		build.bat = build.bat
+		cavesystems.pdn = cavesystems.pdn
+		cavesystems.png = cavesystems.png
+		CodeMaid.config = CodeMaid.config
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
 		INFO = INFO
 		LICENSE = LICENSE
-		Rebracer.xml = Rebracer.xml
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{18D82113-7E79-4013-9AD9-3CDEA6370863}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test_NET2x", "Test\Test_NET2x.csproj", "{76EA8CBF-19C5-4923-BD75-9A89A956AE01}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test_NET4x", "Test\Test_NET4x.csproj", "{5771CD84-2D65-493C-990F-75FA40FE4ED1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test_NETCORE", "Test\Test_NETCORE.csproj", "{5A8B6AA9-0772-4126-AA2B-6C9CF9A1E81F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,13 +38,26 @@ Global
 		{FE901C70-9364-491D-B361-1855A7284EBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE901C70-9364-491D-B361-1855A7284EBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE901C70-9364-491D-B361-1855A7284EBE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{84D5E11D-A583-4640-A675-D0B9ECF2CA7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{84D5E11D-A583-4640-A675-D0B9ECF2CA7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{84D5E11D-A583-4640-A675-D0B9ECF2CA7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{84D5E11D-A583-4640-A675-D0B9ECF2CA7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76EA8CBF-19C5-4923-BD75-9A89A956AE01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76EA8CBF-19C5-4923-BD75-9A89A956AE01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76EA8CBF-19C5-4923-BD75-9A89A956AE01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76EA8CBF-19C5-4923-BD75-9A89A956AE01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5771CD84-2D65-493C-990F-75FA40FE4ED1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5771CD84-2D65-493C-990F-75FA40FE4ED1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5771CD84-2D65-493C-990F-75FA40FE4ED1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5771CD84-2D65-493C-990F-75FA40FE4ED1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A8B6AA9-0772-4126-AA2B-6C9CF9A1E81F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A8B6AA9-0772-4126-AA2B-6C9CF9A1E81F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A8B6AA9-0772-4126-AA2B-6C9CF9A1E81F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A8B6AA9-0772-4126-AA2B-6C9CF9A1E81F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{76EA8CBF-19C5-4923-BD75-9A89A956AE01} = {18D82113-7E79-4013-9AD9-3CDEA6370863}
+		{5771CD84-2D65-493C-990F-75FA40FE4ED1} = {18D82113-7E79-4013-9AD9-3CDEA6370863}
+		{5A8B6AA9-0772-4126-AA2B-6C9CF9A1E81F} = {18D82113-7E79-4013-9AD9-3CDEA6370863}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4350AB73-2272-471E-BDE1-44B61E90ABF0}

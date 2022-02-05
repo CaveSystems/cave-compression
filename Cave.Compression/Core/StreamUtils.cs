@@ -54,7 +54,7 @@ namespace Cave.Compression.Core
 
             while (count > 0)
             {
-                int readCount = stream.Read(buffer, offset, count);
+                var readCount = stream.Read(buffer, offset, count);
                 if (readCount <= 0)
                 {
                     throw new EndOfStreamException();
@@ -94,11 +94,11 @@ namespace Cave.Compression.Core
                 throw new ArgumentException("Buffer is too small", nameof(buffer));
             }
 
-            bool copying = true;
+            var copying = true;
 
             while (copying)
             {
-                int bytesRead = source.Read(buffer, 0, buffer.Length);
+                var bytesRead = source.Read(buffer, 0, buffer.Length);
                 if (bytesRead > 0)
                 {
                     destination.Write(buffer, 0, bytesRead);
@@ -168,7 +168,7 @@ namespace Cave.Compression.Core
                 throw new ArgumentNullException(nameof(progressHandler));
             }
 
-            DateTime marker = DateTime.Now;
+            var marker = DateTime.Now;
             long processed = 0;
             long target = 0;
 
@@ -184,13 +184,13 @@ namespace Cave.Compression.Core
             // Always fire 0% progress..
             var args = new ProgressEventArgs(name, processed, 0, target, true);
             progressHandler(sender, args);
-            bool copying = !args.Break;
+            var copying = !args.Break;
 
-            bool progressFired = true;
-            int done = 0;
+            var progressFired = true;
+            var done = 0;
             while (copying)
             {
-                int bytesRead = source.Read(buffer, 0, buffer.Length);
+                var bytesRead = source.Read(buffer, 0, buffer.Length);
                 if (bytesRead > 0)
                 {
                     processed += bytesRead;

@@ -192,7 +192,7 @@ namespace Cave.Compression.Core
         /// </exception>
         bool DecodeHeader()
         {
-            int header = input.PeekBits(16);
+            var header = input.PeekBits(16);
             if (header < 0)
             {
                 return false;
@@ -242,7 +242,7 @@ namespace Cave.Compression.Core
         {
             while (neededBits > 0)
             {
-                int dictByte = input.PeekBits(8);
+                var dictByte = input.PeekBits(8);
                 if (dictByte < 0)
                 {
                     return false;
@@ -268,7 +268,7 @@ namespace Cave.Compression.Core
         /// </exception>
         bool DecodeHuffman()
         {
-            int free = outputWindow.GetFreeSpace();
+            var free = outputWindow.GetFreeSpace();
             while (free >= 258)
             {
                 int symbol;
@@ -317,7 +317,7 @@ namespace Cave.Compression.Core
                         if (neededBits > 0)
                         {
                             mode = State.HuffmanLenBits;
-                            int i = input.PeekBits(neededBits);
+                            var i = input.PeekBits(neededBits);
                             if (i < 0)
                             {
                                 return false;
@@ -353,7 +353,7 @@ namespace Cave.Compression.Core
                         if (neededBits > 0)
                         {
                             mode = State.HuffmanDistBits;
-                            int i = input.PeekBits(neededBits);
+                            var i = input.PeekBits(neededBits);
                             if (i < 0)
                             {
                                 return false;
@@ -389,7 +389,7 @@ namespace Cave.Compression.Core
         {
             while (neededBits > 0)
             {
-                int chkByte = input.PeekBits(8);
+                var chkByte = input.PeekBits(8);
                 if (chkByte < 0)
                 {
                     return false;
@@ -448,7 +448,7 @@ namespace Cave.Compression.Core
                         }
                     }
 
-                    int type = input.PeekBits(3);
+                    var type = input.PeekBits(3);
                     if (type < 0)
                     {
                         return false;
@@ -479,7 +479,7 @@ namespace Cave.Compression.Core
                     return true;
 
                 case State.StoredLen1:
-                    {
+                {
                     if ((uncomprLen = input.PeekBits(16)) < 0)
                     {
                         return false;
@@ -489,11 +489,11 @@ namespace Cave.Compression.Core
                     mode = State.StoredLen2;
                 }
 
-                    goto case State.StoredLen2; // fall through
+                goto case State.StoredLen2; // fall through
 
                 case State.StoredLen2:
                 {
-                    int nlen = input.PeekBits(16);
+                    var nlen = input.PeekBits(16);
                     if (nlen < 0)
                     {
                         return false;
@@ -511,7 +511,7 @@ namespace Cave.Compression.Core
 
                 case State.Stored:
                 {
-                    int more = outputWindow.CopyStored(input, uncomprLen);
+                    var more = outputWindow.CopyStored(input, uncomprLen);
                     uncomprLen -= more;
                     if (uncomprLen == 0)
                     {
@@ -742,7 +742,7 @@ namespace Cave.Compression.Core
                 return 0;
             }
 
-            int bytesCopied = 0;
+            var bytesCopied = 0;
 
             do
             {
@@ -755,7 +755,7 @@ namespace Cave.Compression.Core
                     *   IsNeedingInput() and not IsState.Done()
                     *   implies more output can be produced.
                     */
-                    int more = outputWindow.CopyOutput(buffer, offset, count);
+                    var more = outputWindow.CopyOutput(buffer, offset, count);
                     if (more > 0)
                     {
                         adler.Update(buffer, offset, more);

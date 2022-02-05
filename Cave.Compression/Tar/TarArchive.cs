@@ -34,16 +34,16 @@ namespace Cave.Compression.Tar
         // and that all non text files contain one of these values
         static bool IsBinary(string filename)
         {
-            using (FileStream fs = File.OpenRead(filename))
+            using (var fs = File.OpenRead(filename))
             {
-                int sampleSize = Math.Min(4096, (int)fs.Length);
-                byte[] content = new byte[sampleSize];
+                var sampleSize = Math.Min(4096, (int)fs.Length);
+                var content = new byte[sampleSize];
 
-                int bytesRead = fs.Read(content, 0, sampleSize);
+                var bytesRead = fs.Read(content, 0, sampleSize);
 
-                for (int i = 0; i < bytesRead; ++i)
+                for (var i = 0; i < bytesRead; ++i)
                 {
-                    byte b = content[i];
+                    var b = content[i];
                     if ((b < 8) || ((b > 13) && (b < 32)) || (b == 255))
                     {
                         return true;
@@ -535,7 +535,7 @@ namespace Cave.Compression.Tar
 
             while (true)
             {
-                TarEntry entry = tarIn.GetNextEntry();
+                var entry = tarIn.GetNextEntry();
 
                 if (entry == null)
                 {
@@ -566,7 +566,7 @@ namespace Cave.Compression.Tar
 
             while (true)
             {
-                TarEntry entry = tarIn.GetNextEntry();
+                var entry = tarIn.GetNextEntry();
 
                 if (entry == null)
                 {
@@ -607,7 +607,7 @@ namespace Cave.Compression.Tar
                 }
             }
 
-            string name = entry.Name;
+            var name = entry.Name;
 
             if (Path.IsPathRooted(name))
             {
@@ -616,7 +616,7 @@ namespace Cave.Compression.Tar
                 name = name.Substring(Path.GetPathRoot(name).Length);
             }
 
-            string destFile = Path.Combine(destDir, name);
+            var destFile = Path.Combine(destDir, name);
 
             if (entry.IsDirectory)
             {
@@ -624,7 +624,7 @@ namespace Cave.Compression.Tar
             }
             else
             {
-                string parentDirectory = Path.GetDirectoryName(destFile);
+                var parentDirectory = Path.GetDirectoryName(destFile);
                 EnsureDirectoryExists(parentDirectory);
 
                 var e = new TarEntryEventArgs(entry);
@@ -634,7 +634,7 @@ namespace Cave.Compression.Tar
                     return false;
                 }
 
-                bool process = !e.Skip;
+                var process = !e.Skip;
                 if (process)
                 {
                     var fileInfo = new FileInfo(destFile);
@@ -650,7 +650,7 @@ namespace Cave.Compression.Tar
                         }
                     }
 
-                    bool asciiTrans = false;
+                    var asciiTrans = false;
 
                     Stream outputStream = File.Create(destFile);
                     if (asciiTranslate)
@@ -664,11 +664,11 @@ namespace Cave.Compression.Tar
                         outw = new StreamWriter(outputStream);
                     }
 
-                    byte[] rdbuf = new byte[32 * 1024];
+                    var rdbuf = new byte[32 * 1024];
 
                     while (true)
                     {
-                        int numRead = tarIn.Read(rdbuf, 0, rdbuf.Length);
+                        var numRead = tarIn.Read(rdbuf, 0, rdbuf.Length);
 
                         if (numRead <= 0)
                         {
@@ -681,7 +681,7 @@ namespace Cave.Compression.Tar
                             {
                                 if (rdbuf[b] == 10)
                                 {
-                                    string s = Encoding.ASCII.GetString(rdbuf, off, b - off);
+                                    var s = Encoding.ASCII.GetString(rdbuf, off, b - off);
                                     outw.WriteLine(s);
                                     off = b + 1;
                                 }
@@ -768,7 +768,7 @@ namespace Cave.Compression.Tar
         bool WriteEntryCore(TarEntry sourceEntry, bool recurse)
         {
             string tempFileName = null;
-            string entryFilename = sourceEntry.FileName;
+            var entryFilename = sourceEntry.FileName;
 
             var entry = (TarEntry)sourceEntry.Clone();
 
@@ -780,7 +780,7 @@ namespace Cave.Compression.Tar
                 entry.UserName = userName;
             }
 
-            TarEntryEventArgs e = new TarEntryEventArgs(entry);
+            var e = new TarEntryEventArgs(entry);
             OnProcessEntry(e);
             if (e.Break)
             {
@@ -798,19 +798,19 @@ namespace Cave.Compression.Tar
                 {
                     tempFileName = Path.GetTempFileName();
 
-                    using (StreamReader inStream = new StreamReader(File.Open(entryFilename, FileMode.Open, FileAccess.Read, FileShare.Read)))
+                    using (var inStream = new StreamReader(File.Open(entryFilename, FileMode.Open, FileAccess.Read, FileShare.Read)))
                     {
                         using (Stream outStream = File.Create(tempFileName))
                         {
                             while (true)
                             {
-                                string line = inStream.ReadLine();
+                                var line = inStream.ReadLine();
                                 if (line == null)
                                 {
                                     break;
                                 }
 
-                                byte[] data = Encoding.ASCII.GetBytes(line);
+                                var data = Encoding.ASCII.GetBytes(line);
                                 outStream.Write(data, 0, data.Length);
                                 outStream.WriteByte((byte)'\n');
                             }
@@ -850,8 +850,8 @@ namespace Cave.Compression.Tar
             {
                 if (recurse)
                 {
-                    TarEntry[] list = entry.GetDirectoryEntries();
-                    for (int i = 0; i < list.Length; ++i)
+                    var list = entry.GetDirectoryEntries();
+                    for (var i = 0; i < list.Length; ++i)
                     {
                         if (!WriteEntryCore(list[i], recurse))
                         {
@@ -864,10 +864,10 @@ namespace Cave.Compression.Tar
             {
                 using (Stream inputStream = File.OpenRead(entryFilename))
                 {
-                    byte[] localBuffer = new byte[32 * 1024];
+                    var localBuffer = new byte[32 * 1024];
                     while (true)
                     {
-                        int numRead = inputStream.Read(localBuffer, 0, localBuffer.Length);
+                        var numRead = inputStream.Read(localBuffer, 0, localBuffer.Length);
 
                         if (numRead <= 0)
                         {

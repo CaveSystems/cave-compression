@@ -107,7 +107,7 @@ namespace Cave.Compression.Lzw
         /// <returns>Returns the byte read (0..255) or -1 at end of stream.</returns>
         public override int ReadByte()
         {
-            int b = Read(one, 0, 1);
+            var b = Read(one, 0, 1);
             if (b == 1)
             {
                 return one[0] & 0xff;
@@ -141,30 +141,30 @@ namespace Cave.Compression.Lzw
                 return 0;
             }
 
-            int start = offset;
+            var start = offset;
 
             /* Using local copies of various variables speeds things up by as
              * much as 30% in Java! Performance not tested in C#.
              */
-            int[] lTabPrefix = tabPrefix;
-            byte[] lTabSuffix = tabSuffix;
-            byte[] lStack = stack;
-            int lNBits = nBits;
-            int lMaxCode = maxCode;
-            int lMaxMaxCode = maxMaxCode;
-            int lBitMask = bitMask;
-            int lOldCode = oldCode;
-            byte lFinChar = finChar;
-            int lStackP = stackP;
-            int lFreeEnt = freeEnt;
-            byte[] lData = data;
-            int lBitPos = bitPos;
+            var lTabPrefix = tabPrefix;
+            var lTabSuffix = tabSuffix;
+            var lStack = stack;
+            var lNBits = nBits;
+            var lMaxCode = maxCode;
+            var lMaxMaxCode = maxMaxCode;
+            var lBitMask = bitMask;
+            var lOldCode = oldCode;
+            var lFinChar = finChar;
+            var lStackP = stackP;
+            var lFreeEnt = freeEnt;
+            var lData = data;
+            var lBitPos = bitPos;
 
             // empty stack if stuff still left
-            int sSize = lStack.Length - lStackP;
+            var sSize = lStack.Length - lStackP;
             if (sSize > 0)
             {
-                int num = (sSize >= count) ? count : sSize;
+                var num = (sSize >= count) ? count : sSize;
                 Array.Copy(lStack, lStackP, buffer, offset, num);
                 offset += num;
                 count -= num;
@@ -186,7 +186,7 @@ namespace Cave.Compression.Lzw
                     Fill();
                 }
 
-                int bitIn = (got > 0) ? (end - (end % lNBits)) << 3 :
+                var bitIn = (got > 0) ? (end - (end % lNBits)) << 3 :
                                         (end << 3) - (lNBits - 1);
 
                 while (lBitPos < bitIn)
@@ -211,7 +211,7 @@ namespace Cave.Compression.Lzw
                     // check for code-width expansion
                     if (lFreeEnt > lMaxCode)
                     {
-                        int nBytes = lNBits << 3;
+                        var nBytes = lNBits << 3;
                         lBitPos = lBitPos - 1 +
                         nBytes - ((lBitPos - 1 + nBytes) % nBytes);
 
@@ -228,8 +228,8 @@ namespace Cave.Compression.Lzw
                     #region B
 
                     // read next code
-                    int pos = lBitPos >> 3;
-                    int code = (((lData[pos] & 0xFF) |
+                    var pos = lBitPos >> 3;
+                    var code = (((lData[pos] & 0xFF) |
                         ((lData[pos + 1] & 0xFF) << 8) |
                         ((lData[pos + 2] & 0xFF) << 16)) >>
                         (lBitPos & 0x7)) & lBitMask;
@@ -256,7 +256,7 @@ namespace Cave.Compression.Lzw
                         Array.Copy(zeros, 0, lTabPrefix, 0, zeros.Length);
                         lFreeEnt = TableFirst - 1;
 
-                        int nBytes = lNBits << 3;
+                        var nBytes = lNBits << 3;
                         lBitPos = lBitPos - 1 + nBytes - ((lBitPos - 1 + nBytes) % nBytes);
                         lNBits = LzwConstants.InitBits;
                         lMaxCode = (1 << lNBits) - 1;
@@ -271,7 +271,7 @@ namespace Cave.Compression.Lzw
                     #region C
 
                     // setup
-                    int inCode = code;
+                    var inCode = code;
                     lStackP = lStack.Length;
 
                     // Handle KwK case
@@ -299,7 +299,7 @@ namespace Cave.Compression.Lzw
 
                     // And put them out in forward order
                     sSize = lStack.Length - lStackP;
-                    int num = (sSize >= count) ? count : sSize;
+                    var num = (sSize >= count) ? count : sSize;
                     Array.Copy(lStack, lStackP, buffer, offset, num);
                     offset += num;
                     count -= num;
@@ -361,7 +361,7 @@ namespace Cave.Compression.Lzw
         /// <returns>Returns 0.</returns>
         int ResetBuf(int bitPosition)
         {
-            int pos = bitPosition >> 3;
+            var pos = bitPosition >> 3;
             Array.Copy(data, pos, data, 0, end - pos);
             end -= pos;
             return 0;
@@ -380,9 +380,9 @@ namespace Cave.Compression.Lzw
         {
             headerParsed = true;
 
-            byte[] hdr = new byte[LzwConstants.HeaderSize];
+            var hdr = new byte[LzwConstants.HeaderSize];
 
-            int result = baseInputStream.Read(hdr, 0, hdr.Length);
+            var result = baseInputStream.Read(hdr, 0, hdr.Length);
 
             // Check the magic marker
             if (result < 0)
@@ -425,7 +425,7 @@ namespace Cave.Compression.Lzw
             stack = new byte[1 << maxBits];
             stackP = stack.Length;
 
-            for (int idx = 255; idx >= 0; idx--)
+            for (var idx = 255; idx >= 0; idx--)
             {
                 tabSuffix[idx] = (byte)idx;
             }

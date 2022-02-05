@@ -127,7 +127,7 @@ namespace Cave.Compression.GZip
                 }
 
                 // Try to read compressed data
-                int bytesRead = base.Read(buffer, offset, count);
+                var bytesRead = base.Read(buffer, offset, count);
                 if (bytesRead > 0)
                 {
                     crc.Update(buffer, offset, bytesRead);
@@ -167,7 +167,7 @@ namespace Cave.Compression.GZip
 
             // 1. Check the two magic bytes
             var headCRC = new ZipCrc32();
-            int magic = InputBuffer.ReadLeByte();
+            var magic = InputBuffer.ReadLeByte();
 
             if (magic < 0)
             {
@@ -196,7 +196,7 @@ namespace Cave.Compression.GZip
             headCRC.Update(magic);
 
             // 2. Check the compression type (must be 8)
-            int compressionType = InputBuffer.ReadLeByte();
+            var compressionType = InputBuffer.ReadLeByte();
 
             if (compressionType < 0)
             {
@@ -211,7 +211,7 @@ namespace Cave.Compression.GZip
             headCRC.Update(compressionType);
 
             // 3. Check the flags
-            int flags = InputBuffer.ReadLeByte();
+            var flags = InputBuffer.ReadLeByte();
             if (flags < 0)
             {
                 throw new EndOfStreamException("EOS reading GZIP header");
@@ -238,9 +238,9 @@ namespace Cave.Compression.GZip
             }
 
             // 4.-6. Skip the modification time, extra flags, and OS type
-            for (int i = 0; i < 6; i++)
+            for (var i = 0; i < 6; i++)
             {
-                int readByte = InputBuffer.ReadLeByte();
+                var readByte = InputBuffer.ReadLeByte();
                 if (readByte < 0)
                 {
                     throw new EndOfStreamException("EOS reading GZIP header");
@@ -264,10 +264,10 @@ namespace Cave.Compression.GZip
                 headCRC.Update(len1);
                 headCRC.Update(len2);
 
-                int extraLen = (len2 << 8) | len1;      // gzip is LSB first
-                for (int i = 0; i < extraLen; i++)
+                var extraLen = (len2 << 8) | len1;      // gzip is LSB first
+                for (var i = 0; i < extraLen; i++)
                 {
-                    int readByte = InputBuffer.ReadLeByte();
+                    var readByte = InputBuffer.ReadLeByte();
                     if (readByte < 0)
                     {
                         throw new EndOfStreamException("EOS reading GZIP header");
@@ -315,7 +315,7 @@ namespace Cave.Compression.GZip
             if ((flags & (int)GZipFlags.CRC) != 0)
             {
                 int tempByte;
-                int crcval = InputBuffer.ReadLeByte();
+                var crcval = InputBuffer.ReadLeByte();
                 if (crcval < 0)
                 {
                     throw new EndOfStreamException("EOS reading GZIP header");
@@ -340,18 +340,18 @@ namespace Cave.Compression.GZip
 
         void ReadFooter()
         {
-            byte[] footer = new byte[8];
+            var footer = new byte[8];
 
             // End of stream; reclaim all bytes from inf, read the final byte count, and reset the inflator
-            long bytesRead = Inflater.TotalOut & 0xffffffff;
+            var bytesRead = Inflater.TotalOut & 0xffffffff;
             InputBuffer.Available += Inflater.RemainingInput;
             Inflater.Reset();
 
             // Read footer from inputBuffer
-            int needed = 8;
+            var needed = 8;
             while (needed > 0)
             {
-                int count = InputBuffer.ReadClearTextBuffer(footer, 8 - needed, needed);
+                var count = InputBuffer.ReadClearTextBuffer(footer, 8 - needed, needed);
                 if (count <= 0)
                 {
                     throw new EndOfStreamException("EOS reading GZIP footer");
@@ -361,14 +361,14 @@ namespace Cave.Compression.GZip
             }
 
             // Calculate CRC
-            int crcval = (footer[0] & 0xff) | ((footer[1] & 0xff) << 8) | ((footer[2] & 0xff) << 16) | (footer[3] << 24);
+            var crcval = (footer[0] & 0xff) | ((footer[1] & 0xff) << 8) | ((footer[2] & 0xff) << 16) | (footer[3] << 24);
             if (crcval != (int)crc.Value)
             {
                 throw new InvalidDataException("GZIP crc sum mismatch, theirs \"" + crcval + "\" and ours \"" + (int)crc.Value);
             }
 
             // NOTE The total here is the original total modulo 2 ^ 32.
-            uint total =
+            var total =
                 (uint)footer[4] & 0xff |
                 ((uint)footer[5] & 0xff) << 8 |
                 ((uint)footer[6] & 0xff) << 16 |

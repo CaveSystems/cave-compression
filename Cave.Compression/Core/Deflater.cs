@@ -319,7 +319,7 @@ namespace Cave.Compression.Core
         /// </exception>
         public int Deflate(byte[] output, int offset, int length)
         {
-            int origLength = length;
+            var origLength = length;
 
             if (state == ClosedState)
             {
@@ -329,9 +329,9 @@ namespace Cave.Compression.Core
             if (state < BusyState)
             {
                 // output header
-                int header = (DEFLATED +
+                var header = (DEFLATED +
                     ((DeflaterConstants.MaxWindowBits - 8) << 4)) << 8;
-                int level_flags = ((int)Strength - 1) >> 1;
+                var level_flags = ((int)Strength - 1) >> 1;
                 if (level_flags < 0 || level_flags > 3)
                 {
                     level_flags = 3;
@@ -349,7 +349,7 @@ namespace Cave.Compression.Core
                 pending.WriteShortMSB(header);
                 if ((state & IsSetDict) != 0)
                 {
-                    int chksum = engine.Adler;
+                    var chksum = engine.Adler;
                     engine.ResetAdler();
                     pending.WriteShortMSB(chksum >> 16);
                     pending.WriteShortMSB(chksum & 0xffff);
@@ -358,9 +358,9 @@ namespace Cave.Compression.Core
                 state = BusyState | (state & (IsFlushing | IsFinishing));
             }
 
-            for (; ;)
+            for (; ; )
             {
-                int count = pending.Flush(output, offset, length);
+                var count = pending.Flush(output, offset, length);
                 offset += count;
                 TotalOut += count;
                 length -= count;
@@ -384,7 +384,7 @@ namespace Cave.Compression.Core
                                  * is needed by the zlib inflater, and we must fill
                                  * the next byte, so that all bits are flushed.
                                  */
-                                int neededbits = 8 + ((-pending.BitCount) & 7);
+                                var neededbits = 8 + ((-pending.BitCount) & 7);
                                 while (neededbits > 0)
                                 {
                                     /* write a static tree block consisting solely of
@@ -403,7 +403,7 @@ namespace Cave.Compression.Core
                             // Compressed data is complete.  Write footer information if required.
                             if (!noZlibHeaderOrFooter)
                             {
-                                int adler = engine.Adler;
+                                var adler = engine.Adler;
                                 pending.WriteShortMSB(adler >> 16);
                                 pending.WriteShortMSB(adler & 0xffff);
                             }

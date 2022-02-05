@@ -22,7 +22,7 @@ namespace Cave.Compression.Tests.BZip2
             var ms = new MemoryStream();
             var outStream = new BZip2OutputStream(ms);
 
-            byte[] buf = new byte[10000];
+            var buf = new byte[10000];
             var rnd = new Random();
             rnd.NextBytes(buf);
 
@@ -31,13 +31,13 @@ namespace Cave.Compression.Tests.BZip2
             ms = new MemoryStream(ms.GetBuffer());
             ms.Seek(0, SeekOrigin.Begin);
 
-            using (BZip2InputStream inStream = new BZip2InputStream(ms))
+            using (var inStream = new BZip2InputStream(ms))
             {
-                byte[] buf2 = new byte[buf.Length];
-                int pos = 0;
+                var buf2 = new byte[buf.Length];
+                var pos = 0;
                 while (true)
                 {
-                    int numRead = inStream.Read(buf2, pos, 4096);
+                    var numRead = inStream.Read(buf2, pos, 4096);
                     if (numRead <= 0)
                     {
                         break;
@@ -45,7 +45,7 @@ namespace Cave.Compression.Tests.BZip2
                     pos += numRead;
                 }
 
-                for (int i = 0; i < buf.Length; ++i)
+                for (var i = 0; i < buf.Length; ++i)
                 {
                     Assert.AreEqual(buf2[i], buf[i]);
                 }
@@ -66,13 +66,13 @@ namespace Cave.Compression.Tests.BZip2
 
             ms.Seek(0, SeekOrigin.Begin);
 
-            using (BZip2InputStream inStream = new BZip2InputStream(ms))
+            using (var inStream = new BZip2InputStream(ms))
             {
-                byte[] buffer = new byte[1024];
-                int pos = 0;
+                var buffer = new byte[1024];
+                var pos = 0;
                 while (true)
                 {
-                    int numRead = inStream.Read(buffer, 0, buffer.Length);
+                    var numRead = inStream.Read(buffer, 0, buffer.Length);
                     if (numRead <= 0)
                     {
                         break;

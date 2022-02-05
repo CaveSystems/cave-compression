@@ -64,7 +64,7 @@ namespace Cave.Compression.Core
             do
             {
                 FillWindow();
-                bool canFlush = flush && (inputOff == inputEnd);
+                var canFlush = flush && (inputOff == inputEnd);
 
 #if DebugDeflation
 				if (DeflaterConstants.DEBUGGING) {
@@ -120,7 +120,7 @@ namespace Cave.Compression.Core
                 throw new InvalidOperationException("Old input was not completely processed");
             }
 
-            int end = offset + count;
+            var end = offset + count;
 
             /* We want to throw an ArrayIndexOutOfBoundsException early.  The
             * check is very tricky: it also handles integer wrap around.
@@ -197,12 +197,12 @@ namespace Cave.Compression.Core
             prevAvailable = false;
             matchLen = DeflaterConstants.MinMatch - 1;
 
-            for (int i = 0; i < DeflaterConstants.HashSize; i++)
+            for (var i = 0; i < DeflaterConstants.HashSize; i++)
             {
                 head[i] = 0;
             }
 
-            for (int i = 0; i < DeflaterConstants.WindowSize; i++)
+            for (var i = 0; i < DeflaterConstants.WindowSize; i++)
             {
                 prev[i] = 0;
             }
@@ -327,7 +327,7 @@ namespace Cave.Compression.Core
              */
             if (lookahead < DeflaterConstants.MinLookahead && inputOff < inputEnd)
             {
-                int more = (2 * DeflaterConstants.WindowSize) - lookahead - strStart;
+                var more = (2 * DeflaterConstants.WindowSize) - lookahead - strStart;
 
                 if (more > inputEnd - inputOff)
                 {
@@ -366,7 +366,7 @@ namespace Cave.Compression.Core
         int InsertString()
         {
             short match;
-            int hash = ((hashIndex << DeflaterConstants.HashShift) ^ window[strStart + (DeflaterConstants.MinMatch - 1)]) & DeflaterConstants.HashMask;
+            var hash = ((hashIndex << DeflaterConstants.HashShift) ^ window[strStart + (DeflaterConstants.MinMatch - 1)]) & DeflaterConstants.HashMask;
 
 #if DebugDeflation
 			if (DeflaterConstants.DEBUGGING) 
@@ -396,16 +396,16 @@ namespace Cave.Compression.Core
 
             // Slide the hash table (could be avoided with 32 bit values
             // at the expense of memory usage).
-            for (int i = 0; i < DeflaterConstants.HashSize; ++i)
+            for (var i = 0; i < DeflaterConstants.HashSize; ++i)
             {
-                int m = head[i] & 0xffff;
+                var m = head[i] & 0xffff;
                 head[i] = (short)(m >= DeflaterConstants.WindowSize ? (m - DeflaterConstants.WindowSize) : 0);
             }
 
             // Slide the prev table.
-            for (int i = 0; i < DeflaterConstants.WindowSize; i++)
+            for (var i = 0; i < DeflaterConstants.WindowSize; i++)
             {
-                int m = prev[i] & 0xffff;
+                var m = prev[i] & 0xffff;
                 prev[i] = (short)(m >= DeflaterConstants.WindowSize ? (m - DeflaterConstants.WindowSize) : 0);
             }
         }
@@ -423,16 +423,16 @@ namespace Cave.Compression.Core
         bool FindLongestMatch(int curMatch)
         {
             int match;
-            int scan = strStart;
+            var scan = strStart;
 
             // scanMax is the highest position that we can look at
-            int scanMax = scan + Math.Min(DeflaterConstants.MaxMatch, lookahead) - 1;
-            int limit = Math.Max(scan - DeflaterConstants.MaxDist, 0);
+            var scanMax = scan + Math.Min(DeflaterConstants.MaxMatch, lookahead) - 1;
+            var limit = Math.Max(scan - DeflaterConstants.MaxDist, 0);
 
-            byte[] window = this.window;
-            short[] prev = this.prev;
-            int chainLength = maxChain;
-            int niceLength = Math.Min(this.niceLength, lookahead);
+            var window = this.window;
+            var prev = this.prev;
+            var chainLength = maxChain;
+            var niceLength = Math.Min(this.niceLength, lookahead);
 
             matchLen = Math.Max(matchLen, DeflaterConstants.MinMatch - 1);
 
@@ -441,8 +441,8 @@ namespace Cave.Compression.Core
                 return false;
             }
 
-            byte scan_end1 = window[scan + matchLen - 1];
-            byte scan_end = window[scan + matchLen];
+            var scan_end1 = window[scan + matchLen - 1];
+            var scan_end = window[scan + matchLen];
 
             // Do not waste too much time if we already have a good match:
             if (matchLen >= goodLength)
@@ -601,13 +601,13 @@ namespace Cave.Compression.Core
             strStart += lookahead;
             lookahead = 0;
 
-            int storedLength = strStart - blockStart;
+            var storedLength = strStart - blockStart;
 
             if ((storedLength >= DeflaterConstants.MaxBlockSize) || // Block is full
                 (blockStart < DeflaterConstants.WindowSize && storedLength >= DeflaterConstants.MaxDist) || // Block may move out of window
                 flush)
             {
-                bool lastBlock = finish;
+                var lastBlock = finish;
                 if (storedLength > DeflaterConstants.MaxBlockSize)
                 {
                     storedLength = DeflaterConstants.MaxBlockSize;
@@ -674,7 +674,7 @@ namespace Cave.Compression.Core
 					}
 #endif
 
-                    bool full = huffman.TallyDist(strStart - matchStart, matchLen);
+                    var full = huffman.TallyDist(strStart - matchStart, matchLen);
 
                     lookahead -= matchLen;
                     if (matchLen <= maxLazy && lookahead >= DeflaterConstants.MinMatch)
@@ -712,7 +712,7 @@ namespace Cave.Compression.Core
 
                 if (huffman.IsFull())
                 {
-                    bool lastBlock = finish && (lookahead == 0);
+                    var lastBlock = finish && (lookahead == 0);
                     huffman.FlushBlock(window, blockStart, strStart - blockStart, lastBlock);
                     blockStart = strStart;
                     return !lastBlock;
@@ -761,11 +761,11 @@ namespace Cave.Compression.Core
                     SlideWindow();
                 }
 
-                int prevMatch = matchStart;
-                int prevLen = matchLen;
+                var prevMatch = matchStart;
+                var prevLen = matchLen;
                 if (lookahead >= DeflaterConstants.MinMatch)
                 {
-                    int hashHead = InsertString();
+                    var hashHead = InsertString();
 
                     if (Strategy != DeflateStrategy.HuffmanOnly &&
                         hashHead != 0 &&
@@ -826,13 +826,13 @@ namespace Cave.Compression.Core
 
                 if (huffman.IsFull())
                 {
-                    int len = strStart - blockStart;
+                    var len = strStart - blockStart;
                     if (prevAvailable)
                     {
                         len--;
                     }
 
-                    bool lastBlock = finish && (lookahead == 0) && !prevAvailable;
+                    var lastBlock = finish && (lookahead == 0) && !prevAvailable;
                     huffman.FlushBlock(window, blockStart, len, lastBlock);
                     blockStart += len;
                     return !lastBlock;

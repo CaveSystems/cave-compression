@@ -94,7 +94,7 @@ namespace Cave.Compression.Core
                 return 285;
             }
 
-            int code = 257;
+            var code = 257;
             while (length >= 8)
             {
                 code += 4;
@@ -106,7 +106,7 @@ namespace Cave.Compression.Core
 
         static int Dcode(int distance)
         {
-            int code = 0;
+            var code = 0;
             while (distance >= 4)
             {
                 code += 2;
@@ -128,7 +128,7 @@ namespace Cave.Compression.Core
             StaticLiteralCodes = new short[LiteralCount];
             StaticLiteralLength = new byte[LiteralCount];
 
-            int i = 0;
+            var i = 0;
             while (i < 144)
             {
                 StaticLiteralCodes[i] = BitReverse((0x030 + i) << 8);
@@ -197,7 +197,7 @@ namespace Cave.Compression.Core
             /// </summary>
             public void Reset()
             {
-                for (int i = 0; i < Freqs.Length; i++)
+                for (var i = 0; i < Freqs.Length; i++)
                 {
                     Freqs[i] = 0;
                 }
@@ -223,8 +223,8 @@ namespace Cave.Compression.Core
             /// </exception>
             public void CheckEmpty()
             {
-                bool empty = true;
-                for (int i = 0; i < Freqs.Length; i++)
+                var empty = true;
+                for (var i = 0; i < Freqs.Length; i++)
                 {
                     empty &= Freqs[i] == 0;
                 }
@@ -251,16 +251,16 @@ namespace Cave.Compression.Core
             /// </summary>
             public void BuildCodes()
             {
-                int numSymbols = Freqs.Length;
-                int[] nextCode = new int[maxLength];
-                int code = 0;
+                var numSymbols = Freqs.Length;
+                var nextCode = new int[maxLength];
+                var code = 0;
 
                 codes = new short[Freqs.Length];
 
                 // if (DeflaterConstants.DEBUGGING) {
                 //                  //Console.WriteLine("buildCodes: "+freqs.Length);
                 //              }
-                for (int bits = 0; bits < maxLength; bits++)
+                for (var bits = 0; bits < maxLength; bits++)
                 {
                     nextCode[bits] = code;
                     code += bitLengthCounts[bits] << (15 - bits);
@@ -277,7 +277,7 @@ namespace Cave.Compression.Core
 					throw new SharpZipBaseException("Inconsistent bl_counts!");
 				}
 #endif
-                for (int i = 0; i < NumCodes; i++)
+                for (var i = 0; i < NumCodes; i++)
                 {
                     int bits = Length[i];
                     if (bits > 0)
@@ -294,7 +294,7 @@ namespace Cave.Compression.Core
 
             public void BuildTree()
             {
-                int numSymbols = Freqs.Length;
+                var numSymbols = Freqs.Length;
 
                 /* heap is a priority queue, sorted by frequency, least frequent
                 * nodes first.  The heap is a binary tree, with the property, that
@@ -304,16 +304,16 @@ namespace Cave.Compression.Core
                 * The binary tree is encoded in an array:  0 is root node and
                 * the nodes 2*n+1, 2*n+2 are the child nodes of node n.
                 */
-                int[] heap = new int[numSymbols];
-                int heapLen = 0;
-                int maxCode = 0;
-                for (int n = 0; n < numSymbols; n++)
+                var heap = new int[numSymbols];
+                var heapLen = 0;
+                var maxCode = 0;
+                for (var n = 0; n < numSymbols; n++)
                 {
                     int freq = Freqs[n];
                     if (freq != 0)
                     {
                         // Insert n into heap
-                        int pos = heapLen++;
+                        var pos = heapLen++;
                         int ppos;
                         while (pos > 0 && Freqs[heap[ppos = (pos - 1) / 2]] > freq)
                         {
@@ -334,19 +334,19 @@ namespace Cave.Compression.Core
                 */
                 while (heapLen < 2)
                 {
-                    int node = maxCode < 2 ? ++maxCode : 0;
+                    var node = maxCode < 2 ? ++maxCode : 0;
                     heap[heapLen++] = node;
                 }
 
                 NumCodes = Math.Max(maxCode + 1, MinNumCodes);
 
-                int numLeafs = heapLen;
-                int[] childs = new int[(4 * heapLen) - 2];
-                int[] values = new int[(2 * heapLen) - 1];
-                int numNodes = numLeafs;
-                for (int i = 0; i < heapLen; i++)
+                var numLeafs = heapLen;
+                var childs = new int[(4 * heapLen) - 2];
+                var values = new int[(2 * heapLen) - 1];
+                var numNodes = numLeafs;
+                for (var i = 0; i < heapLen; i++)
                 {
-                    int node = heap[i];
+                    var node = heap[i];
                     childs[2 * i] = node;
                     childs[(2 * i) + 1] = -1;
                     values[i] = Freqs[node] << 8;
@@ -358,12 +358,12 @@ namespace Cave.Compression.Core
                 */
                 do
                 {
-                    int first = heap[0];
-                    int last = heap[--heapLen];
+                    var first = heap[0];
+                    var last = heap[--heapLen];
 
                     // Propagate the hole to the leafs of the heap
-                    int ppos = 0;
-                    int path = 1;
+                    var ppos = 0;
+                    var path = 1;
 
                     while (path < heapLen)
                     {
@@ -380,7 +380,7 @@ namespace Cave.Compression.Core
                     /* Now propagate the last element down along path.  Normally
                     * it shouldn't go too deep.
                     */
-                    int lastVal = values[last];
+                    var lastVal = values[last];
                     while ((path = ppos) > 0 && values[heap[ppos = (path - 1) / 2]] > lastVal)
                     {
                         heap[path] = heap[ppos];
@@ -388,13 +388,13 @@ namespace Cave.Compression.Core
 
                     heap[path] = last;
 
-                    int second = heap[0];
+                    var second = heap[0];
 
                     // Create a new node father of first and second
                     last = numNodes++;
                     childs[2 * last] = first;
                     childs[(2 * last) + 1] = second;
-                    int mindepth = Math.Min(values[first] & 0xff, values[second] & 0xff);
+                    var mindepth = Math.Min(values[first] & 0xff, values[second] & 0xff);
                     values[last] = lastVal = values[first] + values[second] - mindepth + 1;
 
                     // Again, propagate the hole to the leafs
@@ -437,8 +437,8 @@ namespace Cave.Compression.Core
             /// <returns>Encoded length, the sum of frequencies * lengths.</returns>
             public int GetEncodedLength()
             {
-                int len = 0;
-                for (int i = 0; i < Freqs.Length; i++)
+                var len = 0;
+                for (var i = 0; i < Freqs.Length; i++)
                 {
                     len += Freqs[i] * Length[i];
                 }
@@ -456,9 +456,9 @@ namespace Cave.Compression.Core
                 int max_count;               /* max repeat count */
                 int min_count;               /* min repeat count */
                 int count;                   /* repeat count of the current code */
-                int curlen = -1;             /* length of current code */
+                var curlen = -1;             /* length of current code */
 
-                int i = 0;
+                var i = 0;
                 while (i < NumCodes)
                 {
                     count = 1;
@@ -519,9 +519,9 @@ namespace Cave.Compression.Core
                 int max_count;               // max repeat count
                 int min_count;               // min repeat count
                 int count;                   // repeat count of the current code
-                int curlen = -1;             // length of current code
+                var curlen = -1;             // length of current code
 
-                int i = 0;
+                var i = 0;
                 while (i < NumCodes)
                 {
                     count = 1;
@@ -582,24 +582,24 @@ namespace Cave.Compression.Core
             void BuildLength(int[] childs)
             {
                 Length = new byte[Freqs.Length];
-                int numNodes = childs.Length / 2;
-                int numLeafs = (numNodes + 1) / 2;
-                int overflow = 0;
+                var numNodes = childs.Length / 2;
+                var numLeafs = (numNodes + 1) / 2;
+                var overflow = 0;
 
-                for (int i = 0; i < maxLength; i++)
+                for (var i = 0; i < maxLength; i++)
                 {
                     bitLengthCounts[i] = 0;
                 }
 
                 // First calculate optimal bit lengths
-                int[] lengths = new int[numNodes];
+                var lengths = new int[numNodes];
                 lengths[numNodes - 1] = 0;
 
-                for (int i = numNodes - 1; i >= 0; i--)
+                for (var i = numNodes - 1; i >= 0; i--)
                 {
                     if (childs[(2 * i) + 1] != -1)
                     {
-                        int bitLength = lengths[i] + 1;
+                        var bitLength = lengths[i] + 1;
                         if (bitLength > maxLength)
                         {
                             bitLength = maxLength;
@@ -611,7 +611,7 @@ namespace Cave.Compression.Core
                     else
                     {
                         // A leaf node
-                        int bitLength = lengths[i];
+                        var bitLength = lengths[i];
                         bitLengthCounts[bitLength - 1]++;
                         Length[childs[2 * i]] = (byte)lengths[i];
                     }
@@ -629,7 +629,7 @@ namespace Cave.Compression.Core
                     return;
                 }
 
-                int incrBitLen = maxLength - 1;
+                var incrBitLen = maxLength - 1;
                 do
                 {
                     // Find the first bit length which could increase:
@@ -663,13 +663,13 @@ namespace Cave.Compression.Core
                 * The nodes were inserted with decreasing frequency into the childs
                 * array.
                 */
-                int nodePtr = 2 * numLeafs;
-                for (int bits = maxLength; bits != 0; bits--)
+                var nodePtr = 2 * numLeafs;
+                for (var bits = maxLength; bits != 0; bits--)
                 {
-                    int n = bitLengthCounts[bits - 1];
+                    var n = bitLengthCounts[bits - 1];
                     while (n > 0)
                     {
-                        int childPtr = 2 * childs[nodePtr++];
+                        var childPtr = 2 * childs[nodePtr++];
                         if (childs[childPtr + 1] == -1)
                         {
                             // We found another leaf
@@ -753,7 +753,7 @@ namespace Cave.Compression.Core
             pending.WriteBits(literalTree.NumCodes - 257, 5);
             pending.WriteBits(distTree.NumCodes - 1, 5);
             pending.WriteBits(blTreeCodes - 4, 4);
-            for (int rank = 0; rank < blTreeCodes; rank++)
+            for (var rank = 0; rank < blTreeCodes; rank++)
             {
                 pending.WriteBits(blTree.Length[BitLengthOrder[rank]], 3);
             }
@@ -773,25 +773,25 @@ namespace Cave.Compression.Core
         /// </summary>
         public void CompressBlock()
         {
-            for (int i = 0; i < lastLiteral; i++)
+            for (var i = 0; i < lastLiteral; i++)
             {
-                int litlen = literalBuffer[i] & 0xff;
+                var litlen = literalBuffer[i] & 0xff;
                 int dist = distanceBuffer[i];
                 if (dist-- != 0)
                 {
                     // if (DeflaterConstants.DEBUGGING) {
                     //                      Console.Write("["+(dist+1)+","+(litlen+3)+"]: ");
                     //                  }
-                    int lc = Lcode(litlen);
+                    var lc = Lcode(litlen);
                     literalTree.WriteSymbol(lc);
 
-                    int bits = (lc - 261) / 4;
+                    var bits = (lc - 261) / 4;
                     if (bits > 0 && bits <= 5)
                     {
                         pending.WriteBits(litlen & ((1 << bits) - 1), bits);
                     }
 
-                    int dc = Dcode(dist);
+                    var dc = Dcode(dist);
                     distTree.WriteSymbol(dc);
 
                     bits = (dc / 2) - 1;
@@ -872,8 +872,8 @@ namespace Cave.Compression.Core
             // Build bitlen tree
             blTree.BuildTree();
 
-            int blTreeCodes = 4;
-            for (int i = 18; i > blTreeCodes; i--)
+            var blTreeCodes = 4;
+            for (var i = 18; i > blTreeCodes; i--)
             {
                 if (blTree.Length[BitLengthOrder[i]] > 0)
                 {
@@ -881,17 +881,17 @@ namespace Cave.Compression.Core
                 }
             }
 
-            int opt_len = 14 + (blTreeCodes * 3) + blTree.GetEncodedLength() +
+            var opt_len = 14 + (blTreeCodes * 3) + blTree.GetEncodedLength() +
                 literalTree.GetEncodedLength() + distTree.GetEncodedLength() +
                 extraBits;
 
-            int static_len = extraBits;
-            for (int i = 0; i < LiteralCount; i++)
+            var static_len = extraBits;
+            for (var i = 0; i < LiteralCount; i++)
             {
                 static_len += literalTree.Freqs[i] * StaticLiteralLength[i];
             }
 
-            for (int i = 0; i < DistanceCount; i++)
+            for (var i = 0; i < DistanceCount; i++)
             {
                 static_len += distTree.Freqs[i] * StaticDistanceLength[i];
             }
@@ -964,14 +964,14 @@ namespace Cave.Compression.Core
             distanceBuffer[lastLiteral] = (short)distance;
             literalBuffer[lastLiteral++] = (byte)(length - 3);
 
-            int lc = Lcode(length - 3);
+            var lc = Lcode(length - 3);
             literalTree.Freqs[lc]++;
             if (lc >= 265 && lc < 285)
             {
                 extraBits += (lc - 261) / 4;
             }
 
-            int dc = Dcode(distance - 1);
+            var dc = Dcode(distance - 1);
             distTree.Freqs[dc]++;
             if (dc >= 4)
             {

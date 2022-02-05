@@ -241,7 +241,7 @@ namespace Cave.Compression.Tar
                 longHeader.WriteHeader(blockBuffer);
                 buffer.WriteBlock(blockBuffer);  // Add special long filename header block
 
-                int nameCharIndex = 0;
+                var nameCharIndex = 0;
 
                 while (nameCharIndex < entry.TarHeader.Name.Length + 1 /* we've allocated one for the null char, now we must make sure it gets written out */)
                 {
@@ -283,7 +283,7 @@ namespace Cave.Compression.Tar
 
             if (currBytes < currSize)
             {
-                string errorText = string.Format("Entry closed at '{0}' before the '{1}' bytes specified in the header were written", currBytes, currSize);
+                var errorText = string.Format("Entry closed at '{0}' before the '{1}' bytes specified in the header were written", currBytes, currSize);
                 throw new InvalidOperationException(errorText);
             }
         }
@@ -342,7 +342,7 @@ namespace Cave.Compression.Tar
 
             if ((currBytes + count) > currSize)
             {
-                string errorText = string.Format("request to write '{0}' bytes exceeds size in header of '{1}' bytes", count, currSize);
+                var errorText = string.Format("request to write '{0}' bytes exceeds size in header of '{1}' bytes", count, currSize);
                 throw new ArgumentOutOfRangeException(nameof(count), errorText);
             }
 
@@ -355,7 +355,7 @@ namespace Cave.Compression.Tar
             {
                 if ((assemblyBufferLength + count) >= blockBuffer.Length)
                 {
-                    int aLen = blockBuffer.Length - assemblyBufferLength;
+                    var aLen = blockBuffer.Length - assemblyBufferLength;
 
                     Array.Copy(assemblyBuffer, 0, blockBuffer, 0, assemblyBufferLength);
                     Array.Copy(buffer, offset, blockBuffer, assemblyBufferLength, aLen);
@@ -392,7 +392,7 @@ namespace Cave.Compression.Tar
 
                 this.buffer.WriteBlock(buffer, offset);
 
-                int bufferLength = blockBuffer.Length;
+                var bufferLength = blockBuffer.Length;
                 currBytes += bufferLength;
                 count -= bufferLength;
                 offset += bufferLength;

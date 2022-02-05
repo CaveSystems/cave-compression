@@ -9,9 +9,9 @@ namespace Cave.Compression.Tar
     {
         public static TarExtendedHeader Parse(string data)
         {
-            TarExtendedHeader result = new TarExtendedHeader();
-            int start = 0;
-            for (int i = 0; i < data.Length; i++)
+            var result = new TarExtendedHeader();
+            var start = 0;
+            for (var i = 0; i < data.Length; i++)
             {
                 // read length of entry
                 if (data[i] != ' ')
@@ -19,11 +19,11 @@ namespace Cave.Compression.Tar
                     continue;
                 }
 
-                int numberLength = i - start;
-                int itemLength = int.Parse(data.Substring(start, numberLength));
+                var numberLength = i - start;
+                var itemLength = int.Parse(data.Substring(start, numberLength));
 
                 // read item
-                string itemString = data.Substring(i + 1, itemLength - 2 - numberLength);
+                var itemString = data.Substring(i + 1, itemLength - 2 - numberLength);
                 start = start + itemLength;
                 i = start - 1;
                 if (data[i] != '\n')
@@ -31,7 +31,7 @@ namespace Cave.Compression.Tar
                     throw new InvalidDataException("Extended header line needs to end with newline!");
                 }
 
-                string[] item = itemString.Split(new char[] { '=' }, 2);
+                var item = itemString.Split(new char[] { '=' }, 2);
                 result.Add(item[0], item[1]);
             }
 
@@ -45,38 +45,38 @@ namespace Cave.Compression.Tar
 
         public string Path
         {
-            get => TryGetValue("path", out string value) ? value : null;
+            get => TryGetValue("path", out var value) ? value : null;
             set => this["path"] = value;
         }
 
         public DateTime ModificationTime
         {
-            get => new DateTime(1970, 1, 1) + TimeSpan.FromSeconds(double.Parse(TryGetValue("mtime", out string value) ? value : "0"));
+            get => new DateTime(1970, 1, 1) + TimeSpan.FromSeconds(double.Parse(TryGetValue("mtime", out var value) ? value : "0"));
             set => this["mtime"] = (value - new DateTime(1970, 1, 1)).TotalSeconds.ToString("R");
         }
 
         public DateTime AccessTime
         {
-            get => new DateTime(1970, 1, 1) + TimeSpan.FromSeconds(double.Parse(TryGetValue("atime", out string value) ? value : "0"));
+            get => new DateTime(1970, 1, 1) + TimeSpan.FromSeconds(double.Parse(TryGetValue("atime", out var value) ? value : "0"));
             set => this["atime"] = (value - new DateTime(1970, 1, 1)).TotalSeconds.ToString("R");
         }
 
         public DateTime CreationTime
         {
-            get => new DateTime(1970, 1, 1) + TimeSpan.FromSeconds(double.Parse(TryGetValue("ctime", out string value) ? value : "0"));
+            get => new DateTime(1970, 1, 1) + TimeSpan.FromSeconds(double.Parse(TryGetValue("ctime", out var value) ? value : "0"));
             set => this["ctime"] = (value - new DateTime(1970, 1, 1)).TotalSeconds.ToString("R");
         }
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
-            foreach (KeyValuePair<string, string> i in this)
+            var sb = new StringBuilder();
+            foreach (var i in this)
             {
-                string content = $"{i.Key}={i.Value}\n";
-                string result = content + 3;
-                for (; ;)
+                var content = $"{i.Key}={i.Value}\n";
+                var result = content + 3;
+                for (; ; )
                 {
-                    int prefix = result.Length;
+                    var prefix = result.Length;
                     result = $"{prefix} {content}";
                     if (prefix == result.Length)
                     {
