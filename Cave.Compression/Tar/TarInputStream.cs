@@ -526,7 +526,7 @@ namespace Cave.Compression.Tar
             var numToRead = entrySize;
             while (numToRead > 0)
             {
-                var numRead = this.Read(nameBuffer, 0, numToRead > nameBuffer.Length ? nameBuffer.Length : (int)numToRead);
+                var numRead = Read(nameBuffer, 0, numToRead > nameBuffer.Length ? nameBuffer.Length : (int)numToRead);
                 if (numRead == -1)
                 {
                     throw new InvalidDataException("Failed to read long name entry");

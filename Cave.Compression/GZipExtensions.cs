@@ -14,11 +14,9 @@ namespace Cave.Compression
         /// <returns>Returns the compressed data.</returns>
         public static byte[] Gzip(this byte[] data, CompressionStrength level = CompressionStrength.Best)
         {
-            using (var ms = new MemoryStream())
-            {
-                GZip.GZip.Compress(new MemoryStream(data), ms, true, level);
-                return ms.ToArray();
-            }
+            using var ms = new MemoryStream();
+            GZip.GZip.Compress(new MemoryStream(data), ms, true, level);
+            return ms.ToArray();
         }
 
         /// <summary>Uncompresses the <paramref name="data" />.</summary>
@@ -26,11 +24,9 @@ namespace Cave.Compression
         /// <returns>Returns the uncompressed data.</returns>
         public static byte[] Gunzip(this byte[] data)
         {
-            using (var ms = new MemoryStream())
-            {
-                GZip.GZip.Decompress(new MemoryStream(data), ms, true);
-                return ms.ToArray();
-            }
+            using var ms = new MemoryStream();
+            GZip.GZip.Decompress(new MemoryStream(data), ms, true);
+            return ms.ToArray();
         }
     }
 }

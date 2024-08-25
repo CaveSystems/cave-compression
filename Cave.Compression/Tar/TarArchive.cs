@@ -34,20 +34,18 @@ namespace Cave.Compression.Tar
         // and that all non text files contain one of these values
         static bool IsBinary(string filename)
         {
-            using (var fs = File.OpenRead(filename))
+            using var fs = File.OpenRead(filename);
+            var sampleSize = Math.Min(4096, (int)fs.Length);
+            var content = new byte[sampleSize];
+
+            var bytesRead = fs.Read(content, 0, sampleSize);
+
+            for (var i = 0; i < bytesRead; ++i)
             {
-                var sampleSize = Math.Min(4096, (int)fs.Length);
-                var content = new byte[sampleSize];
-
-                var bytesRead = fs.Read(content, 0, sampleSize);
-
-                for (var i = 0; i < bytesRead; ++i)
+                var b = content[i];
+                if ((b < 8) || ((b > 13) && (b < 32)) || (b == 255))
                 {
-                    var b = content[i];
-                    if ((b < 8) || ((b > 13) && (b < 32)) || (b == 255))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
 
@@ -613,7 +611,7 @@ namespace Cave.Compression.Tar
             {
                 // NOTE:
                 // for UNC names...  \\machine\share\zoom\beet.txt gives \zoom\beet.txt
-                name = name.Substring(Path.GetPathRoot(name).Length);
+                name = name[Path.GetPathRoot(name).Length..];
             }
 
             var destFile = Path.Combine(destDir, name);
@@ -800,23 +798,21 @@ namespace Cave.Compression.Tar
 
                     using (var inStream = new StreamReader(File.Open(entryFilename, FileMode.Open, FileAccess.Read, FileShare.Read)))
                     {
-                        using (Stream outStream = File.Create(tempFileName))
+                        using Stream outStream = File.Create(tempFileName);
+                        while (true)
                         {
-                            while (true)
+                            var line = inStream.ReadLine();
+                            if (line == null)
                             {
-                                var line = inStream.ReadLine();
-                                if (line == null)
-                                {
-                                    break;
-                                }
-
-                                var data = Encoding.ASCII.GetBytes(line);
-                                outStream.Write(data, 0, data.Length);
-                                outStream.WriteByte((byte)'\n');
+                                break;
                             }
 
-                            outStream.Flush();
+                            var data = Encoding.ASCII.GetBytes(line);
+                            outStream.Write(data, 0, data.Length);
+                            outStream.WriteByte((byte)'\n');
                         }
+
+                        outStream.Flush();
                     }
 
                     entry.Size = new FileInfo(tempFileName).Length;
@@ -830,7 +826,7 @@ namespace Cave.Compression.Tar
             {
                 if (entry.Name.StartsWith(rootPath, StringComparison.OrdinalIgnoreCase))
                 {
-                    newName = entry.Name.Substring(rootPath.Length + 1);
+                    newName = entry.Name[(rootPath.Length + 1)..];
                 }
             }
 

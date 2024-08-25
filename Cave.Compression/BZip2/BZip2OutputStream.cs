@@ -130,7 +130,7 @@ namespace Cave.Compression.BZip2
                     parent[n1] = parent[n2] = nNodes;
 
                     weight[nNodes] = (int)((weight[n1] & 0xffffff00) + (weight[n2] & 0xffffff00)) |
-                        1 + (((weight[n1] & 0x000000ff) > (weight[n2] & 0x000000ff)) ? (weight[n1] & 0x000000ff) : (weight[n2] & 0x000000ff));
+                        (1 + (((weight[n1] & 0x000000ff) > (weight[n2] & 0x000000ff)) ? (weight[n1] & 0x000000ff) : (weight[n2] & 0x000000ff)));
 
                     parent[nNodes] = -1;
                     nHeap++;

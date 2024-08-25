@@ -44,8 +44,8 @@ namespace Cave.Compression.Streams
                     return -1; // ok
                 }
 
-                buffer |= (uint)((window[windowStart++] & 0xff |
-                                 (window[windowStart++] & 0xff) << 8) << AvailableBits);
+                buffer |= (uint)(((window[windowStart++] & 0xff) |
+                                 ((window[windowStart++] & 0xff) << 8)) << AvailableBits);
                 AvailableBits += 16;
             }
 

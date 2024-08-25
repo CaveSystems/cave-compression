@@ -36,19 +36,17 @@ namespace Cave.Compression.Tests.Tar
             }
             using (var stream = new MemoryStream(data))
             {
-                using (var reader = new TarReader(stream, true))
+                using var reader = new TarReader(stream, true);
+                var copy = checks.ToDictionary(i => i.Key, i => i.Value);
+                while (reader.ReadNext(out var entry, out var content))
                 {
-                    var copy = checks.ToDictionary(i => i.Key, i => i.Value);
-                    while (reader.ReadNext(out var entry, out var content))
+                    if (!copy.TryGetValue(entry.Name, out var expectedContent))
                     {
-                        if (!copy.TryGetValue(entry.Name, out var expectedContent))
-                        {
-                            Assert.Fail("Entry name not found at source!");
-                        }
-
-                        copy.Remove(entry.Name);
-                        CollectionAssert.AreEqual(expectedContent, content);
+                        Assert.Fail("Entry name not found at source!");
                     }
+
+                    copy.Remove(entry.Name);
+                    CollectionAssert.AreEqual(expectedContent, content);
                 }
             }
         }
@@ -79,47 +77,41 @@ namespace Cave.Compression.Tests.Tar
 
             using (var stream = File.Create(tempFileName))
             {
-                using (var writer = new TarWriter(stream, true))
+                using var writer = new TarWriter(stream, true);
+                for (var i = 0; i < 1000; i++)
                 {
-                    for (var i = 0; i < 1000; i++)
-                    {
-                        var buffer = new byte[random.Next(64 * 1024)];
-                        var name = $"{i % 10}/{i}.txt";
-                        var fullName = Path.Combine(temp1, name);
-                        Directory.CreateDirectory(Path.GetDirectoryName(fullName));
-                        File.WriteAllBytes(fullName, buffer);
-                        checks.Add(name, buffer);
-                    }
-                    writer.AddDirectory("/", temp1);
+                    var buffer = new byte[random.Next(64 * 1024)];
+                    var name = $"{i % 10}/{i}.txt";
+                    var fullName = Path.Combine(temp1, name);
+                    Directory.CreateDirectory(Path.GetDirectoryName(fullName));
+                    File.WriteAllBytes(fullName, buffer);
+                    checks.Add(name, buffer);
                 }
+                writer.AddDirectory("/", temp1);
             }
 
             using (var stream = File.OpenRead(tempFileName))
             {
-                using (var reader = new TarReader(stream, true))
-                {
-                    reader.UnpackTo(temp2);
-                }
+                using var reader = new TarReader(stream, true);
+                reader.UnpackTo(temp2);
             }
 
             using (var stream = File.OpenRead(tempFileName))
             {
-                using (var reader = new TarReader(stream, true))
+                using var reader = new TarReader(stream, true);
+                var copy = checks.ToDictionary(i => i.Key, i => i.Value);
+                while (reader.ReadNext(out var entry, out var content))
                 {
-                    var copy = checks.ToDictionary(i => i.Key, i => i.Value);
-                    while (reader.ReadNext(out var entry, out var content))
+                    var name = entry.Name.TrimStart('/');
+                    if (!copy.TryGetValue(name, out var expectedContent))
                     {
-                        var name = entry.Name.TrimStart('/');
-                        if (!copy.TryGetValue(name, out var expectedContent))
-                        {
-                            Assert.Fail("Entry name not found at source!");
-                        }
-
-                        copy.Remove(name);
-                        CollectionAssert.AreEqual(expectedContent, content);
-                        CollectionAssert.AreEqual(expectedContent, File.ReadAllBytes(Path.Combine(temp1, name)));
-                        CollectionAssert.AreEqual(expectedContent, File.ReadAllBytes(Path.Combine(temp2, name)));
+                        Assert.Fail("Entry name not found at source!");
                     }
+
+                    copy.Remove(name);
+                    CollectionAssert.AreEqual(expectedContent, content);
+                    CollectionAssert.AreEqual(expectedContent, File.ReadAllBytes(Path.Combine(temp1, name)));
+                    CollectionAssert.AreEqual(expectedContent, File.ReadAllBytes(Path.Combine(temp2, name)));
                 }
             }
 

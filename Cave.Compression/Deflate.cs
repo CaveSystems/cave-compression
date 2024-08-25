@@ -103,14 +103,10 @@ namespace Cave.Compression
                 throw new ArgumentNullException(nameof(data));
             }
 
-            using (var source = new MemoryStream(data))
-            {
-                using (var target = new MemoryStream())
-                {
-                    Compress(source, target, -1, true);
-                    return target.ToArray();
-                }
-            }
+            using var source = new MemoryStream(data);
+            using var target = new MemoryStream();
+            Compress(source, target, -1, true);
+            return target.ToArray();
         }
 
         /// <summary>
@@ -125,14 +121,10 @@ namespace Cave.Compression
                 throw new ArgumentNullException(nameof(data));
             }
 
-            using (var source = new MemoryStream(data))
-            {
-                using (var target = new MemoryStream())
-                {
-                    Decompress(source, target, -1, true);
-                    return target.ToArray();
-                }
-            }
+            using var source = new MemoryStream(data);
+            using var target = new MemoryStream();
+            Decompress(source, target, -1, true);
+            return target.ToArray();
         }
 
         /// <summary>
@@ -149,10 +141,8 @@ namespace Cave.Compression
 
             using (Stream source = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                using (Stream target = File.Open(fileName + ".deflate", FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    Compress(source, target, source.Length, true);
-                }
+                using Stream target = File.Open(fileName + ".deflate", FileMode.Create, FileAccess.Write, FileShare.None);
+                Compress(source, target, source.Length, true);
             }
 
             if (delete)
@@ -180,10 +170,8 @@ namespace Cave.Compression
 
             using (Stream source = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                using (Stream target = File.Open(Path.GetFileNameWithoutExtension(fileName), FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    Decompress(source, target, source.Length, true);
-                }
+                using Stream target = File.Open(Path.GetFileNameWithoutExtension(fileName), FileMode.Create, FileAccess.Write, FileShare.None);
+                Decompress(source, target, source.Length, true);
             }
 
             if (delete)

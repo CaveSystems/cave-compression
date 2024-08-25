@@ -6,8 +6,7 @@ namespace Cave.Compression.Core
     /// <summary>
     /// This is the DeflaterHuffman class.
     ///
-    /// This class is <i>not</i> thread safe.  This is inherent in the API, due
-    /// to the split of Deflate and SetInput.
+    /// This class is <i>not</i> thread safe. This is inherent in the API, due to the split of Deflate and SetInput.
     ///
     /// author of the original java version : Jochen Hoenicke.
     /// </summary>
@@ -18,29 +17,19 @@ namespace Cave.Compression.Core
         const int BufferSize = 1 << (DeflaterConstants.DefaultMemoryLevel + 6);
         const int LiteralCount = 286;
 
-        /// <summary>
-        /// Number of distance codes.
-        /// </summary>
+        /// <summary>Number of distance codes.</summary>
         const int DistanceCount = 30;
 
-        /// <summary>
-        /// Number of codes used to transfer bit lengths.
-        /// </summary>
+        /// <summary>Number of codes used to transfer bit lengths.</summary>
         const int BitLengthCount = 19;
 
-        /// <summary>
-        /// repeat previous bit length 3-6 times (2 bits of repeat count).
-        /// </summary>
+        /// <summary>repeat previous bit length 3-6 times (2 bits of repeat count).</summary>
         const int Repeat3to6 = 16;
 
-        /// <summary>
-        /// repeat a zero length 3-10 times  (3 bits of repeat count).
-        /// </summary>
+        /// <summary>repeat a zero length 3-10 times (3 bits of repeat count).</summary>
         const int Repeat3to10 = 17;
 
-        /// <summary>
-        /// repeat a zero length 11-138 times  (7 bits of repeat count).
-        /// </summary>
+        /// <summary>repeat a zero length 11-138 times (7 bits of repeat count).</summary>
         const int Repeat11to138 = 18;
 
         const int EndOfFileSymbol = 256;
@@ -69,21 +58,20 @@ namespace Cave.Compression.Core
             7,
             15,
         };
-        #endregion
+
+        #endregion constants
 
         #region static class
 
-        /// <summary>
-        /// Reverse the bits of a 16 bit value.
-        /// </summary>
+        /// <summary>Reverse the bits of a 16 bit value.</summary>
         /// <param name="toReverse">Value to reverse bits.</param>
         /// <returns>Value with bits reversed.</returns>
         public static short BitReverse(int toReverse)
         {
             return (short)(
-                Reverse4Bits[toReverse & 0xF] << 12 |
-                Reverse4Bits[(toReverse >> 4) & 0xF] << 8 |
-                Reverse4Bits[(toReverse >> 8) & 0xF] << 4 |
+                (Reverse4Bits[toReverse & 0xF] << 12) |
+                (Reverse4Bits[(toReverse >> 4) & 0xF] << 8) |
+                (Reverse4Bits[(toReverse >> 8) & 0xF] << 4) |
                 Reverse4Bits[toReverse >> 12]);
         }
 
@@ -123,8 +111,7 @@ namespace Cave.Compression.Core
 
         static DeflaterHuffman()
         {
-            // See RFC 1951 3.2.6
-            // Literal codes
+            // See RFC 1951 3.2.6 Literal codes
             StaticLiteralCodes = new short[LiteralCount];
             StaticLiteralLength = new byte[LiteralCount];
 
@@ -162,13 +149,17 @@ namespace Cave.Compression.Core
                 StaticDistanceLength[i] = 5;
             }
         }
-        #endregion
+
+        #endregion static class
 
         #region class Tree
+
 #pragma warning disable SA1401 // Fields must be private
+
         class Tree
         {
             #region Instance Fields
+
             readonly int[] bitLengthCounts;
             readonly int maxLength;
             short[] codes;
@@ -178,9 +169,11 @@ namespace Cave.Compression.Core
             public byte[] Length;
             public int MinNumCodes;
             public int NumCodes;
-            #endregion
+
+            #endregion Instance Fields
 
             #region Constructors
+
             public Tree(DeflaterHuffman dh, int elems, int minCodes, int maxLength)
             {
                 this.dh = dh;
@@ -190,11 +183,9 @@ namespace Cave.Compression.Core
                 bitLengthCounts = new int[maxLength];
             }
 
-            #endregion
+            #endregion Constructors
 
-            /// <summary>
-            /// Resets the internal state of the tree.
-            /// </summary>
+            /// <summary>Resets the internal state of the tree.</summary>
             public void Reset()
             {
                 for (var i = 0; i < Freqs.Length; i++)
@@ -208,19 +199,12 @@ namespace Cave.Compression.Core
 
             public void WriteSymbol(int code)
             {
-                // if (DeflaterConstants.DEBUGGING) {
-                //                  freqs[code]--;
-                //                  //        Console.Write("writeSymbol("+freqs.length+","+code+"): ");
-                //              }
+                // if (DeflaterConstants.DEBUGGING) { freqs[code]--; // Console.Write("writeSymbol("+freqs.length+","+code+"): "); }
                 dh.pending.WriteBits(codes[code] & 0xffff, Length[code]);
             }
 
-            /// <summary>
-            /// Check that all frequencies are zero.
-            /// </summary>
-            /// <exception cref="InvalidDataException">
-            /// At least one frequency is non-zero.
-            /// </exception>
+            /// <summary>Check that all frequencies are zero.</summary>
+            /// <exception cref="InvalidDataException">At least one frequency is non-zero.</exception>
             public void CheckEmpty()
             {
                 var empty = true;
@@ -235,9 +219,7 @@ namespace Cave.Compression.Core
                 }
             }
 
-            /// <summary>
-            /// Set static codes and length.
-            /// </summary>
+            /// <summary>Set static codes and length.</summary>
             /// <param name="staticCodes">new codes.</param>
             /// <param name="staticLengths">length for new codes.</param>
             public void SetStaticCodes(short[] staticCodes, byte[] staticLengths)
@@ -246,9 +228,7 @@ namespace Cave.Compression.Core
                 Length = staticLengths;
             }
 
-            /// <summary>
-            /// Build dynamic codes and lengths.
-            /// </summary>
+            /// <summary>Build dynamic codes and lengths.</summary>
             public void BuildCodes()
             {
                 var numSymbols = Freqs.Length;
@@ -257,22 +237,18 @@ namespace Cave.Compression.Core
 
                 codes = new short[Freqs.Length];
 
-                // if (DeflaterConstants.DEBUGGING) {
-                //                  //Console.WriteLine("buildCodes: "+freqs.Length);
-                //              }
+                // if (DeflaterConstants.DEBUGGING) { //Console.WriteLine("buildCodes: "+freqs.Length); }
                 for (var bits = 0; bits < maxLength; bits++)
                 {
                     nextCode[bits] = code;
                     code += bitLengthCounts[bits] << (15 - bits);
 
-                    // if (DeflaterConstants.DEBUGGING) {
-                    //                      //Console.WriteLine("bits: " + ( bits + 1) + " count: " + bl_counts[bits]
-                    //                                        +" nextCode: "+code);
-                    //                  }
+                    // if (DeflaterConstants.DEBUGGING) { //Console.WriteLine("bits: " + ( bits + 1) + " count: " + bl_counts[bits]
+                    // +" nextCode: "+code); }
                 }
 
 #if DebugDeflation
-				if ( DeflaterConstants.DEBUGGING && (code != 65536) ) 
+				if ( DeflaterConstants.DEBUGGING && (code != 65536) )
 				{
 					throw new SharpZipBaseException("Inconsistent bl_counts!");
 				}
@@ -282,10 +258,8 @@ namespace Cave.Compression.Core
                     int bits = Length[i];
                     if (bits > 0)
                     {
-                        // if (DeflaterConstants.DEBUGGING) {
-                        //                              //Console.WriteLine("codes["+i+"] = rev(" + nextCode[bits-1]+"),
-                        //                                                +bits);
-                        //                      }
+                        // if (DeflaterConstants.DEBUGGING) { //Console.WriteLine("codes["+i+"] = rev(" + nextCode[bits-1]+"),
+                        // +bits); }
                         codes[i] = BitReverse(nextCode[bits - 1]);
                         nextCode[bits - 1] += 1 << (16 - bits);
                     }
@@ -431,9 +405,7 @@ namespace Cave.Compression.Core
                 BuildLength(childs);
             }
 
-            /// <summary>
-            /// Get encoded length.
-            /// </summary>
+            /// <summary>Get encoded length.</summary>
             /// <returns>Encoded length, the sum of frequencies * lengths.</returns>
             public int GetEncodedLength()
             {
@@ -446,10 +418,7 @@ namespace Cave.Compression.Core
                 return len;
             }
 
-            /// <summary>
-            /// Scan a literal or distance tree to determine the frequencies of the codes
-            /// in the bit length tree.
-            /// </summary>
+            /// <summary>Scan a literal or distance tree to determine the frequencies of the codes in the bit length tree.</summary>
             /// <param name="blTree">Bit length tree.</param>
             public void CalcBLFreq(Tree blTree)
             {
@@ -510,9 +479,7 @@ namespace Cave.Compression.Core
                 }
             }
 
-            /// <summary>
-            /// Write tree values.
-            /// </summary>
+            /// <summary>Write tree values.</summary>
             /// <param name="blTree">Tree to write.</param>
             public void WriteTree(Tree blTree)
             {
@@ -617,13 +584,9 @@ namespace Cave.Compression.Core
                     }
                 }
 
-                // if (DeflaterConstants.DEBUGGING) {
-                //                  //Console.WriteLine("Tree "+freqs.Length+" lengths:");
-                //                  for (int i=0; i < numLeafs; i++) {
-                //                      //Console.WriteLine("Node "+childs[2*i]+" freq: "+freqs[childs[2*i]]
-                //                                        + " len: "+length[childs[2*i]]);
-                //                  }
-                //              }
+                // if (DeflaterConstants.DEBUGGING) { //Console.WriteLine("Tree "+freqs.Length+" lengths:"); for (int i=0; i < numLeafs; i++) {
+                // //Console.WriteLine("Node "+childs[2*i]+" freq: "+freqs[childs[2*i]]
+                // + " len: "+length[childs[2*i]]); } }
                 if (overflow == 0)
                 {
                     return;
@@ -637,8 +600,7 @@ namespace Cave.Compression.Core
                     {
                     }
 
-                    // Move this node one down and remove a corresponding
-                    // number of overflow nodes.
+                    // Move this node one down and remove a corresponding number of overflow nodes.
                     do
                     {
                         bitLengthCounts[incrBitLen]--;
@@ -679,29 +641,24 @@ namespace Cave.Compression.Core
                     }
                 }
 
-                // if (DeflaterConstants.DEBUGGING) {
-                //                  //Console.WriteLine("*** After overflow elimination. ***");
-                //                  for (int i=0; i < numLeafs; i++) {
-                //                      //Console.WriteLine("Node "+childs[2*i]+" freq: "+freqs[childs[2*i]]
-                //                                        + " len: "+length[childs[2*i]]);
-                //                  }
-                //              }
+                // if (DeflaterConstants.DEBUGGING) { //Console.WriteLine("*** After overflow elimination. ***"); for (int i=0; i < numLeafs; i++) {
+                // //Console.WriteLine("Node "+childs[2*i]+" freq: "+freqs[childs[2*i]]
+                // + " len: "+length[childs[2*i]]); } }
             }
         }
+
 #pragma warning restore SA1401 // Fields must be private
-        #endregion
+
+        #endregion class Tree
 
         #region Instance Fields
 
-        /// <summary>
-        /// Buffer for distances.
-        /// </summary>
+        /// <summary>Buffer for distances.</summary>
         readonly short[] distanceBuffer;
+
         readonly byte[] literalBuffer;
 
-        /// <summary>
-        /// Pending buffer to use.
-        /// </summary>
+        /// <summary>Pending buffer to use.</summary>
         DeflaterPending pending;
 
         Tree literalTree;
@@ -711,11 +668,9 @@ namespace Cave.Compression.Core
         int lastLiteral;
         int extraBits;
 
-        #endregion
+        #endregion Instance Fields
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DeflaterHuffman"/> class.
-        /// </summary>
+        /// <summary>Initializes a new instance of the <see cref="DeflaterHuffman"/> class.</summary>
         /// <param name="pending">Pending buffer to use.</param>
         public DeflaterHuffman(DeflaterPending pending)
         {
@@ -729,9 +684,7 @@ namespace Cave.Compression.Core
             literalBuffer = new byte[BufferSize];
         }
 
-        /// <summary>
-        /// Reset internal state.
-        /// </summary>
+        /// <summary>Reset internal state.</summary>
         public void Reset()
         {
             lastLiteral = 0;
@@ -741,9 +694,7 @@ namespace Cave.Compression.Core
             blTree.Reset();
         }
 
-        /// <summary>
-        /// Write all trees to pending buffer.
-        /// </summary>
+        /// <summary>Write all trees to pending buffer.</summary>
         /// <param name="blTreeCodes">The number/rank of treecodes to send.</param>
         public void SendAllTrees(int blTreeCodes)
         {
@@ -768,9 +719,7 @@ namespace Cave.Compression.Core
 #endif
         }
 
-        /// <summary>
-        /// Compress current buffer writing data to pending buffer.
-        /// </summary>
+        /// <summary>Compress current buffer writing data to pending buffer.</summary>
         public void CompressBlock()
         {
             for (var i = 0; i < lastLiteral; i++)
@@ -779,9 +728,7 @@ namespace Cave.Compression.Core
                 int dist = distanceBuffer[i];
                 if (dist-- != 0)
                 {
-                    // if (DeflaterConstants.DEBUGGING) {
-                    //                      Console.Write("["+(dist+1)+","+(litlen+3)+"]: ");
-                    //                  }
+                    // if (DeflaterConstants.DEBUGGING) { Console.Write("["+(dist+1)+","+(litlen+3)+"]: "); }
                     var lc = Lcode(litlen);
                     literalTree.WriteSymbol(lc);
 
@@ -802,13 +749,8 @@ namespace Cave.Compression.Core
                 }
                 else
                 {
-                    // if (DeflaterConstants.DEBUGGING) {
-                    //                      if (litlen > 32 && litlen < 127) {
-                    //                          Console.Write("("+(char)litlen+"): ");
-                    //                      } else {
-                    //                          Console.Write("{"+litlen+"}: ");
-                    //                      }
-                    //                  }
+                    // if (DeflaterConstants.DEBUGGING) { if (litlen > 32 && litlen < 127) { Console.Write("("+(char)litlen+"): "); } else {
+                    // Console.Write("{"+litlen+"}: "); } }
                     literalTree.WriteSymbol(litlen);
                 }
             }
@@ -828,9 +770,7 @@ namespace Cave.Compression.Core
 #endif
         }
 
-        /// <summary>
-        /// Flush block to output with no compression.
-        /// </summary>
+        /// <summary>Flush block to output with no compression.</summary>
         /// <param name="stored">Data to write.</param>
         /// <param name="storedOffset">Index of first byte to write.</param>
         /// <param name="storedLength">Count of bytes to write.</param>
@@ -838,9 +778,7 @@ namespace Cave.Compression.Core
         public void FlushStoredBlock(byte[] stored, int storedOffset, int storedLength, bool lastBlock)
         {
 #if DebugDeflation
-			//			if (DeflaterConstants.DEBUGGING) {
-			//				//Console.WriteLine("Flushing stored block "+ storedLength);
-			//			}
+			// if (DeflaterConstants.DEBUGGING) { //Console.WriteLine("Flushing stored block "+ storedLength); }
 #endif
             pending.WriteBits((DeflaterConstants.StoredBlock << 1) + (lastBlock ? 1 : 0), 3);
             pending.AlignToByte();
@@ -850,9 +788,7 @@ namespace Cave.Compression.Core
             Reset();
         }
 
-        /// <summary>
-        /// Flush block to output with compression.
-        /// </summary>
+        /// <summary>Flush block to output with compression.</summary>
         /// <param name="stored">Data to flush.</param>
         /// <param name="storedOffset">Index of first byte to flush.</param>
         /// <param name="storedLength">Count of bytes to flush.</param>
@@ -906,10 +842,8 @@ namespace Cave.Compression.Core
             {
                 // Store Block
 
-                // if (DeflaterConstants.DEBUGGING) {
-                //                  //Console.WriteLine("Storing, since " + storedLength + " < " + opt_len
-                //                                    + " <= " + static_len);
-                //              }
+                // if (DeflaterConstants.DEBUGGING) { //Console.WriteLine("Storing, since " + storedLength + " < " + opt_len
+                // + " <= " + static_len); }
                 FlushStoredBlock(stored, storedOffset, storedLength, lastBlock);
             }
             else if (opt_len == static_len)
@@ -931,18 +865,14 @@ namespace Cave.Compression.Core
             }
         }
 
-        /// <summary>
-        /// Get value indicating if internal buffer is full.
-        /// </summary>
+        /// <summary>Get value indicating if internal buffer is full.</summary>
         /// <returns>true if buffer is full.</returns>
         public bool IsFull()
         {
             return lastLiteral >= BufferSize;
         }
 
-        /// <summary>
-        /// Add literal to buffer.
-        /// </summary>
+        /// <summary>Add literal to buffer.</summary>
         /// <param name="literal">Literal value to add to buffer.</param>
         /// <returns>Value indicating internal buffer is full.</returns>
         public bool TallyLit(int literal)
@@ -953,9 +883,7 @@ namespace Cave.Compression.Core
             return IsFull();
         }
 
-        /// <summary>
-        /// Add distance code and length to literal and distance trees.
-        /// </summary>
+        /// <summary>Add distance code and length to literal and distance trees.</summary>
         /// <param name="distance">Distance code.</param>
         /// <param name="length">Length.</param>
         /// <returns>Value indicating if internal buffer is full.</returns>

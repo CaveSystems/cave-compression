@@ -5,6 +5,8 @@
 # trigger: add any branches with releases to build AND change fixedBuildVersion variable!
 trigger:
 - refs/tags/*
+- bugfix/*
+- feature/*
 - master
 - next
 
@@ -12,10 +14,11 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  fixedBuildVersion: '2.1'
+  fixedBuildVersion: '3.0'
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  system.debug: true
 
 steps:
 
@@ -29,7 +32,8 @@ steps:
     targetType: inline
     script: |
       $fixedVersion = [Version]"$(fixedBuildVersion)"
-      $gitTag = "$(git describe --tags --always)".Trim().TrimStart('v')                                # possible return values: 'hash' (no tags), 'tag-hash' (old tag), 'tag' (if commit == tag)
+      $gitTag = "$(git describe --tags --always)".Trim().TrimStart('v')
+      # possible return values: 'hash' (no tags), 'tag-hash' (old tag), 'tag' (if commit == tag)
       if (!$gitTag.Contains('.'))
       {
         echo "no tag set yet!"
@@ -42,7 +46,8 @@ steps:
       }
       else
       {
-        $semVer = "ci-$env:BUILD_BUILDNUMBER".Replace('.', '-')                                     # semVer = ci-yyyyMMdd-NN
+        $semVer = "ci-$env:BUILD_BUILDNUMBER".Replace('.', '-')
+        # semVer = ci-yyyyMMdd-NN
         $gitTagVersion = [Version]$gitTag.Split('-')[0]
         if ($gitTagVersion.Major -ne $fixedVersion.Major)
         {
@@ -65,6 +70,41 @@ steps:
   inputs:
     versionSpec: '>=4.9.0'
 
+- task: UseDotNet@2
+  displayName: 'Install .NET sdk 8'
+  inputs:
+    packageType: sdk
+    version: 8.x
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
+- task: UseDotNet@2
+  displayName: 'Install .NET sdk 7'
+  inputs:
+    packageType: sdk
+    version: 7.x
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
+- task: UseDotNet@2
+  displayName: 'Install .NET sdk 6'
+  inputs:
+    packageType: sdk
+    version: 6.x
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
+- task: UseDotNet@2
+  displayName: 'Install .NET sdk 5'
+  inputs:
+    packageType: sdk
+    version: 5.x
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+    
+- task: UseDotNet@2
+  displayName: 'Install .NET Core sdk 3.1'
+  inputs:
+    packageType: sdk
+    version: 3.1.x
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
 - task: NuGetCommand@2
   displayName: Restore nuget packages
   inputs:
@@ -73,17 +113,55 @@ steps:
 - task: VSBuild@1
   displayName: Build solution
   inputs:
+    maximumCpuCount: true
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
 - task: VSTest@2
+  displayName: Test netcore
   inputs:
+    runSettingsFile: 'Tests.RunSettings'
+    runInParallel: false
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+    codeCoverageEnabled: true
     testAssemblyVer2: |
-      **/bin/Release/**/Test.exe
-      **/bin/Release/**/Test.dll
+      **/bin/$(buildConfiguration)/netcoreapp*/Test.dll
+
+- task: VSTest@2
+  displayName: Test net5+
+  inputs:
+    runSettingsFile: 'Tests.RunSettings'
+    runInParallel: false
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+    codeCoverageEnabled: true
+    testAssemblyVer2: |
+      **/bin/$(buildConfiguration)/net?.?/Test.dll
+
+- task: VSTest@2
+  displayName: Test net2x, net3x
+  inputs:
+    runSettingsFile: 'Tests.RunSettings'
+    runInParallel: false
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+    codeCoverageEnabled: true
+    testAssemblyVer2: |
+      **/bin/$(buildConfiguration)/net20/Test.exe
+      **/bin/$(buildConfiguration)/net35/Test.exe
+
+- task: VSTest@2
+  displayName: Test net4x
+  inputs:
+    runSettingsFile: 'Tests.RunSettings'
+    runInParallel: false
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+    codeCoverageEnabled: true
+    testAssemblyVer2: |
+      **/bin/$(buildConfiguration)/net4?/Test.exe
 
 - task: NuGetCommand@2
   displayName: Push to nuget (release)

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30225.117
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34714.143
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cave.Compression", "Cave.Compression\Cave.Compression.csproj", "{FE901C70-9364-491D-B361-1855A7284EBE}"
 EndProject
@@ -22,11 +22,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{18D82113-7E79-4013-9AD9-3CDEA6370863}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test_NET2x", "Test\Test_NET2x.csproj", "{76EA8CBF-19C5-4923-BD75-9A89A956AE01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "net_2.0-3.5", "Test\net_2.0-3.5.csproj", "{76EA8CBF-19C5-4923-BD75-9A89A956AE01}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test_NET4x", "Test\Test_NET4x.csproj", "{5771CD84-2D65-493C-990F-75FA40FE4ED1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "net_4.x", "Test\net_4.x.csproj", "{5771CD84-2D65-493C-990F-75FA40FE4ED1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test_NETCORE", "Test\Test_NETCORE.csproj", "{5A8B6AA9-0772-4126-AA2B-6C9CF9A1E81F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "net_5+", "Test\net_5+.csproj", "{A07B2D81-9458-4AB7-B47C-A880236F9791}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,10 +46,10 @@ Global
 		{5771CD84-2D65-493C-990F-75FA40FE4ED1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5771CD84-2D65-493C-990F-75FA40FE4ED1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5771CD84-2D65-493C-990F-75FA40FE4ED1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5A8B6AA9-0772-4126-AA2B-6C9CF9A1E81F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5A8B6AA9-0772-4126-AA2B-6C9CF9A1E81F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5A8B6AA9-0772-4126-AA2B-6C9CF9A1E81F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5A8B6AA9-0772-4126-AA2B-6C9CF9A1E81F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A07B2D81-9458-4AB7-B47C-A880236F9791}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A07B2D81-9458-4AB7-B47C-A880236F9791}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A07B2D81-9458-4AB7-B47C-A880236F9791}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A07B2D81-9458-4AB7-B47C-A880236F9791}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,7 +57,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{76EA8CBF-19C5-4923-BD75-9A89A956AE01} = {18D82113-7E79-4013-9AD9-3CDEA6370863}
 		{5771CD84-2D65-493C-990F-75FA40FE4ED1} = {18D82113-7E79-4013-9AD9-3CDEA6370863}
-		{5A8B6AA9-0772-4126-AA2B-6C9CF9A1E81F} = {18D82113-7E79-4013-9AD9-3CDEA6370863}
+		{A07B2D81-9458-4AB7-B47C-A880236F9791} = {18D82113-7E79-4013-9AD9-3CDEA6370863}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4350AB73-2272-471E-BDE1-44B61E90ABF0}

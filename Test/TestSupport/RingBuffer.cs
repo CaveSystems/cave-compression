@@ -1,5 +1,4 @@
-// Define this to use simple synchronisation rather than events.
-// They are about the same in terms of speed.
+// Define this to use simple synchronisation rather than events. They are about the same in terms of speed.
 #define SimpleSynch
 
 using NUnit.Framework;
@@ -9,25 +8,21 @@ using System.Threading;
 namespace Cave.Compression.Tests.TestSupport
 {
     /// <summary>
-    /// A fixed size buffer of bytes.  Both reading and writing are supported.
-    /// Reading from an empty buffer will wait until data is written.  Writing to a full buffer
-    /// will wait until data is read.
+    /// A fixed size buffer of bytes. Both reading and writing are supported. Reading from an empty buffer will wait until data is written. Writing to a full
+    /// buffer will wait until data is read.
     /// </summary>
     public class ReadWriteRingBuffer
     {
         #region Constructors
 
 #if !(NET20 || NET35)
-        /// <summary>
-        /// Create a new RingBuffer with a specified size.
-        /// </summary>
+        /// <summary>Create a new RingBuffer with a specified size.</summary>
         /// <param name="size">The size of the ring buffer to create.</param>
         /// <param name="token">The cancellation token.</param>
         public ReadWriteRingBuffer(int size, CancellationToken? token = null)
 #else
-        /// <summary>
-        /// Create a new RingBuffer with a specified size.
-        /// </summary>
+
+        /// <summary>Create a new RingBuffer with a specified size.</summary>
         /// <param name="size">The size of the ring buffer to create.</param>
         public ReadWriteRingBuffer(int size)
 #endif
@@ -53,14 +48,12 @@ namespace Cave.Compression.Tests.TestSupport
 
         #endregion Constructors
 
-        /// <summary>
-        /// Clear the buffer contents.
-        /// </summary>
+        /// <summary>Clear the buffer contents.</summary>
         public void Clear()
         {
             tail_ = 0;
             head_ = 0;
-            count_ = 0;
+            Count = 0;
 
             Array.Clear(array_, 0, array_.Length);
 
@@ -70,25 +63,21 @@ namespace Cave.Compression.Tests.TestSupport
 #endif
         }
 
-        /// <summary>
-        /// Close the buffer for writing.
-        /// </summary>
+        /// <summary>Close the buffer for writing.</summary>
         /// <remarks>A Read when the buffer is closed and there is no data will return -1.</remarks>
         public void Close()
         {
-            isClosed_ = true;
+            IsClosed = true;
 #if !SimpleSynch
 			notEmptyEvent_.Set();
 #endif
         }
 
-        /// <summary>
-        /// Write adds a byte to the head of the RingBuffer.
-        /// </summary>
+        /// <summary>Write adds a byte to the head of the RingBuffer.</summary>
         /// <param name="value">The value to add.</param>
         public void WriteByte(byte value)
         {
-            if (isClosed_)
+            if (IsClosed)
             {
                 throw new ApplicationException("Buffer is closed");
             }
@@ -114,7 +103,7 @@ namespace Cave.Compression.Tests.TestSupport
 				bool setEmpty = (count_ == 0);
 #endif
 
-                count_ += 1;
+                Count += 1;
 
 #if !SimpleSynch
 				if (IsFull)
@@ -129,12 +118,12 @@ namespace Cave.Compression.Tests.TestSupport
 #endif
             }
 
-            bytesWritten_++;
+            BytesWritten++;
         }
 
         public void Write(byte[] buffer, int index, int count)
         {
-            if (isClosed_)
+            if (IsClosed)
             {
                 throw new ApplicationException("Buffer is closed");
             }
@@ -153,8 +142,7 @@ namespace Cave.Compression.Tests.TestSupport
 				notFullEvent_.WaitOne();
 #endif
 
-                // Gauranteed to not be full at this point, however readers may sill read
-                // from the buffer first.
+                // Gauranteed to not be full at this point, however readers may sill read from the buffer first.
                 lock (lockObject_)
                 {
                     var bytesToWrite = Length - Count;
@@ -175,9 +163,9 @@ namespace Cave.Compression.Tests.TestSupport
                         head_ = (head_ + 1) % array_.Length;
 
                         bytesToWrite--;
-                        bytesWritten_++;
+                        BytesWritten++;
                         count--;
-                        count_++;
+                        Count++;
                     }
 
 #if !SimpleSynch
@@ -195,16 +183,14 @@ namespace Cave.Compression.Tests.TestSupport
             }
         }
 
-        /// <summary>
-        /// Read a byte from the buffer.
-        /// </summary>
+        /// <summary>Read a byte from the buffer.</summary>
         /// <returns></returns>
         public int ReadByte()
         {
             var result = -1;
 
 #if SimpleSynch
-            while (!isClosed_ && IsEmpty)
+            while (!IsClosed && IsEmpty)
             {
                 Thread.Sleep(waitSpan_);
 #if !(NET20 || NET35)
@@ -224,7 +210,7 @@ namespace Cave.Compression.Tests.TestSupport
 #if !SimpleSynch
 					bool setFull = IsFull;
 #endif
-                    count_ -= 1;
+                    Count -= 1;
 #if !SimpleSynch
 					if (!isClosed_ && (count_ == 0))
 					{
@@ -239,7 +225,7 @@ namespace Cave.Compression.Tests.TestSupport
                 }
             }
 
-            bytesRead_++;
+            BytesRead++;
 
             return result;
         }
@@ -251,7 +237,7 @@ namespace Cave.Compression.Tests.TestSupport
             while (count > 0)
             {
 #if SimpleSynch
-                while (!isClosed_ && IsEmpty)
+                while (!IsClosed && IsEmpty)
                 {
                     Thread.Sleep(waitSpan_);
 #if !(NET20 || NET35)
@@ -290,9 +276,9 @@ namespace Cave.Compression.Tests.TestSupport
 
                             tail_ = (tail_ + 1) % array_.Length;
                             count--;
-                            count_--;
+                            Count--;
                             toRead--;
-                            bytesRead_++;
+                            BytesRead++;
                         }
 #if !SimpleSynch
 						if (!isClosed_ && (count_ == 0))
@@ -314,56 +300,24 @@ namespace Cave.Compression.Tests.TestSupport
 
         #region Properties
 
-        /// <summary>
-        /// Gets a value indicating wether the buffer is empty or not.
-        /// </summary>
-        public bool IsEmpty
-        {
-            get { return count_ == 0; }
-        }
+        /// <summary>Gets a value indicating wether the buffer is empty or not.</summary>
+        public bool IsEmpty => Count == 0;
 
-        public bool IsFull
-        {
-            get
-            {
-                return (count_ == array_.Length);
-            }
-        }
+        public bool IsFull => Count == array_.Length;
 
-        public bool IsClosed
-        {
-            get { return isClosed_; }
-        }
+        /// <summary>Flag indicating the buffer is closed.</summary>
+        public bool IsClosed { get; private set; }
 
-        /// <summary>
-        /// Gets the number of elements in the buffer.
-        /// </summary>
-        public int Count
-        {
-            get
-            {
-                return count_;
-            }
-        }
+        /// <summary>Gets the number of elements in the buffer.</summary>
+        public int Count { get; private set; }
 
-        public int Length
-        {
-            get { return array_.Length; }
-        }
+        public int Length => array_.Length;
 
-        public long BytesWritten
-        {
-            get { return bytesWritten_; }
-        }
+        public long BytesWritten { get; private set; }
 
-        public long BytesRead
-        {
-            get { return bytesRead_; }
-        }
+        public long BytesRead { get; private set; }
 
-        /// <summary>
-        /// Indexer - Get an element from the tail of the RingBuffer.
-        /// </summary>
+        /// <summary>Indexer - Get an element from the tail of the RingBuffer.</summary>
         public byte this[int index]
         {
             get
@@ -381,35 +335,16 @@ namespace Cave.Compression.Tests.TestSupport
 
         #region Instance Variables
 
-        /// <summary>
-        /// Flag indicating the buffer is closed.
-        /// </summary>
-        bool isClosed_;
-
-        /// <summary>
-        /// Index for the head of the buffer.
-        /// </summary>
+        /// <summary>Index for the head of the buffer.</summary>
         /// <remarks>Its the index of the next byte to be <see cref="Write">written</see>.</remarks>
         int head_;
 
-        /// <summary>
-        /// Index for the tail of the buffer.
-        /// </summary>
+        /// <summary>Index for the tail of the buffer.</summary>
         /// <remarks>Its the index of the next byte to be <see cref="Read">written</see>.</remarks>
         int tail_;
 
-        /// <summary>
-        /// The total number of elements added to the buffer.
-        /// </summary>
-        int count_;
-
-        /// <summary>
-        /// Storage for the ring buffer contents.
-        /// </summary>
+        /// <summary>Storage for the ring buffer contents.</summary>
         byte[] array_;
-
-        long bytesWritten_;
-        long bytesRead_;
 
         object lockObject_;
 #if !(NET20 || NET35)

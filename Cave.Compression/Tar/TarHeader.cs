@@ -173,7 +173,7 @@ namespace Cave.Compression.Tar
                 long result = 0;
                 for (var pos = length - 8; pos < length; pos++)
                 {
-                    result = result << 8 | header[offset + pos];
+                    result = (result << 8) | header[offset + pos];
                 }
 
                 return result;
@@ -746,14 +746,14 @@ namespace Cave.Compression.Tar
             {
                 if (value != null)
                 {
-                    userName = value.Substring(0, Math.Min(UsernameLength, value.Length));
+                    userName = value[..Math.Min(UsernameLength, value.Length)];
                 }
                 else
                 {
                     var currentUser = "user";
                     if (currentUser.Length > UsernameLength)
                     {
-                        currentUser = currentUser.Substring(0, UsernameLength);
+                        currentUser = currentUser[..UsernameLength];
                     }
 
                     userName = currentUser;
@@ -807,7 +807,7 @@ namespace Cave.Compression.Tar
         /// <returns>A new <see cref="object"/> that is a copy of the current instance.</returns>
         public object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
         #endregion
 

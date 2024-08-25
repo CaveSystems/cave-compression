@@ -435,7 +435,7 @@ namespace Cave.Compression.Tar
             // 23-Jan-2004 GnuTar allows device names in path where the name is not local to the current directory
             if (name.IndexOf(Directory.GetCurrentDirectory(), StringComparison.Ordinal) == 0)
             {
-                name = name.Substring(Directory.GetCurrentDirectory().Length);
+                name = name[Directory.GetCurrentDirectory().Length..];
             }
 
             name = name.Replace(Path.DirectorySeparatorChar, '/');
@@ -445,7 +445,7 @@ namespace Cave.Compression.Tar
             // so we loop on starting /'s.
             while (name.StartsWith("/", StringComparison.Ordinal))
             {
-                name = name.Substring(1);
+                name = name[1..];
             }
 
             header.LinkName = string.Empty;

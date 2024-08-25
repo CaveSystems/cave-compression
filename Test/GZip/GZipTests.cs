@@ -197,10 +197,8 @@ namespace Cave.Compression.Tests.GZip
             s.Close();
 
             memStream = new TrackedMemoryStream();
-            using (var no2 = new GZipOutputStream(memStream))
-            {
-                s.Close();
-            }
+            using var no2 = new GZipOutputStream(memStream);
+            s.Close();
         }
 
         [Test]

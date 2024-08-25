@@ -31,24 +31,22 @@ namespace Cave.Compression.Tests.BZip2
             ms = new MemoryStream(ms.GetBuffer());
             ms.Seek(0, SeekOrigin.Begin);
 
-            using (var inStream = new BZip2InputStream(ms))
+            using var inStream = new BZip2InputStream(ms);
+            var buf2 = new byte[buf.Length];
+            var pos = 0;
+            while (true)
             {
-                var buf2 = new byte[buf.Length];
-                var pos = 0;
-                while (true)
+                var numRead = inStream.Read(buf2, pos, 4096);
+                if (numRead <= 0)
                 {
-                    var numRead = inStream.Read(buf2, pos, 4096);
-                    if (numRead <= 0)
-                    {
-                        break;
-                    }
-                    pos += numRead;
+                    break;
                 }
+                pos += numRead;
+            }
 
-                for (var i = 0; i < buf.Length; ++i)
-                {
-                    Assert.AreEqual(buf2[i], buf[i]);
-                }
+            for (var i = 0; i < buf.Length; ++i)
+            {
+                Assert.AreEqual(buf2[i], buf[i]);
             }
         }
 
@@ -66,22 +64,20 @@ namespace Cave.Compression.Tests.BZip2
 
             ms.Seek(0, SeekOrigin.Begin);
 
-            using (var inStream = new BZip2InputStream(ms))
+            using var inStream = new BZip2InputStream(ms);
+            var buffer = new byte[1024];
+            var pos = 0;
+            while (true)
             {
-                var buffer = new byte[1024];
-                var pos = 0;
-                while (true)
+                var numRead = inStream.Read(buffer, 0, buffer.Length);
+                if (numRead <= 0)
                 {
-                    var numRead = inStream.Read(buffer, 0, buffer.Length);
-                    if (numRead <= 0)
-                    {
-                        break;
-                    }
-                    pos += numRead;
+                    break;
                 }
-
-                Assert.AreEqual(pos, 0);
+                pos += numRead;
             }
+
+            Assert.AreEqual(pos, 0);
         }
 
         /*

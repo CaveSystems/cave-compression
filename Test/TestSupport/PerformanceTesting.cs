@@ -1,11 +1,14 @@
-﻿
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using Cave.Console;
+
 #if !(NET20 || NET35)
+
 using System.Runtime.ExceptionServices;
+
 #endif
 
 namespace Cave.Compression.Tests.TestSupport
@@ -29,7 +32,6 @@ namespace Cave.Compression.Tests.TestSupport
 #else
             var window = new WindowedStream(size);
 #endif
-
 
             var readerState = new PerfWorkerState()
             {
@@ -155,7 +157,7 @@ namespace Cave.Compression.Tests.TestSupport
 
             var elapsed = sw.Elapsed;
             var testSize = size / ByteToMB;
-            Console.WriteLine($"Time {elapsed:mm\\:ss\\.fff} throughput {testSize / elapsed.TotalSeconds:f2} MB/s (using test size: {testSize:f2} MB)");
+            SystemConsole.WriteLine($"Time {elapsed:mm\\:ss\\.fff} throughput {testSize / elapsed.TotalSeconds:f2} MB/s (using test size: {testSize:f2} MB)");
         }
 
         public static void TestWrite(int size, Func<Stream, Stream> output, Action<Stream> outputClose = null)
@@ -183,7 +185,7 @@ namespace Cave.Compression.Tests.TestSupport
 
             var elapsed = sw.Elapsed;
             var testSize = size / ByteToMB;
-            Console.WriteLine($"Time {elapsed:mm\\:ss\\.fff} throughput {testSize / elapsed.TotalSeconds:f2} MB/s (using test size: {testSize:f2} MB)");
+            SystemConsole.WriteLine($"Time {elapsed:mm\\:ss\\.fff} throughput {testSize / elapsed.TotalSeconds:f2} MB/s (using test size: {testSize:f2} MB)");
         }
 
         internal static void WriteTargetBytes(ref PerfWorkerState state)
@@ -216,7 +218,7 @@ namespace Cave.Compression.Tests.TestSupport
 
             var pacifierLevel = state.bytesLeft - PacifierOffset;
 
-            while ((state.bytesLeft > 0)
+            while (state.bytesLeft > 0
 #if !(NET20 || NET35)
                 && !state.token.IsCancellationRequested
 #endif
