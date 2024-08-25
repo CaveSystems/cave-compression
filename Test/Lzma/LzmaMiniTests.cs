@@ -5,6 +5,7 @@ using Cave.Console;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
 using Cave.Compression.Lzma;
+using System.Linq;
 
 namespace Cave.Compression.Tests.Lzma;
 
@@ -39,6 +40,7 @@ public class LzmaMiniTests
         {
             var block = new byte[200];
             random.NextBytes(block);
+            block = block.Where(b => b > 16 && b < 128).ToArray();
             return new SampleStruct()
             {
                 Double = Math.Round(random.NextDouble() * 600, 3),
