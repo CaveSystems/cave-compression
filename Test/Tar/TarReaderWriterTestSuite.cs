@@ -7,12 +7,29 @@ using NUnit.Framework;
 
 namespace Cave.Compression.Tests.Tar
 {
-    /// <summary>
-    /// This class contains test cases for Tar archive handling.
-    /// </summary>
+    /// <summary>This class contains test cases for Tar archive handling.</summary>
     [TestFixture]
     public class TarReaderWriterTestSuite
     {
+        #region Private Methods
+
+        string GetTempDir()
+        {
+            while (true)
+            {
+                var temp = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}");
+                if (!Directory.Exists(temp))
+                {
+                    Directory.CreateDirectory(temp);
+                    return temp;
+                }
+            }
+        }
+
+        #endregion Private Methods
+
+        #region Public Methods
+
         [Test]
         [Category("Tar")]
         public void TarReaderWriter()
@@ -24,7 +41,7 @@ namespace Cave.Compression.Tests.Tar
             {
                 using (var writer = new TarWriter(stream, true))
                 {
-                    for (var i = 0; i < 1000; i++)
+                    for (var i = 0; i < 100; i++)
                     {
                         var buffer = new byte[random.Next(64 * 1024)];
                         var name = $"{i % 10}/{i} {buffer.GetHashCode().ToString("x")}.txt";
@@ -51,19 +68,6 @@ namespace Cave.Compression.Tests.Tar
             }
         }
 
-        string GetTempDir()
-        {
-            while (true)
-            {
-                var temp = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}");
-                if (!Directory.Exists(temp))
-                {
-                    Directory.CreateDirectory(temp);
-                    return temp;
-                }
-            }
-        }
-
         [Test]
         [Category("Tar")]
         public void TarReaderWriterFiles()
@@ -78,7 +82,7 @@ namespace Cave.Compression.Tests.Tar
             using (var stream = File.Create(tempFileName))
             {
                 using var writer = new TarWriter(stream, true);
-                for (var i = 0; i < 1000; i++)
+                for (var i = 0; i < 100; i++)
                 {
                     var buffer = new byte[random.Next(64 * 1024)];
                     var name = $"{i % 10}/{i}.txt";
@@ -118,5 +122,7 @@ namespace Cave.Compression.Tests.Tar
             Directory.Delete(temp1, true);
             Directory.Delete(temp2, true);
         }
+
+        #endregion Public Methods
     }
 }

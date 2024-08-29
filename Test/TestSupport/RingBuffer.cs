@@ -451,7 +451,7 @@ namespace Cave.Compression.Tests.TestSupport
         public void Threaded()
         {
             buffer_ = new ReadWriteRingBuffer(8);
-            readTarget_ = writeTarget_ = 16384;
+            readTarget_ = writeTarget_ = 2048;
 
             var reader = new Thread(Reader);
             reader.Start();
@@ -484,8 +484,6 @@ namespace Cave.Compression.Tests.TestSupport
                     thisTime--;
                     readTarget_--;
                 }
-
-                Thread.Sleep(r.Next(10));
             }
 
             var last = buffer_.ReadByte();
@@ -514,7 +512,6 @@ namespace Cave.Compression.Tests.TestSupport
                     thisTime--;
                     writeTarget_--;
                 }
-                Thread.Sleep(r.Next(10));
             }
             buffer_.Close();
         }

@@ -572,7 +572,8 @@ namespace Cave.Compression.Tests.Tar
         [Test]
         [Category("Tar")]
         [Category("Performance")]
-        //[Explicit("Long Running")]
+        [Category("Long Running")]
+        [Explicit("Long Running")]
         public void SingleLargeEntry()
         {
             const string EntryName = "LargeTarEntry";
@@ -740,7 +741,8 @@ namespace Cave.Compression.Tests.Tar
         [Test]
         [Category("Tar")]
         [Category("Performance")]
-        //[Explicit("Long Running")]
+        [Category("Long Running")]
+        [Explicit("Long Running")]
         public void WriteThroughput()
         {
             const string EntryName = "LargeTarEntry";

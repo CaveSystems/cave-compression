@@ -117,27 +117,42 @@ public class LzmaStandardTests
 
     #endregion Private Classes
 
+    #region Private Methods
+
+    void Test(long size)
+    {
+        var ms = new MemoryStream();
+        var stopWatch = StopWatch.StartNew();
+        LzmaStandard.Compress(new TestStream(size), ms);
+        var compressionTime = stopWatch.Elapsed;
+        ms.Position = 0;
+        var checkStream = new CheckStream(size);
+        stopWatch.Reset();
+        LzmaStandard.Decompress(ms, checkStream);
+        var decompressionTime = stopWatch.Elapsed;
+        Assert.IsTrue(checkStream.Position == checkStream.Length);
+        Assert.IsTrue(checkStream.Position == size);
+        var ratio = ms.Length / (double)size;
+        SystemConsole.WriteLine($"Lzma Streaming {size.FormatSize()} compressionTime={compressionTime.FormatTime()} decompressionTime={decompressionTime.FormatTime()} speed={(size / decompressionTime.TotalSeconds).FormatBinarySize()}/s ratio={ratio:P} ok.");
+    }
+
+    #endregion Private Methods
+
     #region Public Methods
 
     [Test]
-    public void LzmaTest()
+    public void LzmaTest10k()
     {
-        for (long i = 10000; i < uint.MaxValue; i *= 100)
-        {
-            var ms = new MemoryStream();
-            var stopWatch = StopWatch.StartNew();
-            LzmaStandard.Compress(new TestStream(i), ms);
-            var compressionTime = stopWatch.Elapsed;
-            ms.Position = 0;
-            var checkStream = new CheckStream(i);
-            stopWatch.Reset();
-            LzmaStandard.Decompress(ms, checkStream);
-            var decompressionTime = stopWatch.Elapsed;
-            Assert.IsTrue(checkStream.Position == checkStream.Length);
-            Assert.IsTrue(checkStream.Position == i);
-            var ratio = ms.Length / (double)i;
-            SystemConsole.WriteLine($"Lzma Streaming {i.FormatSize()} compressionTime={compressionTime.FormatTime()} decompressionTime={decompressionTime.FormatTime()} ratio={ratio:P} ok.");
-        }
+        Test(10 * 1024);
+    }
+
+    [Test]
+    [Category("Performance")]
+    [Category("Long Running")]
+    [Explicit("Long Running")]
+    public void LzmaTest1G()
+    {
+        Test(1024 * 1024 * 1024);
     }
 
     #endregion Public Methods

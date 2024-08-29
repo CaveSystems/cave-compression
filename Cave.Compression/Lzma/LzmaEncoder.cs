@@ -8,6 +8,8 @@ using Cave.Progress;
 
 namespace Cave.Compression.Lzma;
 
+/// <summary>Lzma endoder</summary>
+/// <remarks>Use same <see cref="DictionarySize"/> and <see cref="GetEncoderState()"/> used for encoding. Alternative use <see cref="WriteCoderProperties(Stream)"/>.</remarks>
 public class LzmaEncoder
 {
     #region Private Classes
@@ -1315,11 +1317,11 @@ public class LzmaEncoder
 
     #region Public Fields
 
-    public const int kDefaultDictionaryLogSize = 22;
+    internal const int kDefaultDictionaryLogSize = 22;
 
-    public const uint kNumFastBytesDefault = 0x20;
+    internal const uint kNumFastBytesDefault = 0x20;
 
-    public const int kPropSize = 5;
+    internal const int kPropSize = 5;
 
     #endregion Public Fields
 
@@ -1339,6 +1341,7 @@ public class LzmaEncoder
         }
     }
 
+    /// <summary>Creates a new instance of the encoder</summary>
     public LzmaEncoder()
     {
         for (var i = 0; i < kNumOpts; i++)
@@ -1398,7 +1401,7 @@ public class LzmaEncoder
 
     /// <summary>Gets the coder state byte needed together with the dictionary size at decoding.</summary>
     /// <returns></returns>
-    public byte GetCoderState() => (byte)((((posStateBits * 5) + numLiteralPosStateBits) * 9) + numLiteralContextBits);
+    public byte GetEncoderState() => (byte)((((posStateBits * 5) + numLiteralPosStateBits) * 9) + numLiteralContextBits);
 
     /// <inheritdoc/>
     public void SetCoderProperties(LzmaCoderProperties settings)
@@ -1435,6 +1438,9 @@ public class LzmaEncoder
         SetWriteEndMarkerMode(settings.EndMarker);
     }
 
+    /// <summary>Sets the dictionary size. This has to be communicated to the decoder.</summary>
+    /// <param name="newDictionarySize"></param>
+    /// <exception cref="LzmaInvalidParamException"></exception>
     public void SetDictionarySize(uint newDictionarySize)
     {
         const int kDicLogSizeMaxCompress = 30;
@@ -1447,15 +1453,22 @@ public class LzmaEncoder
         distTableSize = (uint)dicLogSize * 2;
     }
 
+    /// <summary>Sets the number of bytes used for training of the encoder.</summary>
+    /// <param name="trainSize"></param>
     public void SetTrainSize(uint trainSize) => this.trainSize = trainSize;
 
+    /// <summary>
+    /// Sets whether an end mark shall be encoded or not. In streaming mode with unknown (uncompressed) packet size this has to be present. If this is false the
+    /// decoder has to know the size of the decoded data.
+    /// </summary>
+    /// <param name="writeEndMarker"></param>
     public void SetWriteEndMarkerMode(bool writeEndMarker) => writeEndMark = writeEndMarker;
 
     /// <inheritdoc/>
     public void WriteCoderProperties(Stream outStream)
     {
         if (dictionarySize == 0) throw new InvalidOperationException($"{nameof(DictionarySize)} was not set. Use {nameof(SetDictionarySize)} first!");
-        properties[0] = GetCoderState();
+        properties[0] = GetEncoderState();
         for (var i = 0; i < 4; i++)
             properties[1 + i] = (byte)((dictionarySize >> (8 * i)) & 0xFF);
         outStream.Write(properties, 0, kPropSize);

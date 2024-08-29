@@ -3,10 +3,15 @@ using Cave.IO;
 
 namespace Cave.Compression.Lzma;
 
+/// <summary>Provides lzma standard compression / decompression</summary>
 public static class LzmaStandard
 {
     #region Public Methods
 
+    /// <summary>Compresses the specified input stream.</summary>
+    /// <param name="input"></param>
+    /// <param name="output"></param>
+    /// <param name="properties"></param>
     public static void Compress(Stream input, Stream output, LzmaCoderProperties properties = null)
     {
         var datasize = input.CanSeek ? input.Length : -1L;
@@ -20,7 +25,7 @@ public static class LzmaStandard
             encoder.SetDictionarySize(1 << LzmaEncoder.kDefaultDictionaryLogSize);
             encoder.SetWriteEndMarkerMode(datasize <= 0);
         }
-        var state = encoder.GetCoderState();
+        var state = encoder.GetEncoderState();
         var writer = new DataWriter(output);
         writer.Write(state);
         writer.Write(encoder.DictionarySize);
@@ -28,6 +33,9 @@ public static class LzmaStandard
         encoder.Encode(input, output, datasize);
     }
 
+    /// <summary>Decompresses the specified input stream.</summary>
+    /// <param name="input"></param>
+    /// <param name="output"></param>
     public static void Decompress(Stream input, Stream output)
     {
         LzmaDecoder decoder = new();

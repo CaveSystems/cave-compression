@@ -162,7 +162,7 @@ namespace Cave.Compression.Tar
 
             Stream StreamForEntry(TarEntry t)
             {
-                var name = t.Name;
+                var name = t.Name.ToString();
                 if (Path.IsPathRooted(name))
                 {
                     name = name[Path.GetPathRoot(name).Length..];

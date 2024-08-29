@@ -236,6 +236,7 @@ public class LzmaDecoder
 
     #region Public Constructors
 
+    /// <summary>Creates a new instance of the decoder</summary>
     public LzmaDecoder()
     {
         for (var i = 0; i < LzmaBase.kNumLenToPosStates; i++)
@@ -389,6 +390,9 @@ public class LzmaDecoder
         rangeDecoder.ReleaseStream();
     }
 
+    /// <summary>Sets the decoder properties from a 5 byte array (state and dictionary size)</summary>
+    /// <param name="properties"></param>
+    /// <exception cref="LzmaInvalidParamException"></exception>
     public void SetDecoderProperties(byte[] properties)
     {
         if (properties.Length < 5) throw new LzmaInvalidParamException(nameof(properties));
@@ -398,6 +402,9 @@ public class LzmaDecoder
         SetDictionarySize(dictionarySize);
     }
 
+    /// <summary>Sets the decoder state</summary>
+    /// <param name="state"></param>
+    /// <exception cref="LzmaInvalidParamException"></exception>
     public void SetDecoderState(byte state)
     {
         var lc = state % 9;
@@ -409,6 +416,8 @@ public class LzmaDecoder
         SetPosBitsProperties(pb);
     }
 
+    /// <summary>Sets the dictionary size</summary>
+    /// <param name="dictionarySize"></param>
     public void SetDictionarySize(uint dictionarySize)
     {
         if (this.dictionarySize != dictionarySize)
@@ -420,6 +429,10 @@ public class LzmaDecoder
         }
     }
 
+    /// <summary>Sets the literal decoder properties (part of the decoder state byte)</summary>
+    /// <param name="numPosBits"></param>
+    /// <param name="numPrevBits"></param>
+    /// <exception cref="LzmaInvalidParamException"></exception>
     public void SetLiteralProperties(int numPosBits, int numPrevBits)
     {
         if (numPosBits > 8) throw new LzmaInvalidParamException($"{nameof(numPosBits)} > 8!", nameof(numPosBits));
@@ -427,6 +440,9 @@ public class LzmaDecoder
         literalDecoder.Create(numPosBits, numPrevBits);
     }
 
+    /// <summary>Sets the position bits of the decoder properties (part of the decoder state byte)</summary>
+    /// <param name="posBits"></param>
+    /// <exception cref="LzmaInvalidParamException"></exception>
     public void SetPosBitsProperties(int posBits)
     {
         if (posBits > LzmaBase.kNumPosStatesBitsMax) throw new LzmaInvalidParamException($"{nameof(posBits)} > {nameof(LzmaBase.kNumPosStatesBitsMax)}", nameof(posBits));
@@ -436,6 +452,9 @@ public class LzmaDecoder
         posStateMask = numPosStates - 1;
     }
 
+    /// <summary>Trains the decoder with the specified data</summary>
+    /// <param name="stream"></param>
+    /// <returns></returns>
     public bool Train(Stream stream)
     {
         solid = true;

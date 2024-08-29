@@ -7,10 +7,16 @@ using Cave.IO;
 
 namespace Cave.Compression.Lzma;
 
+/// <summary>Provides mini packet encoding using lzma. This is an expensive way to save some bytes, but can make sense in broadcast scenarios.</summary>
 public static class LzmaMini
 {
     #region Public Methods
 
+    /// <summary>Creates all possible encoder settings with the specified properties.</summary>
+    /// <param name="validLitPosStateBits">0..4</param>
+    /// <param name="validPosStateBits">0..4</param>
+    /// <param name="validMatchFinders">BT2, BT4</param>
+    /// <returns>Returns the list of valid <see cref="LzmaCoderProperties"/></returns>
     public static IEnumerable<LzmaCoderProperties> BuildSettings(int[] validLitPosStateBits = null, int[] validPosStateBits = null, LzmaMatchFinderType[] validMatchFinders = null)
     {
         if (validLitPosStateBits is null) validLitPosStateBits = new[] { 0, 1, 2, 3, 4 };
@@ -31,6 +37,10 @@ public static class LzmaMini
         return settings.ToArray();
     }
 
+    /// <summary>Compress the specified byte block</summary>
+    /// <param name="data"></param>
+    /// <param name="coderProperties"></param>
+    /// <returns></returns>
     public static byte[] Compress(byte[] data, LzmaCoderProperties coderProperties = null)
     {
         if (coderProperties == null) coderProperties = new LzmaCoderProperties()
@@ -47,15 +57,19 @@ public static class LzmaMini
         LzmaEncoder encoder = new();
         encoder.SetDictionarySize((uint)data.Length);
         encoder.SetCoderProperties(coderProperties);
-        var state = encoder.GetCoderState();
+        var state = encoder.GetEncoderState();
         var writer = new DataWriter(output);
         writer.Write7BitEncoded32(data.Length);
         writer.Write(state);
         encoder.Encode(input, output, data.Length);
+        if (output.Length > data.Length + 1)
+        {
+            return Uncompressed(data);
+        }
         return output.ToArray();
     }
 
-    /// <summary>Compress the specified byte block</summary>
+    /// <summary>Decompress the specified byte block</summary>
     /// <param name="data"></param>
     /// <returns></returns>
     public static byte[] Decompress(byte[] data)
@@ -77,8 +91,9 @@ public static class LzmaMini
         return output.ToArray();
     }
 
-    /// <summary>Compress the specified byte block</summary>
+    /// <summary>Compress the specified byte block using all specified coder <paramref name="coderProperties"/> and returning only the best.</summary>
     /// <param name="data"></param>
+    /// <param name="coderProperties"></param>
     /// <returns></returns>
     public static byte[] ParallelCompress(byte[] data, IEnumerable<LzmaCoderProperties> coderProperties)
     {
@@ -98,6 +113,9 @@ public static class LzmaMini
         return best;
     }
 
+    /// <summary>Prepends the uncompressed data follows byte so that the receiver can always call the <see cref="Decompress(byte[])"/> function.</summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
     public static byte[] Uncompressed(byte[] data)
     {
         //uncompressed
