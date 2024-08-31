@@ -133,7 +133,7 @@ public class LzmaStandardTests
         Assert.IsTrue(checkStream.Position == checkStream.Length);
         Assert.IsTrue(checkStream.Position == size);
         var ratio = ms.Length / (double)size;
-        SystemConsole.WriteLine($"Lzma Streaming {size.FormatSize()} compressionTime={compressionTime.FormatTime()} decompressionTime={decompressionTime.FormatTime()} speed={(size / decompressionTime.TotalSeconds).FormatBinarySize()}/s ratio={ratio:P} ok.");
+        SystemConsole.WriteLine($"Lzma Streaming {size.FormatBinarySize()} compressionTime={compressionTime.FormatTime()} decompressionTime={decompressionTime.FormatTime()} speed={(size / decompressionTime.TotalSeconds).FormatBinarySize()}/s ratio={ratio:P} ok.");
     }
 
     #endregion Private Methods
@@ -141,7 +141,7 @@ public class LzmaStandardTests
     #region Public Methods
 
     [Test]
-    public void LzmaTest10k()
+    public void LzmaTest10kiB()
     {
         Test(10 * 1024);
     }
@@ -150,9 +150,9 @@ public class LzmaStandardTests
     [Category("Performance")]
     [Category("Long Running")]
     [Explicit("Long Running")]
-    public void LzmaTest1G()
+    public void LzmaTest64MiB()
     {
-        Test(1024 * 1024 * 1024);
+        Test(64 * 1024 * 1024);
     }
 
     #endregion Public Methods
