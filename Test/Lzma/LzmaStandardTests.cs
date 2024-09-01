@@ -140,6 +140,7 @@ public class LzmaStandardTests
 
     #region Public Methods
 
+#if !NET20
     [Test]
     public void LzmaTest10kiB()
     {
@@ -154,6 +155,7 @@ public class LzmaStandardTests
     {
         Test(64 * 1024 * 1024);
     }
+#endif
 
     #endregion Public Methods
 }

@@ -65,6 +65,7 @@ public class LzmaMiniTests
 
     #region Public Methods
 
+#if !NET20
     [Test]
     public void LzmaMiniTest()
     {
@@ -83,6 +84,7 @@ public class LzmaMiniTests
         ratio /= 1000d;
         SystemConsole.WriteLine($"Ratio: {ratio:P}");
     }
+#endif
 
     #endregion Public Methods
 }
