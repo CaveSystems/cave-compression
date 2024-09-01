@@ -65,7 +65,7 @@ public class LzmaMiniTests
 
     #region Public Methods
 
-#if !NET20
+#if !NET20 && !NET35
     [Test]
     public void LzmaMiniTest()
     {
