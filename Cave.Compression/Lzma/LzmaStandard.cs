@@ -12,7 +12,7 @@ public static class LzmaStandard
     /// <param name="input"></param>
     /// <param name="output"></param>
     /// <param name="properties"></param>
-    public static void Compress(Stream input, Stream output, LzmaCoderProperties properties = null)
+    public static void Compress(Stream input, Stream output, LzmaCoderProperties? properties = null)
     {
         var datasize = input.CanSeek ? input.Length : -1L;
         LzmaEncoder encoder = new();
@@ -22,7 +22,7 @@ public static class LzmaStandard
         }
         else
         {
-            encoder.SetDictionarySize(1 << LzmaEncoder.kDefaultDictionaryLogSize);
+            encoder.SetDictionarySize(1 << LzmaEncoder.KDefaultDictionaryLogSize);
             encoder.SetWriteEndMarkerMode(datasize <= 0);
         }
         var state = encoder.GetEncoderState();

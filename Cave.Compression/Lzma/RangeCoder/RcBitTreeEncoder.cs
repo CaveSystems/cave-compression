@@ -1,11 +1,11 @@
 ﻿namespace Cave.Compression.Lzma.RangeCoder;
 
-struct RcBitTreeEncoder
+readonly struct RcBitTreeEncoder
 {
     #region Private Fields
 
-    RcBitEncoder[] Models;
-    int NumBitLevels;
+    readonly RcBitEncoder[] models;
+    readonly int numBitLevels;
 
     #endregion Private Fields
 
@@ -13,37 +13,35 @@ struct RcBitTreeEncoder
 
     public RcBitTreeEncoder(int numBitLevels)
     {
-        NumBitLevels = numBitLevels;
-        Models = new RcBitEncoder[1 << numBitLevels];
+        this.numBitLevels = numBitLevels;
+        models = new RcBitEncoder[1 << numBitLevels];
     }
 
     #endregion Public Constructors
 
     #region Public Methods
 
-    public static void ReverseEncode(RcBitEncoder[] Models, uint startIndex,
-        RcEncoder rangeEncoder, int NumBitLevels, uint symbol)
+    public static void ReverseEncode(RcBitEncoder[] models, uint startIndex, RcEncoder rangeEncoder, int numBitLevels, uint symbol)
     {
         uint m = 1;
-        for (var i = 0; i < NumBitLevels; i++)
+        for (var i = 0; i < numBitLevels; i++)
         {
             var bit = symbol & 1;
-            Models[startIndex + m].Encode(rangeEncoder, bit);
+            models[startIndex + m].Encode(rangeEncoder, bit);
             m = (m << 1) | bit;
             symbol >>= 1;
         }
     }
 
-    public static uint ReverseGetPrice(RcBitEncoder[] Models, uint startIndex,
-        int NumBitLevels, uint symbol)
+    public static uint ReverseGetPrice(RcBitEncoder[] models, uint startIndex, int numBitLevels, uint symbol)
     {
         uint price = 0;
         uint m = 1;
-        for (var i = NumBitLevels; i > 0; i--)
+        for (var i = numBitLevels; i > 0; i--)
         {
             var bit = symbol & 1;
             symbol >>= 1;
-            price += Models[startIndex + m].GetPrice(bit);
+            price += models[startIndex + m].GetPrice(bit);
             m = (m << 1) | bit;
         }
         return price;
@@ -52,11 +50,11 @@ struct RcBitTreeEncoder
     public void Encode(RcEncoder rangeEncoder, uint symbol)
     {
         uint m = 1;
-        for (var bitIndex = NumBitLevels; bitIndex > 0;)
+        for (var bitIndex = numBitLevels; bitIndex > 0;)
         {
             bitIndex--;
             var bit = (symbol >> bitIndex) & 1;
-            Models[m].Encode(rangeEncoder, bit);
+            models[m].Encode(rangeEncoder, bit);
             m = (m << 1) | bit;
         }
     }
@@ -65,11 +63,11 @@ struct RcBitTreeEncoder
     {
         uint price = 0;
         uint m = 1;
-        for (var bitIndex = NumBitLevels; bitIndex > 0;)
+        for (var bitIndex = numBitLevels; bitIndex > 0;)
         {
             bitIndex--;
             var bit = (symbol >> bitIndex) & 1;
-            price += Models[m].GetPrice(bit);
+            price += models[m].GetPrice(bit);
             m = (m << 1) + bit;
         }
         return price;
@@ -77,17 +75,17 @@ struct RcBitTreeEncoder
 
     public void Init()
     {
-        for (uint i = 1; i < (1 << NumBitLevels); i++)
-            Models[i].Init();
+        for (uint i = 1; i < (1 << numBitLevels); i++)
+            models[i].Init();
     }
 
     public void ReverseEncode(RcEncoder rangeEncoder, uint symbol)
     {
         uint m = 1;
-        for (uint i = 0; i < NumBitLevels; i++)
+        for (uint i = 0; i < numBitLevels; i++)
         {
             var bit = symbol & 1;
-            Models[m].Encode(rangeEncoder, bit);
+            models[m].Encode(rangeEncoder, bit);
             m = (m << 1) | bit;
             symbol >>= 1;
         }
@@ -97,11 +95,11 @@ struct RcBitTreeEncoder
     {
         uint price = 0;
         uint m = 1;
-        for (var i = NumBitLevels; i > 0; i--)
+        for (var i = numBitLevels; i > 0; i--)
         {
             var bit = symbol & 1;
             symbol >>= 1;
-            price += Models[m].GetPrice(bit);
+            price += models[m].GetPrice(bit);
             m = (m << 1) | bit;
         }
         return price;

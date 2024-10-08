@@ -2,72 +2,71 @@
 using System.IO;
 using Cave.Compression.Core;
 
-namespace Cave.Compression.GZip
+namespace Cave.Compression.GZip;
+
+/// <summary>
+/// An example class to demonstrate compression and decompression of GZip streams.
+/// </summary>
+public static class GZip
 {
     /// <summary>
-    /// An example class to demonstrate compression and decompression of GZip streams.
+    /// Decompress the <paramref name="inStream">input</paramref> writing
+    /// uncompressed data to the <paramref name="outStream">output stream</paramref>.
     /// </summary>
-    public static class GZip
+    /// <param name="inStream">The readable stream containing data to decompress.</param>
+    /// <param name="outStream">The output stream to receive the decompressed data.</param>
+    /// <param name="isStreamOwner">Both streams are closed on completion if true.</param>
+    public static void Decompress(Stream inStream, Stream outStream, bool isStreamOwner)
     {
-        /// <summary>
-        /// Decompress the <paramref name="inStream">input</paramref> writing
-        /// uncompressed data to the <paramref name="outStream">output stream</paramref>.
-        /// </summary>
-        /// <param name="inStream">The readable stream containing data to decompress.</param>
-        /// <param name="outStream">The output stream to receive the decompressed data.</param>
-        /// <param name="isStreamOwner">Both streams are closed on completion if true.</param>
-        public static void Decompress(Stream inStream, Stream outStream, bool isStreamOwner)
+        if (inStream == null || outStream == null)
         {
-            if (inStream == null || outStream == null)
-            {
-                throw new Exception("Null Stream");
-            }
-
-            try
-            {
-                using var bzipInput = new GZipInputStream(inStream);
-                bzipInput.IsStreamOwner = isStreamOwner;
-                StreamUtils.Copy(bzipInput, outStream, new byte[4096]);
-            }
-            finally
-            {
-                if (isStreamOwner)
-                {
-                    // inStream is closed by the GZipInputStream if stream owner
-                    outStream.Dispose();
-                }
-            }
+            throw new Exception("Null Stream");
         }
 
-        /// <summary>
-        /// Compress the <paramref name="inStream">input stream</paramref> sending
-        /// result data to <paramref name="outStream">output stream</paramref>.
-        /// </summary>
-        /// <param name="inStream">The readable stream to compress.</param>
-        /// <param name="outStream">The output stream to receive the compressed data.</param>
-        /// <param name="isStreamOwner">Both streams are closed on completion if true.</param>
-        /// <param name="level">Block size acts as compression level (1 to 9) with 1 giving
-        /// the lowest compression and 9 the highest.</param>
-        public static void Compress(Stream inStream, Stream outStream, bool isStreamOwner, CompressionStrength level)
+        try
         {
-            if (inStream == null || outStream == null)
+            using var bzipInput = new GZipInputStream(inStream);
+            bzipInput.IsStreamOwner = isStreamOwner;
+            StreamUtils.Copy(bzipInput, outStream, new byte[4096]);
+        }
+        finally
+        {
+            if (isStreamOwner)
             {
-                throw new Exception("Null Stream");
+                // inStream is closed by the GZipInputStream if stream owner
+                outStream.Dispose();
             }
+        }
+    }
 
-            try
+    /// <summary>
+    /// Compress the <paramref name="inStream">input stream</paramref> sending
+    /// result data to <paramref name="outStream">output stream</paramref>.
+    /// </summary>
+    /// <param name="inStream">The readable stream to compress.</param>
+    /// <param name="outStream">The output stream to receive the compressed data.</param>
+    /// <param name="isStreamOwner">Both streams are closed on completion if true.</param>
+    /// <param name="level">Block size acts as compression level (1 to 9) with 1 giving
+    /// the lowest compression and 9 the highest.</param>
+    public static void Compress(Stream inStream, Stream outStream, bool isStreamOwner, CompressionStrength level)
+    {
+        if (inStream == null || outStream == null)
+        {
+            throw new Exception("Null Stream");
+        }
+
+        try
+        {
+            using var bzipOutput = new GZipOutputStream(outStream, level, 4096);
+            bzipOutput.IsStreamOwner = isStreamOwner;
+            StreamUtils.Copy(inStream, bzipOutput, new byte[4096]);
+        }
+        finally
+        {
+            if (isStreamOwner)
             {
-                using var bzipOutput = new GZipOutputStream(outStream, level, 4096);
-                bzipOutput.IsStreamOwner = isStreamOwner;
-                StreamUtils.Copy(inStream, bzipOutput, new byte[4096]);
-            }
-            finally
-            {
-                if (isStreamOwner)
-                {
-                    // outStream is closed by the GZipOutputStream if stream owner
-                    inStream.Dispose();
-                }
+                // outStream is closed by the GZipOutputStream if stream owner
+                inStream.Dispose();
             }
         }
     }

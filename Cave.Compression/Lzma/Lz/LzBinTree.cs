@@ -5,27 +5,27 @@ using System.Diagnostics;
 
 namespace Cave.Compression.Lzma.LZ;
 
-class LzBinTree : LzInWindow, ILzMatchFinder
+sealed class LzBinTree : LzInWindow, ILzMatchFinder
 {
     #region Private Fields
 
-    const uint kBT2HashSize = 1 << 16;
-    const uint kEmptyHashValue = 0;
-    const uint kHash2Size = 1 << 10;
-    const uint kHash3Offset = kHash2Size;
-    const uint kHash3Size = 1 << 16;
-    const uint kMaxValForNormalize = ((uint)1 << 31) - 1;
-    const uint kStartMaxLen = 1;
+    const uint KBT2HashSize = 1 << 16;
+    const uint KEmptyHashValue = 0;
+    const uint KHash2Size = 1 << 10;
+    const uint KHash3Offset = KHash2Size;
+    const uint KHash3Size = 1 << 16;
+    const uint KMaxValForNormalize = ((uint)1 << 31) - 1;
+    const uint KStartMaxLen = 1;
     uint cutValue = 0xFF;
     uint cyclicBufferPos;
-    uint cyclicBufferSize = 0;
+    uint cyclicBufferSize;
     uint[] hash;
-    bool HASH_ARRAY = true;
+    bool hashArray = true;
     uint hashMask;
-    uint hashSizeSum = 0;
-    uint kFixHashSize = kHash2Size + kHash3Size;
+    uint hashSizeSum;
+    uint kFixHashSize = KHash2Size + KHash3Size;
     uint kMinMatchCheck = 4;
-    uint kNumHashDirectBytes = 0;
+    uint kNumHashDirectBytes;
     uint matchMaxLen;
     uint[] son;
 
@@ -35,7 +35,7 @@ class LzBinTree : LzInWindow, ILzMatchFinder
 
     void Normalize()
     {
-        var subValue = _pos - cyclicBufferSize;
+        var subValue = Pos - cyclicBufferSize;
         NormalizeLinks(son, cyclicBufferSize * 2, subValue);
         NormalizeLinks(hash, hashSizeSum, subValue);
         ReduceOffsets((int)subValue);
@@ -47,7 +47,7 @@ class LzBinTree : LzInWindow, ILzMatchFinder
         {
             var value = items[i];
             if (value <= subValue)
-                value = kEmptyHashValue;
+                value = KEmptyHashValue;
             else
                 value -= subValue;
             items[i] = value;
@@ -60,7 +60,7 @@ class LzBinTree : LzInWindow, ILzMatchFinder
 
     public void Create(uint historySize, uint keepAddBufferBefore, uint matchMaxLen, uint keepAddBufferAfter)
     {
-        if (historySize > kMaxValForNormalize - 256)
+        if (historySize > KMaxValForNormalize - 256)
             throw new Exception();
         cutValue = 16 + (matchMaxLen >> 1);
 
@@ -75,9 +75,9 @@ class LzBinTree : LzInWindow, ILzMatchFinder
         if (this.cyclicBufferSize < cyclicBufferSize)
             son = new uint[(this.cyclicBufferSize = cyclicBufferSize) * 2];
 
-        var hs = kBT2HashSize;
+        var hs = KBT2HashSize;
 
-        if (HASH_ARRAY)
+        if (hashArray)
         {
             hs = historySize - 1;
             hs |= hs >> 1;
@@ -101,11 +101,11 @@ class LzBinTree : LzInWindow, ILzMatchFinder
     public uint GetMatches(uint[] distances)
     {
         uint lenLimit;
-        if (_pos + matchMaxLen <= _streamPos)
+        if (Pos + matchMaxLen <= StreamPos)
             lenLimit = matchMaxLen;
         else
         {
-            lenLimit = _streamPos - _pos;
+            lenLimit = StreamPos - Pos;
             if (lenLimit < kMinMatchCheck)
             {
                 MovePos();
@@ -114,52 +114,52 @@ class LzBinTree : LzInWindow, ILzMatchFinder
         }
 
         uint offset = 0;
-        var matchMinPos = (_pos > cyclicBufferSize) ? (_pos - cyclicBufferSize) : 0;
-        var cur = _bufferOffset + _pos;
-        var maxLen = kStartMaxLen; // to avoid items for len < hashSize;
+        var matchMinPos = (Pos > cyclicBufferSize) ? (Pos - cyclicBufferSize) : 0;
+        var cur = BufferOffset + Pos;
+        var maxLen = KStartMaxLen; // to avoid items for len < hashSize;
         uint hashValue, hash2Value = 0, hash3Value = 0;
 
-        if (HASH_ARRAY)
+        if (hashArray)
         {
-            var temp = LzmaCrc32.Table[_bufferBase[cur]] ^ _bufferBase[cur + 1];
-            hash2Value = temp & (kHash2Size - 1);
-            temp ^= (uint)_bufferBase[cur + 2] << 8;
-            hash3Value = temp & (kHash3Size - 1);
-            hashValue = (temp ^ (LzmaCrc32.Table[_bufferBase[cur + 3]] << 5)) & hashMask;
+            var temp = LzmaCrc32.Table[BufferBase[cur]] ^ BufferBase[cur + 1];
+            hash2Value = temp & (KHash2Size - 1);
+            temp ^= (uint)BufferBase[cur + 2] << 8;
+            hash3Value = temp & (KHash3Size - 1);
+            hashValue = (temp ^ (LzmaCrc32.Table[BufferBase[cur + 3]] << 5)) & hashMask;
         }
         else
-            hashValue = _bufferBase[cur] ^ ((uint)_bufferBase[cur + 1] << 8);
+            hashValue = BufferBase[cur] ^ ((uint)BufferBase[cur + 1] << 8);
 
         var curMatch = hash[kFixHashSize + hashValue];
-        if (HASH_ARRAY)
+        if (hashArray)
         {
             var curMatch2 = hash[hash2Value];
-            var curMatch3 = hash[kHash3Offset + hash3Value];
-            hash[hash2Value] = _pos;
-            hash[kHash3Offset + hash3Value] = _pos;
+            var curMatch3 = hash[KHash3Offset + hash3Value];
+            hash[hash2Value] = Pos;
+            hash[KHash3Offset + hash3Value] = Pos;
             if (curMatch2 > matchMinPos)
-                if (_bufferBase[_bufferOffset + curMatch2] == _bufferBase[cur])
+                if (BufferBase[BufferOffset + curMatch2] == BufferBase[cur])
                 {
                     distances[offset++] = maxLen = 2;
-                    distances[offset++] = _pos - curMatch2 - 1;
+                    distances[offset++] = Pos - curMatch2 - 1;
                 }
             if (curMatch3 > matchMinPos)
-                if (_bufferBase[_bufferOffset + curMatch3] == _bufferBase[cur])
+                if (BufferBase[BufferOffset + curMatch3] == BufferBase[cur])
                 {
                     if (curMatch3 == curMatch2)
                         offset -= 2;
                     distances[offset++] = maxLen = 3;
-                    distances[offset++] = _pos - curMatch3 - 1;
+                    distances[offset++] = Pos - curMatch3 - 1;
                     curMatch2 = curMatch3;
                 }
             if (offset != 0 && curMatch2 == curMatch)
             {
                 offset -= 2;
-                maxLen = kStartMaxLen;
+                maxLen = KStartMaxLen;
             }
         }
 
-        hash[kFixHashSize + hashValue] = _pos;
+        hash[kFixHashSize + hashValue] = Pos;
 
         var ptr0 = (cyclicBufferPos << 1) + 1;
         var ptr1 = cyclicBufferPos << 1;
@@ -171,11 +171,11 @@ class LzBinTree : LzInWindow, ILzMatchFinder
         {
             if (curMatch > matchMinPos)
             {
-                if (_bufferBase[_bufferOffset + curMatch + kNumHashDirectBytes] !=
-                        _bufferBase[cur + kNumHashDirectBytes])
+                if (BufferBase[BufferOffset + curMatch + kNumHashDirectBytes] !=
+                        BufferBase[cur + kNumHashDirectBytes])
                 {
                     distances[offset++] = maxLen = kNumHashDirectBytes;
-                    distances[offset++] = _pos - curMatch - 1;
+                    distances[offset++] = Pos - curMatch - 1;
                 }
             }
         }
@@ -186,20 +186,20 @@ class LzBinTree : LzInWindow, ILzMatchFinder
         {
             if (curMatch <= matchMinPos || count-- == 0)
             {
-                son[ptr0] = son[ptr1] = kEmptyHashValue;
+                son[ptr0] = son[ptr1] = KEmptyHashValue;
                 break;
             }
-            var delta = _pos - curMatch;
+            var delta = Pos - curMatch;
             var cyclicPos = ((delta <= cyclicBufferPos) ?
                         (cyclicBufferPos - delta) :
                         (cyclicBufferPos - delta + cyclicBufferSize)) << 1;
 
-            var pby1 = _bufferOffset + curMatch;
+            var pby1 = BufferOffset + curMatch;
             var len = Math.Min(len0, len1);
-            if (_bufferBase[pby1 + len] == _bufferBase[cur + len])
+            if (BufferBase[pby1 + len] == BufferBase[cur + len])
             {
                 while (++len != lenLimit)
-                    if (_bufferBase[pby1 + len] != _bufferBase[cur + len])
+                    if (BufferBase[pby1 + len] != BufferBase[cur + len])
                         break;
                 if (maxLen < len)
                 {
@@ -213,7 +213,7 @@ class LzBinTree : LzInWindow, ILzMatchFinder
                     }
                 }
             }
-            if (_bufferBase[pby1 + len] < _bufferBase[cur + len])
+            if (BufferBase[pby1 + len] < BufferBase[cur + len])
             {
                 son[ptr1] = curMatch;
                 ptr1 = cyclicPos + 1;
@@ -256,7 +256,7 @@ class LzBinTree : LzInWindow, ILzMatchFinder
         if (++cyclicBufferPos >= cyclicBufferSize)
             cyclicBufferPos = 0;
         base.MovePos();
-        if (_pos == kMaxValForNormalize)
+        if (Pos == KMaxValForNormalize)
             Normalize();
     }
 
@@ -268,12 +268,12 @@ class LzBinTree : LzInWindow, ILzMatchFinder
 
     public void SetType(int numHashBytes)
     {
-        HASH_ARRAY = numHashBytes > 2;
-        if (HASH_ARRAY)
+        hashArray = numHashBytes > 2;
+        if (hashArray)
         {
             kNumHashDirectBytes = 0;
             kMinMatchCheck = 4;
-            kFixHashSize = kHash2Size + kHash3Size;
+            kFixHashSize = KHash2Size + KHash3Size;
         }
         else
         {
@@ -288,11 +288,11 @@ class LzBinTree : LzInWindow, ILzMatchFinder
         do
         {
             uint lenLimit;
-            if (_pos + matchMaxLen <= _streamPos)
+            if (Pos + matchMaxLen <= StreamPos)
                 lenLimit = matchMaxLen;
             else
             {
-                lenLimit = _streamPos - _pos;
+                lenLimit = StreamPos - Pos;
                 if (lenLimit < kMinMatchCheck)
                 {
                     MovePos();
@@ -300,26 +300,26 @@ class LzBinTree : LzInWindow, ILzMatchFinder
                 }
             }
 
-            var matchMinPos = (_pos > cyclicBufferSize) ? (_pos - cyclicBufferSize) : 0;
-            var cur = _bufferOffset + _pos;
+            var matchMinPos = (Pos > cyclicBufferSize) ? (Pos - cyclicBufferSize) : 0;
+            var cur = BufferOffset + Pos;
 
             uint hashValue;
 
-            if (HASH_ARRAY)
+            if (hashArray)
             {
-                var temp = LzmaCrc32.Table[_bufferBase[cur]] ^ _bufferBase[cur + 1];
-                var hash2Value = temp & (kHash2Size - 1);
-                hash[hash2Value] = _pos;
-                temp ^= (uint)_bufferBase[cur + 2] << 8;
-                var hash3Value = temp & (kHash3Size - 1);
-                hash[kHash3Offset + hash3Value] = _pos;
-                hashValue = (temp ^ (LzmaCrc32.Table[_bufferBase[cur + 3]] << 5)) & hashMask;
+                var temp = LzmaCrc32.Table[BufferBase[cur]] ^ BufferBase[cur + 1];
+                var hash2Value = temp & (KHash2Size - 1);
+                hash[hash2Value] = Pos;
+                temp ^= (uint)BufferBase[cur + 2] << 8;
+                var hash3Value = temp & (KHash3Size - 1);
+                hash[KHash3Offset + hash3Value] = Pos;
+                hashValue = (temp ^ (LzmaCrc32.Table[BufferBase[cur + 3]] << 5)) & hashMask;
             }
             else
-                hashValue = _bufferBase[cur] ^ ((uint)_bufferBase[cur + 1] << 8);
+                hashValue = BufferBase[cur] ^ ((uint)BufferBase[cur + 1] << 8);
 
             var curMatch = hash[kFixHashSize + hashValue];
-            hash[kFixHashSize + hashValue] = _pos;
+            hash[kFixHashSize + hashValue] = Pos;
 
             var ptr0 = (cyclicBufferPos << 1) + 1;
             var ptr1 = cyclicBufferPos << 1;
@@ -332,21 +332,21 @@ class LzBinTree : LzInWindow, ILzMatchFinder
             {
                 if (curMatch <= matchMinPos || count-- == 0)
                 {
-                    son[ptr0] = son[ptr1] = kEmptyHashValue;
+                    son[ptr0] = son[ptr1] = KEmptyHashValue;
                     break;
                 }
 
-                var delta = _pos - curMatch;
+                var delta = Pos - curMatch;
                 var cyclicPos = ((delta <= cyclicBufferPos) ?
                             (cyclicBufferPos - delta) :
                             (cyclicBufferPos - delta + cyclicBufferSize)) << 1;
 
-                var pby1 = _bufferOffset + curMatch;
+                var pby1 = BufferOffset + curMatch;
                 var len = Math.Min(len0, len1);
-                if (_bufferBase[pby1 + len] == _bufferBase[cur + len])
+                if (BufferBase[pby1 + len] == BufferBase[cur + len])
                 {
                     while (++len != lenLimit)
-                        if (_bufferBase[pby1 + len] != _bufferBase[cur + len])
+                        if (BufferBase[pby1 + len] != BufferBase[cur + len])
                             break;
                     if (len == lenLimit)
                     {
@@ -355,7 +355,7 @@ class LzBinTree : LzInWindow, ILzMatchFinder
                         break;
                     }
                 }
-                if (_bufferBase[pby1 + len] < _bufferBase[cur + len])
+                if (BufferBase[pby1 + len] < BufferBase[cur + len])
                 {
                     son[ptr1] = curMatch;
                     ptr1 = cyclicPos + 1;

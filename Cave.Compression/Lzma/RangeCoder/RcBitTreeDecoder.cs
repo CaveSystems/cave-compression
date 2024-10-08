@@ -1,11 +1,11 @@
 namespace Cave.Compression.Lzma.RangeCoder;
 
-struct RcBitTreeDecoder
+readonly struct RcBitTreeDecoder
 {
     #region Private Fields
 
-    RcBitDecoder[] Models;
-    int NumBitLevels;
+    readonly RcBitDecoder[] models;
+    readonly int numBitLevels;
 
     #endregion Private Fields
 
@@ -13,22 +13,21 @@ struct RcBitTreeDecoder
 
     public RcBitTreeDecoder(int numBitLevels)
     {
-        NumBitLevels = numBitLevels;
-        Models = new RcBitDecoder[1 << numBitLevels];
+        this.numBitLevels = numBitLevels;
+        models = new RcBitDecoder[1 << numBitLevels];
     }
 
     #endregion Public Constructors
 
     #region Public Methods
 
-    public static uint ReverseDecode(RcBitDecoder[] Models, uint startIndex,
-        RcDecoder rangeDecoder, int NumBitLevels)
+    public static uint ReverseDecode(RcBitDecoder[] models, uint startIndex, RcDecoder rangeDecoder, int numBitLevels)
     {
         uint m = 1;
         uint symbol = 0;
-        for (var bitIndex = 0; bitIndex < NumBitLevels; bitIndex++)
+        for (var bitIndex = 0; bitIndex < numBitLevels; bitIndex++)
         {
-            var bit = Models[startIndex + m].Decode(rangeDecoder);
+            var bit = models[startIndex + m].Decode(rangeDecoder);
             m <<= 1;
             m += bit;
             symbol |= bit << bitIndex;
@@ -39,24 +38,24 @@ struct RcBitTreeDecoder
     public uint Decode(RcDecoder rangeDecoder)
     {
         uint m = 1;
-        for (var bitIndex = NumBitLevels; bitIndex > 0; bitIndex--)
-            m = (m << 1) + Models[m].Decode(rangeDecoder);
-        return m - ((uint)1 << NumBitLevels);
+        for (var bitIndex = numBitLevels; bitIndex > 0; bitIndex--)
+            m = (m << 1) + models[m].Decode(rangeDecoder);
+        return m - ((uint)1 << numBitLevels);
     }
 
     public void Init()
     {
-        for (uint i = 1; i < (1 << NumBitLevels); i++)
-            Models[i].Init();
+        for (uint i = 1; i < (1 << numBitLevels); i++)
+            models[i].Init();
     }
 
     public uint ReverseDecode(RcDecoder rangeDecoder)
     {
         uint m = 1;
         uint symbol = 0;
-        for (var bitIndex = 0; bitIndex < NumBitLevels; bitIndex++)
+        for (var bitIndex = 0; bitIndex < numBitLevels; bitIndex++)
         {
-            var bit = Models[m].Decode(rangeDecoder);
+            var bit = models[m].Decode(rangeDecoder);
             m <<= 1;
             m += bit;
             symbol |= bit << bitIndex;

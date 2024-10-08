@@ -46,6 +46,11 @@ namespace Cave.Compression.Tests.Tar
 
             using var tis = new TarInputStream(ms, StringEncoding.UTF8);
             var entry = tis.GetNextEntry();
+            if (entry is null)
+            {
+                Assert.Fail("NullReference at entry check!");
+                return;
+            }
             Assert.AreEqual("some entry", entry.Name);
             var buffer = new byte[1000]; // smaller than 2 blocks
             var read0 = tis.Read(buffer, 0, buffer.Length);

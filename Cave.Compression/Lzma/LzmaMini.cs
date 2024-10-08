@@ -17,11 +17,11 @@ public static class LzmaMini
     /// <param name="validPosStateBits">0..4</param>
     /// <param name="validMatchFinders">BT2, BT4</param>
     /// <returns>Returns the list of valid <see cref="LzmaCoderProperties"/></returns>
-    public static IEnumerable<LzmaCoderProperties> BuildSettings(int[] validLitPosStateBits = null, int[] validPosStateBits = null, LzmaMatchFinderType[] validMatchFinders = null)
+    public static IEnumerable<LzmaCoderProperties> BuildSettings(int[]? validLitPosStateBits = null, int[]? validPosStateBits = null, LzmaMatchFinderType[]? validMatchFinders = null)
     {
-        if (validLitPosStateBits is null) validLitPosStateBits = new[] { 0, 1, 2, 3, 4 };
-        if (validPosStateBits is null) validPosStateBits = new[] { 0, 1, 2, 3, 4 };
-        if (validMatchFinders is null) validMatchFinders = new[] { LzmaMatchFinderType.BT2, LzmaMatchFinderType.BT4 };
+        validLitPosStateBits ??= [0, 1, 2, 3, 4];
+        validPosStateBits ??= [0, 1, 2, 3, 4];
+        validMatchFinders ??= [LzmaMatchFinderType.BT2, LzmaMatchFinderType.BT4];
         //context bits do not make sense because we got not context during mini packs
         var settings = new List<LzmaCoderProperties>(256);
         foreach (var matchFinder in validMatchFinders)
@@ -41,9 +41,9 @@ public static class LzmaMini
     /// <param name="data"></param>
     /// <param name="coderProperties"></param>
     /// <returns></returns>
-    public static byte[] Compress(byte[] data, LzmaCoderProperties coderProperties = null)
+    public static byte[] Compress(byte[] data, LzmaCoderProperties? coderProperties = null)
     {
-        if (coderProperties == null) coderProperties = new LzmaCoderProperties()
+        coderProperties ??= new LzmaCoderProperties()
         {
             EndMarker = false,
             LiteralContextBits = 0,

@@ -11,7 +11,7 @@ public class LzmaCoderProperties
 
     /// <summary>Specifies mode with end marker. (Use this with streaming, can skipped on fixed container sizes.)</summary>
     /// <remarks>Default = false</remarks>
-    public bool EndMarker { get; init; } = false;
+    public bool EndMarker { get; init; }
 
     /// <summary>Specifies number of literal context bits for LZMA (0 &lt;= x &lt;= 8).</summary>
     /// <remarks>Default = 3</remarks>
@@ -19,7 +19,7 @@ public class LzmaCoderProperties
 
     /// <summary>Specifies number of literal position bits for LZMA (0 &lt;= x &lt;= 4).</summary>
     /// <remarks>Default = 0</remarks>
-    public int LiteralPosStateBits { get; init; } = 0;
+    public int LiteralPosStateBits { get; init; }
 
     /// <summary>Specifies match finder. LZMA: "BT2" or "BT4".</summary>
     /// <remarks>Default = BT4</remarks>

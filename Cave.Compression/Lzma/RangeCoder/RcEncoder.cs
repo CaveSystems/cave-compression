@@ -4,20 +4,20 @@ using System.IO;
 
 namespace Cave.Compression.Lzma.RangeCoder;
 
-class RcEncoder
+sealed class RcEncoder
 {
     #region Private Fields
 
-    byte _cache;
-    uint _cacheSize;
-    long StartPosition;
-    System.IO.Stream Stream;
+    byte cache;
+    uint cacheSize;
+    long startPosition;
+    Stream stream;
 
     #endregion Private Fields
 
     #region Public Fields
 
-    public const uint kTopValue = 1 << 24;
+    public const uint KTopValue = 1 << 24;
     public ulong Low;
     public uint Range;
 
@@ -25,13 +25,13 @@ class RcEncoder
 
     #region Public Methods
 
-    public void CloseStream() => Stream.Close();
+    public void CloseStream() => stream.Close();
 
     public void Encode(uint start, uint size, uint total)
     {
         Low += start * (Range /= total);
         Range *= size;
-        while (Range < kTopValue)
+        while (Range < KTopValue)
         {
             Range <<= 8;
             ShiftLow();
@@ -48,7 +48,7 @@ class RcEncoder
             Low += newBound;
             Range -= newBound;
         }
-        while (Range < kTopValue)
+        while (Range < KTopValue)
         {
             Range <<= 8;
             ShiftLow();
@@ -62,7 +62,7 @@ class RcEncoder
             Range >>= 1;
             if (((v >> i) & 1) == 1)
                 Low += Range;
-            if (Range < kTopValue)
+            if (Range < KTopValue)
             {
                 Range <<= 8;
                 ShiftLow();
@@ -76,38 +76,38 @@ class RcEncoder
             ShiftLow();
     }
 
-    public void FlushStream() => Stream.Flush();
+    public void FlushStream() => stream.Flush();
 
-    public long GetProcessedSizeAdd() => _cacheSize + Stream.Position - StartPosition + 4;// (long)Stream.GetProcessedSize();
+    public long GetProcessedSizeAdd() => cacheSize + stream.Position - startPosition + 4;// (long)Stream.GetProcessedSize();
 
     public void Init()
     {
-        StartPosition = Stream.Position;
+        startPosition = stream.Position;
 
         Low = 0;
         Range = 0xFFFFFFFF;
-        _cacheSize = 1;
-        _cache = 0;
+        cacheSize = 1;
+        cache = 0;
     }
 
-    public void ReleaseStream() => Stream = null;
+    public void ReleaseStream() => stream = null;
 
-    public void SetStream(Stream stream) => Stream = stream;
+    public void SetStream(Stream stream) => this.stream = stream;
 
     public void ShiftLow()
     {
-        if ((uint)Low < (uint)0xFF000000 || (uint)(Low >> 32) == 1)
+        if ((uint)Low < 0xFF000000u || (uint)(Low >> 32) == 1u)
         {
-            var temp = _cache;
+            var temp = cache;
             do
             {
-                Stream.WriteByte((byte)(temp + (Low >> 32)));
+                stream.WriteByte((byte)(temp + (Low >> 32)));
                 temp = 0xFF;
             }
-            while (--_cacheSize != 0);
-            _cache = (byte)(((uint)Low) >> 24);
+            while (--cacheSize != 0);
+            cache = (byte)(((uint)Low) >> 24);
         }
-        _cacheSize++;
+        cacheSize++;
         Low = ((uint)Low) << 8;
     }
 
