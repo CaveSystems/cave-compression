@@ -6,149 +6,154 @@ class LzInWindow
 {
     #region Private Fields
 
-    uint _keepSizeAfter;
-    uint _keepSizeBefore;
-    uint _pointerToLastSafePosition;
-    uint _posLimit;
-    System.IO.Stream _stream;
+    uint keepSizeAfter;
+    uint keepSizeBefore;
+    uint pointerToLastSafePosition;
+    uint posLimit;
+    System.IO.Stream stream;
 
     // offset (from _buffer) of first byte when new block reading must be done
-    bool _streamEndWasReached;
+    bool streamEndWasReached;
 
     #endregion Private Fields
 
     #region Private Methods
 
-    void Free() => _bufferBase = null;
+    void Free() => BufferBase = null;
 
     #endregion Private Methods
 
     #region Public Fields
 
-    public uint _blockSize;
-    public byte[] _bufferBase = null; // pointer to buffer with data
+    public uint BlockSize;
+
+    public byte[] BufferBase;
 
     // if (true) then _streamPos shows real end of stream
-    public uint _bufferOffset;
+    public uint BufferOffset;
 
-    // Size of Allocated memory block
-    public uint _pos; // offset (from _buffer) of curent byte
+    // pointer to buffer with data Size of Allocated memory block
+    public uint Pos;
 
     // how many BYTEs must be kept in buffer before _pos how many BYTEs must be kept buffer after _pos
-    public uint _streamPos;
+    public uint StreamPos;
 
     #endregion Public Fields
 
-    // offset (from _buffer) of first not read byte from Stream
+    // offset (from _buffer) of curent byte offset (from _buffer) of first not read byte from Stream
 
     #region Public Methods
 
     public void Create(uint keepSizeBefore, uint keepSizeAfter, uint keepSizeReserv)
     {
-        _keepSizeBefore = keepSizeBefore;
-        _keepSizeAfter = keepSizeAfter;
+        this.keepSizeBefore = keepSizeBefore;
+        this.keepSizeAfter = keepSizeAfter;
         var blockSize = keepSizeBefore + keepSizeAfter + keepSizeReserv;
-        if (_bufferBase == null || _blockSize != blockSize)
+        if (BufferBase == null || BlockSize != blockSize)
         {
             Free();
-            _blockSize = blockSize;
-            _bufferBase = new byte[_blockSize];
+            BlockSize = blockSize;
+            BufferBase = new byte[BlockSize];
         }
-        _pointerToLastSafePosition = _blockSize - keepSizeAfter;
+        pointerToLastSafePosition = BlockSize - keepSizeAfter;
     }
 
-    public byte GetIndexByte(int index) => _bufferBase[_bufferOffset + _pos + index];
+    public byte GetIndexByte(int index) => BufferBase[BufferOffset + Pos + index];
 
     // index + limit have not to exceed _keepSizeAfter;
     public uint GetMatchLen(int index, uint distance, uint limit)
     {
-        if (_streamEndWasReached)
-            if (_pos + index + limit > _streamPos)
-                limit = _streamPos - (uint)(_pos + index);
+        if (streamEndWasReached)
+            if (Pos + index + limit > StreamPos)
+                limit = StreamPos - (uint)(Pos + index);
         distance++;
         // Byte *pby = _buffer + (size_t)_pos + index;
-        var pby = _bufferOffset + _pos + (uint)index;
+        var pby = BufferOffset + Pos + (uint)index;
 
         uint i;
-        for (i = 0; i < limit && _bufferBase[pby + i] == _bufferBase[pby + i - distance]; i++) ;
+        for (i = 0; i < limit && BufferBase[pby + i] == BufferBase[pby + i - distance]; i++) ;
         return i;
     }
 
-    public uint GetNumAvailableBytes() => _streamPos - _pos;
+    public uint GetNumAvailableBytes() => StreamPos - Pos;
 
     public void Init()
     {
-        _bufferOffset = 0;
-        _pos = 0;
-        _streamPos = 0;
-        _streamEndWasReached = false;
+        BufferOffset = 0;
+        Pos = 0;
+        StreamPos = 0;
+        streamEndWasReached = false;
         ReadBlock();
     }
 
     public void MoveBlock()
     {
-        var offset = (uint)_bufferOffset + _pos - _keepSizeBefore;
+        var offset = BufferOffset + Pos - keepSizeBefore;
         // we need one additional byte, since MovePos moves on 1 byte.
         if (offset > 0)
             offset--;
 
-        var numBytes = (uint)_bufferOffset + _streamPos - offset;
+        var numBytes = BufferOffset + StreamPos - offset;
 
         // check negative offset ????
         for (uint i = 0; i < numBytes; i++)
-            _bufferBase[i] = _bufferBase[offset + i];
-        _bufferOffset -= offset;
+        {
+            BufferBase[i] = BufferBase[offset + i];
+        }
+        BufferOffset -= offset;
     }
 
     public void MovePos()
     {
-        _pos++;
-        if (_pos > _posLimit)
+        Pos++;
+        if (Pos > posLimit)
         {
-            var pointerToPostion = _bufferOffset + _pos;
-            if (pointerToPostion > _pointerToLastSafePosition)
-                MoveBlock();
+            var pointerToPostion = BufferOffset + Pos;
+            if (pointerToPostion > pointerToLastSafePosition) MoveBlock();
             ReadBlock();
         }
     }
 
     public virtual void ReadBlock()
     {
-        if (_streamEndWasReached)
-            return;
+        if (streamEndWasReached) return;
         while (true)
         {
-            var size = (int)(0 - _bufferOffset + _blockSize - _streamPos);
+            var size = (int)(0 - BufferOffset + BlockSize - StreamPos);
             if (size == 0)
                 return;
-            var numReadBytes = _stream.Read(_bufferBase, (int)(_bufferOffset + _streamPos), size);
+            var numReadBytes = stream.Read(BufferBase, (int)(BufferOffset + StreamPos), size);
             if (numReadBytes == 0)
             {
-                _posLimit = _streamPos;
-                var pointerToPostion = _bufferOffset + _posLimit;
-                if (pointerToPostion > _pointerToLastSafePosition)
-                    _posLimit = (uint)(_pointerToLastSafePosition - _bufferOffset);
+                posLimit = StreamPos;
+                var pointerToPostion = BufferOffset + posLimit;
+                if (pointerToPostion > pointerToLastSafePosition)
+                {
+                    posLimit = pointerToLastSafePosition - BufferOffset;
+                }
 
-                _streamEndWasReached = true;
+                streamEndWasReached = true;
                 return;
             }
-            _streamPos += (uint)numReadBytes;
-            if (_streamPos >= _pos + _keepSizeAfter)
-                _posLimit = _streamPos - _keepSizeAfter;
+            StreamPos += (uint)numReadBytes;
+            if (StreamPos >= Pos + keepSizeAfter)
+            {
+                posLimit = StreamPos - keepSizeAfter;
+            }
         }
     }
 
     public void ReduceOffsets(int subValue)
     {
-        _bufferOffset += (uint)subValue;
-        _posLimit -= (uint)subValue;
-        _pos -= (uint)subValue;
-        _streamPos -= (uint)subValue;
+        BufferOffset += (uint)subValue;
+        posLimit -= (uint)subValue;
+        Pos -= (uint)subValue;
+        StreamPos -= (uint)subValue;
     }
 
-    public void ReleaseStream() => _stream = null;
+    public void ReleaseStream() => stream = null;
 
-    public void SetStream(System.IO.Stream stream) => _stream = stream;
+    public void SetStream(System.IO.Stream stream) => this.stream = stream;
 
     #endregion Public Methods
 }

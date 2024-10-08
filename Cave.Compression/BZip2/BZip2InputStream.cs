@@ -10,77 +10,41 @@ public class BZip2InputStream : Stream
     #region Private Fields
 
     readonly int[][] baseArray = new int[BZip2Constants.GroupCount][];
-
     readonly Stream baseStream;
-
     readonly bool[] inUse = new bool[256];
-
     readonly int[][] limit = new int[BZip2Constants.GroupCount][];
-
+    readonly BZip2Crc mCrc = new();
     readonly int[] minLens = new int[BZip2Constants.GroupCount];
-
     readonly int[][] perm = new int[BZip2Constants.GroupCount][];
-
     readonly byte[] selector = new byte[BZip2Constants.MaximumSelectors];
-
     readonly byte[] selectorMtf = new byte[BZip2Constants.MaximumSelectors];
-
     readonly byte[] seqToUnseq = new byte[256];
-
     readonly byte[] unseqToSeq = new byte[256];
-
     readonly int[] unzftab = new int[256];
-
     bool blockRandomised;
-
     int blockSize100k;
-
     int bsBuff;
-
     int bsLive;
-
     int ch2;
-
     int chPrev;
-
     int computedBlockCRC;
-
     uint computedCombinedCRC;
-
     int count;
-
     int currentChar = -1;
-
     State currentState = State.StartBlock;
-
     int i2;
-
     int j2;
-
     int last;
-
-    byte[] ll8;
-
-    IZipChecksum mCrc = new BZip2Crc();
-
+    byte[] ll8 = [];
     int nInUse;
-
     int origPtr;
-
     int rNToGo;
-
     int rTPos;
-
     int storedBlockCRC;
-
     int storedCombinedCRC;
-
     bool streamEnd;
-
     int tPos;
-
-    int[] tt;
-
+    int[] tt = [];
     byte z;
 
     #endregion Private Fields
@@ -102,25 +66,13 @@ public class BZip2InputStream : Stream
 
     #region Private Methods
 
-    static void BadBlockHeader()
-    {
-        throw new InvalidDataException("BZip2 input stream bad block header");
-    }
+    static void BadBlockHeader() => throw new InvalidDataException("BZip2 input stream bad block header");
 
-    static void BlockOverrun()
-    {
-        throw new InvalidDataException("BZip2 input stream block overrun");
-    }
+    static void BlockOverrun() => throw new InvalidDataException("BZip2 input stream block overrun");
 
-    static void CompressedStreamEOF()
-    {
-        throw new EndOfStreamException("BZip2 input stream end of compressed stream");
-    }
+    static void CompressedStreamEOF() => throw new EndOfStreamException("BZip2 input stream end of compressed stream");
 
-    static void CrcError()
-    {
-        throw new InvalidDataException("BZip2 input stream crc error");
-    }
+    static void CrcError() => throw new InvalidDataException("BZip2 input stream crc error");
 
     static void HbCreateDecodeTables(int[] limit, int[] baseArray, int[] perm, char[] length, int minLen, int maxLen, int alphaSize)
     {
@@ -198,15 +150,9 @@ public class BZip2InputStream : Stream
         return result;
     }
 
-    int BsGetIntVS(int numBits)
-    {
-        return BsR(numBits);
-    }
+    int BsGetIntVS(int numBits) => BsR(numBits);
 
-    char BsGetUChar()
-    {
-        return (char)BsR(8);
-    }
+    char BsGetUChar() => (char)BsR(8);
 
     int BsR(int n)
     {
@@ -243,7 +189,7 @@ public class BZip2InputStream : Stream
 
         // 1528150659
         computedCombinedCRC = ((computedCombinedCRC << 1) & 0xFFFFFFFF) | (computedCombinedCRC >> 31);
-        computedCombinedCRC = computedCombinedCRC ^ (uint)computedBlockCRC;
+        computedCombinedCRC ^= (uint)computedBlockCRC;
     }
 
     void FillBuffer()
@@ -329,7 +275,7 @@ public class BZip2InputStream : Stream
             zvec = (zvec << 1) | zj;
         }
 
-        if (zvec - baseArray[zt][zn] < 0 || zvec - baseArray[zt][zn] >= BZip2Constants.MaximumAlphaSize)
+        if (zvec - baseArray[zt][zn] is < 0 or >= BZip2Constants.MaximumAlphaSize)
         {
             throw new InvalidDataException("Bzip data error");
         }
@@ -343,7 +289,7 @@ public class BZip2InputStream : Stream
                 break;
             }
 
-            if (nextSym == BZip2Constants.RunA || nextSym == BZip2Constants.RunB)
+            if (nextSym is BZip2Constants.RunA or BZip2Constants.RunB)
             {
                 var s = -1;
                 var n = 1;
@@ -387,7 +333,7 @@ public class BZip2InputStream : Stream
 
                     nextSym = perm[zt][zvec - baseArray[zt][zn]];
                 }
-                while (nextSym == BZip2Constants.RunA || nextSym == BZip2Constants.RunB);
+                while (nextSym is BZip2Constants.RunA or BZip2Constants.RunB);
 
                 s++;
                 var ch = seqToUnseq[yy[0]];
@@ -651,24 +597,24 @@ public class BZip2InputStream : Stream
 
     void SetupBlock()
     {
-        var cftab = new int[257];
-
-        cftab[0] = 0;
-        Array.Copy(unzftab, 0, cftab, 1, 256);
-
-        for (var i = 1; i <= 256; i++)
         {
-            cftab[i] += cftab[i - 1];
-        }
+            var cftab = new int[257];
 
-        for (var i = 0; i <= last; i++)
-        {
-            var ch = ll8[i];
-            tt[cftab[ch]] = i;
-            cftab[ch]++;
-        }
+            cftab[0] = 0;
+            Array.Copy(unzftab, 0, cftab, 1, 256);
 
-        cftab = null;
+            for (var i = 1; i <= 256; i++)
+            {
+                cftab[i] += cftab[i - 1];
+            }
+
+            for (var i = 0; i <= last; i++)
+            {
+                var ch = ll8[i];
+                tt[cftab[ch]] = i;
+                cftab[ch]++;
+            }
+        }
 
         tPos = tt[origPtr];
 
@@ -854,6 +800,7 @@ public class BZip2InputStream : Stream
         {
             baseStream.Dispose();
         }
+        base.Dispose(disposing);
     }
 
     #endregion Protected Methods
@@ -885,57 +832,26 @@ public class BZip2InputStream : Stream
     #region Public Properties
 
     /// <summary>Gets a value indicating whether the stream supports reading.</summary>
-    public override bool CanRead
-    {
-        get
-        {
-            return baseStream.CanRead;
-        }
-    }
+    public override bool CanRead => baseStream.CanRead;
 
     /// <summary>Gets a value indicating whether the current stream supports seeking.</summary>
-    public override bool CanSeek
-    {
-        get
-        {
-            return false;
-        }
-    }
+    public override bool CanSeek => false;
 
     /// <summary>Gets a value indicating whether the current stream supports writing. This property always returns false.</summary>
-    public override bool CanWrite
-    {
-        get
-        {
-            return false;
-        }
-    }
+    public override bool CanWrite => false;
 
     /// <summary>Gets or sets a value indicating whether the underlying stream shall be closed by this instance.</summary>
     public bool IsStreamOwner { get; set; } = true;
 
     /// <summary>Gets the length in bytes of the stream.</summary>
-    public override long Length
-    {
-        get
-        {
-            return baseStream.Length;
-        }
-    }
+    public override long Length => baseStream.Length;
 
     /// <summary>Gets or sets gets the current position of the stream. Setting the position is not supported and will throw a NotSupportException.</summary>
     /// <exception cref="NotSupportedException">Any attempt to set the position.</exception>
     public override long Position
     {
-        get
-        {
-            return baseStream.Position;
-        }
-
-        set
-        {
-            throw new NotSupportedException("BZip2InputStream position cannot be set");
-        }
+        get => baseStream.Position;
+        set => throw new NotSupportedException("BZip2InputStream position cannot be set");
     }
 
     #endregion Public Properties
@@ -943,10 +859,7 @@ public class BZip2InputStream : Stream
     #region Public Methods
 
     /// <summary>Flushes the stream.</summary>
-    public override void Flush()
-    {
-        baseStream.Flush();
-    }
+    public override void Flush() => baseStream.Flush();
 
     /// <summary>Read a sequence of bytes and advances the read position by one byte.</summary>
     /// <param name="buffer">Array of bytes to store values in.</param>
@@ -1019,36 +932,24 @@ public class BZip2InputStream : Stream
     /// <param name="origin">A value of type <see cref="SeekOrigin"/> indicating the reference point used to obtain the new position.</param>
     /// <returns>The new position of the stream.</returns>
     /// <exception cref="NotSupportedException">Any access.</exception>
-    public override long Seek(long offset, SeekOrigin origin)
-    {
-        throw new NotSupportedException("BZip2InputStream Seek not supported");
-    }
+    public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException("BZip2InputStream Seek not supported");
 
     /// <summary>Sets the length of this stream to the given value. This operation is not supported and will throw a NotSupportedExceptionortedException.</summary>
     /// <param name="value">The new length for the stream.</param>
     /// <exception cref="NotSupportedException">Any access.</exception>
-    public override void SetLength(long value)
-    {
-        throw new NotSupportedException("BZip2InputStream SetLength not supported");
-    }
+    public override void SetLength(long value) => throw new NotSupportedException("BZip2InputStream SetLength not supported");
 
     /// <summary>Writes a block of bytes to this stream using data from a buffer. This operation is not supported and will throw a NotSupportedException.</summary>
     /// <param name="buffer">The buffer to source data from.</param>
     /// <param name="offset">The offset to start obtaining data from.</param>
     /// <param name="count">The number of bytes of data to write.</param>
     /// <exception cref="NotSupportedException">Any access.</exception>
-    public override void Write(byte[] buffer, int offset, int count)
-    {
-        throw new NotSupportedException("BZip2InputStream Write not supported");
-    }
+    public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException("BZip2InputStream Write not supported");
 
     /// <summary>Writes a byte to the current position in the file stream. This operation is not supported and will throw a NotSupportedException.</summary>
     /// <param name="value">The value to write.</param>
     /// <exception cref="NotSupportedException">Any access.</exception>
-    public override void WriteByte(byte value)
-    {
-        throw new NotSupportedException("BZip2InputStream WriteByte not supported");
-    }
+    public override void WriteByte(byte value) => throw new NotSupportedException("BZip2InputStream WriteByte not supported");
 
     #endregion Public Methods
 }

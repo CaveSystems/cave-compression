@@ -9,7 +9,8 @@ public class ArHeader
 {
     #region Private Fields
 
-    byte[] data = new byte[60];
+    static readonly char[] PathSeparators = ['\\', '/'];
+    readonly byte[] data = new byte[60];
 
     #endregion Private Fields
 
@@ -149,9 +150,9 @@ public class ArHeader
         for (var i = 0; i < name.Length; i++)
         {
             var c = name[i];
-            if (c >= 32 && c < 128)
+            if (c is >= (char)32 and < (char)128)
             {
-                if (Array.IndexOf(new char[] { '\\', '/' }, c) >= 0)
+                if (PathSeparators.IndexOf(c) >= 0)
                 {
                     throw new NotSupportedException(string.Format("(Sub)Directories are not supported!"));
                 }
@@ -214,10 +215,7 @@ public class ArHeader
         }
     }
 
-    void SetValue(int index, int count, int value, int toBase)
-    {
-        SetString(index, count, Convert.ToString(value, toBase));
-    }
+    void SetValue(int index, int count, int value, int toBase) => SetString(index, count, Convert.ToString(value, toBase));
 
     #endregion Private Methods
 
@@ -253,19 +251,10 @@ public class ArHeader
     #region Public Properties
 
     /// <summary>Gets a copy of the header data.</summary>
-    public byte[] Data
-    {
-        get { return (byte[])data.Clone(); }
-    }
+    public byte[] Data => (byte[])data.Clone();
 
     /// <summary>Gets the unix file mode (ugo) default = 640.</summary>
-    public int FileMode
-    {
-        get
-        {
-            return GetValue(40, 8, 10);
-        }
-    }
+    public int FileMode => GetValue(40, 8, 10);
 
     /// <summary>Gets the unix FileName.</summary>
     public string FileName
@@ -278,40 +267,16 @@ public class ArHeader
     }
 
     /// <summary>Gets the file size.</summary>
-    public int FileSize
-    {
-        get
-        {
-            return GetValue(48, 10, 10);
-        }
-    }
+    public int FileSize => GetValue(48, 10, 10);
 
     /// <summary>Gets the unix group id.</summary>
-    public int Group
-    {
-        get
-        {
-            return GetValue(34, 6, 10);
-        }
-    }
+    public int Group => GetValue(34, 6, 10);
 
     /// <summary>Gets the last modification date (utc).</summary>
-    public DateTime LastWriteTime
-    {
-        get
-        {
-            return new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(GetValue(16, 12, 10)).ToLocalTime();
-        }
-    }
+    public DateTime LastWriteTime => new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(GetValue(16, 12, 10)).ToLocalTime();
 
     /// <summary>Gets the unix owner id.</summary>
-    public int Owner
-    {
-        get
-        {
-            return GetValue(28, 6, 10);
-        }
-    }
+    public int Owner => GetValue(28, 6, 10);
 
     #endregion Public Properties
 
@@ -330,20 +295,14 @@ public class ArHeader
     /// <param name="name">The name of the file.</param>
     /// <param name="size">The size of the file in bytes.</param>
     /// <returns>Returns a new header instance.</returns>
-    public static ArHeader CreateFile(string name, long size)
-    {
-        return CreateFile(name, size, 644, 0, 0, DateTime.Now);
-    }
+    public static ArHeader CreateFile(string name, long size) => CreateFile(name, size, 644, 0, 0, DateTime.Now);
 
     /// <summary>Creates a new <see cref="ArHeader"/> for the specified file name. (Name may not contain subdirectories).</summary>
     /// <param name="name">The name of the file.</param>
     /// <param name="size">The size of the file in bytes.</param>
     /// <param name="fileMode">the unix filemode to use.</param>
     /// <returns>Returns a new header instance.</returns>
-    public static ArHeader CreateFile(string name, long size, int fileMode)
-    {
-        return CreateFile(name, size, fileMode, 0, 0, DateTime.Now);
-    }
+    public static ArHeader CreateFile(string name, long size, int fileMode) => CreateFile(name, size, fileMode, 0, 0, DateTime.Now);
 
     /// <summary>Creates a new <see cref="ArHeader"/> for the specified file name. (Name may not contain subdirectories).</summary>
     /// <param name="name">The name of the file.</param>
@@ -352,10 +311,7 @@ public class ArHeader
     /// <param name="owner">the unix owner.</param>
     /// <param name="group">the unix group.</param>
     /// <returns>Returns a new header instance.</returns>
-    public static ArHeader CreateFile(string name, long size, int fileMode, int owner, int group)
-    {
-        return CreateFile(name, size, fileMode, owner, group, DateTime.Now);
-    }
+    public static ArHeader CreateFile(string name, long size, int fileMode, int owner, int group) => CreateFile(name, size, fileMode, owner, group, DateTime.Now);
 
     /// <summary>Creates a new <see cref="ArHeader"/> for the specified file name. (Name may not contain subdirectories).</summary>
     /// <param name="name">The name of the file.</param>
@@ -393,10 +349,7 @@ public class ArHeader
 
     /// <summary>Gets a summary of the header.</summary>
     /// <returns>File: {FileName} {FileMode} {Owner} {Group} {FileSize}.</returns>
-    public override string ToString()
-    {
-        return $"File: {FileName} {FileMode} {Owner} {Group} {FileSize}";
-    }
+    public override string ToString() => $"File: {FileName} {FileMode} {Owner} {Group} {FileSize}";
 
     #endregion Public Methods
 }

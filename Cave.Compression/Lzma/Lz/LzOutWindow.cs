@@ -2,21 +2,21 @@
 
 namespace Cave.Compression.Lzma.LZ;
 
-class LzOutWindow
+sealed class LzOutWindow
 {
     #region Private Fields
 
-    byte[] _buffer = null;
-    uint _pos;
-    System.IO.Stream _stream;
-    uint _streamPos;
-    uint _windowSize = 0;
+    byte[] buffer;
+    uint position;
+    System.IO.Stream stream;
+    uint streamPos;
+    uint windowSize;
 
     #endregion Private Fields
 
     #region Public Fields
 
-    public uint TrainSize = 0;
+    public uint TrainSize;
 
     #endregion Public Fields
 
@@ -24,95 +24,95 @@ class LzOutWindow
 
     public void CopyBlock(uint distance, uint len)
     {
-        var pos = _pos - distance - 1;
-        if (pos >= _windowSize)
-            pos += _windowSize;
+        var pos = position - distance - 1;
+        if (pos >= windowSize)
+            pos += windowSize;
         for (; len > 0; len--)
         {
-            if (pos >= _windowSize)
+            if (pos >= windowSize)
                 pos = 0;
-            _buffer[_pos++] = _buffer[pos++];
-            if (_pos >= _windowSize)
+            buffer[position++] = buffer[pos++];
+            if (position >= windowSize)
                 Flush();
         }
     }
 
     public void Create(uint windowSize)
     {
-        if (_windowSize != windowSize)
+        if (this.windowSize != windowSize)
         {
             // System.GC.Collect();
-            _buffer = new byte[windowSize];
+            buffer = new byte[windowSize];
         }
-        _windowSize = windowSize;
-        _pos = 0;
-        _streamPos = 0;
+        this.windowSize = windowSize;
+        position = 0;
+        streamPos = 0;
     }
 
     public void Flush()
     {
-        var size = _pos - _streamPos;
+        var size = position - streamPos;
         if (size == 0)
             return;
-        _stream.Write(_buffer, (int)_streamPos, (int)size);
-        if (_pos >= _windowSize)
-            _pos = 0;
-        _streamPos = _pos;
+        stream.Write(buffer, (int)streamPos, (int)size);
+        if (position >= windowSize)
+            position = 0;
+        streamPos = position;
     }
 
     public byte GetByte(uint distance)
     {
-        var pos = _pos - distance - 1;
-        if (pos >= _windowSize)
-            pos += _windowSize;
-        return _buffer[pos];
+        var pos = position - distance - 1;
+        if (pos >= windowSize)
+            pos += windowSize;
+        return buffer[pos];
     }
 
     public void Init(System.IO.Stream stream, bool solid)
     {
         ReleaseStream();
-        _stream = stream;
+        this.stream = stream;
         if (!solid)
         {
-            _streamPos = 0;
-            _pos = 0;
+            streamPos = 0;
+            position = 0;
             TrainSize = 0;
         }
     }
 
     public void PutByte(byte b)
     {
-        _buffer[_pos++] = b;
-        if (_pos >= _windowSize)
+        buffer[position++] = b;
+        if (position >= windowSize)
             Flush();
     }
 
     public void ReleaseStream()
     {
         Flush();
-        _stream = null;
+        stream = null;
     }
 
     public bool Train(System.IO.Stream stream)
     {
         var len = stream.Length;
-        var size = (len < _windowSize) ? (uint)len : _windowSize;
+        var size = (len < windowSize) ? (uint)len : windowSize;
         TrainSize = size;
         stream.Position = len - size;
-        _streamPos = _pos = 0;
+        streamPos = position = 0;
         while (size > 0)
         {
-            var curSize = _windowSize - _pos;
+            var curSize = windowSize - position;
             if (size < curSize)
                 curSize = size;
-            var numReadBytes = stream.Read(_buffer, (int)_pos, (int)curSize);
+            var numReadBytes = stream.Read(buffer, (int)position, (int)curSize);
             if (numReadBytes == 0)
                 return false;
             size -= (uint)numReadBytes;
-            _pos += (uint)numReadBytes;
-            _streamPos += (uint)numReadBytes;
-            if (_pos == _windowSize)
-                _streamPos = _pos = 0;
+            position += (uint)numReadBytes;
+            streamPos += (uint)numReadBytes;
+            if (position == windowSize)
+                streamPos = position = 0;
         }
         return true;
     }

@@ -32,6 +32,7 @@ namespace Cave.Compression.Tests.Tar
 
         [Test]
         [Category("Tar")]
+        [Category("Long Running")]
         public void TarReaderWriter()
         {
             var checks = new Dictionary<string, byte[]>();
@@ -57,6 +58,11 @@ namespace Cave.Compression.Tests.Tar
                 var copy = checks.ToDictionary(i => i.Key, i => i.Value);
                 while (reader.ReadNext(out var entry, out var content))
                 {
+                    if (entry is null)
+                    {
+                        Assert.Fail("NullReference at entry check!");
+                        return;
+                    }
                     if (!copy.TryGetValue(entry.Name, out var expectedContent))
                     {
                         Assert.Fail("Entry name not found at source!");
@@ -70,6 +76,7 @@ namespace Cave.Compression.Tests.Tar
 
         [Test]
         [Category("Tar")]
+        [Category("Long Running")]
         public void TarReaderWriterFiles()
         {
             var tempFileName = Path.GetTempFileName();
@@ -106,6 +113,11 @@ namespace Cave.Compression.Tests.Tar
                 var copy = checks.ToDictionary(i => i.Key, i => i.Value);
                 while (reader.ReadNext(out var entry, out var content))
                 {
+                    if (entry is null)
+                    {
+                        Assert.Fail("NullReference at entry check!");
+                        return;
+                    }
                     var name = entry.Name.TrimStart('/');
                     if (!copy.TryGetValue(name, out var expectedContent))
                     {

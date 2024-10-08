@@ -2,182 +2,181 @@ using System;
 using System.IO;
 using Cave.Compression.Streams;
 
-namespace Cave.Compression
+namespace Cave.Compression;
+
+/// <summary>
+/// Provides deflate de-/compression.
+/// </summary>
+public static class Deflate
 {
     /// <summary>
-    /// Provides deflate de-/compression.
+    /// Compresses the data at the current read position in the source stream to the specified targetstream.
     /// </summary>
-    public static class Deflate
+    /// <param name="sourceStream">The stream containing the data to be compressed.</param>
+    /// <param name="targetStream">The stream that will receive the compressed data.</param>
+    /// <param name="count">The number of bytes to compress.</param>
+    /// <param name="closeStream">Close the source stream after compression.</param>
+    public static void Compress(Stream sourceStream, Stream targetStream, long count, bool closeStream)
     {
-        /// <summary>
-        /// Compresses the data at the current read position in the source stream to the specified targetstream.
-        /// </summary>
-        /// <param name="sourceStream">The stream containing the data to be compressed.</param>
-        /// <param name="targetStream">The stream that will receive the compressed data.</param>
-        /// <param name="count">The number of bytes to compress.</param>
-        /// <param name="closeStream">Close the source stream after compression.</param>
-        public static void Compress(Stream sourceStream, Stream targetStream, long count, bool closeStream)
+        if (sourceStream == null)
         {
-            if (sourceStream == null)
-            {
-                throw new ArgumentNullException(nameof(sourceStream));
-            }
+            throw new ArgumentNullException(nameof(sourceStream));
+        }
 
-            if (targetStream == null)
-            {
-                throw new ArgumentNullException(nameof(targetStream));
-            }
+        if (targetStream == null)
+        {
+            throw new ArgumentNullException(nameof(targetStream));
+        }
 
-            var compressStream = new DeflaterOutputStream(targetStream)
-            {
-                IsStreamOwner = false,
-            };
-            if (count > 0)
-            {
-                sourceStream.CopyBlocksTo(compressStream, count);
-            }
-            else
-            {
-                sourceStream.CopyBlocksTo(compressStream);
-            }
+        var compressStream = new DeflaterOutputStream(targetStream)
+        {
+            IsStreamOwner = false,
+        };
+        if (count > 0)
+        {
+            sourceStream.CopyBlocksTo(compressStream, count);
+        }
+        else
+        {
+            sourceStream.CopyBlocksTo(compressStream);
+        }
 
-            compressStream.Finish();
-            if (closeStream)
-            {
+        compressStream.Finish();
+        if (closeStream)
+        {
 #if !NETSTANDARD13
-                compressStream.Close();
-                sourceStream.Close();
+            compressStream.Close();
+            sourceStream.Close();
 #endif
-            }
+        }
+    }
+
+    /// <summary>
+    /// Decompresses the data at the current read position in the source stream to the specified targetstream.
+    /// </summary>
+    /// <param name="sourceStream">The stream containing the data to be compressed.</param>
+    /// <param name="targetStream">The stream that will receive the decompressed data.</param>
+    /// <param name="count">The number of bytes to decompress.</param>
+    /// <param name="closeStream">Close the source stream after decompression.</param>
+    public static void Decompress(Stream sourceStream, Stream targetStream, long count, bool closeStream)
+    {
+        if (sourceStream == null)
+        {
+            throw new ArgumentNullException(nameof(sourceStream));
         }
 
-        /// <summary>
-        /// Decompresses the data at the current read position in the source stream to the specified targetstream.
-        /// </summary>
-        /// <param name="sourceStream">The stream containing the data to be compressed.</param>
-        /// <param name="targetStream">The stream that will receive the decompressed data.</param>
-        /// <param name="count">The number of bytes to decompress.</param>
-        /// <param name="closeStream">Close the source stream after decompression.</param>
-        public static void Decompress(Stream sourceStream, Stream targetStream, long count, bool closeStream)
+        if (targetStream == null)
         {
-            if (sourceStream == null)
-            {
-                throw new ArgumentNullException(nameof(sourceStream));
-            }
+            throw new ArgumentNullException(nameof(targetStream));
+        }
 
-            if (targetStream == null)
-            {
-                throw new ArgumentNullException(nameof(targetStream));
-            }
+        var decompressStream = new InflaterInputStream(sourceStream)
+        {
+            IsStreamOwner = false,
+        };
+        if (count > 0)
+        {
+            decompressStream.CopyBlocksTo(targetStream, count);
+        }
+        else
+        {
+            decompressStream.CopyBlocksTo(targetStream);
+        }
 
-            var decompressStream = new InflaterInputStream(sourceStream)
-            {
-                IsStreamOwner = false,
-            };
-            if (count > 0)
-            {
-                decompressStream.CopyBlocksTo(targetStream, count);
-            }
-            else
-            {
-                decompressStream.CopyBlocksTo(targetStream);
-            }
-
-            if (closeStream)
-            {
+        if (closeStream)
+        {
 #if !NETSTANDARD13
-                sourceStream.Close();
+            sourceStream.Close();
 #endif
-            }
+        }
+    }
+
+    /// <summary>
+    /// Compresses a byte array into memory.
+    /// </summary>
+    /// <param name="data">Array to compress.</param>
+    /// <returns>Returns a new compressed byte[] array.</returns>
+    public static byte[] Compress(byte[] data)
+    {
+        if (data == null)
+        {
+            throw new ArgumentNullException(nameof(data));
         }
 
-        /// <summary>
-        /// Compresses a byte array into memory.
-        /// </summary>
-        /// <param name="data">Array to compress.</param>
-        /// <returns>Returns a new compressed byte[] array.</returns>
-        public static byte[] Compress(byte[] data)
-        {
-            if (data == null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
+        using var source = new MemoryStream(data);
+        using var target = new MemoryStream();
+        Compress(source, target, -1, true);
+        return target.ToArray();
+    }
 
-            using var source = new MemoryStream(data);
-            using var target = new MemoryStream();
-            Compress(source, target, -1, true);
-            return target.ToArray();
+    /// <summary>
+    /// Decompresses a byte array into memory.
+    /// </summary>
+    /// <param name="data">data to decompress.</param>
+    /// <returns>Returns a new byte[] array with decompressed data.</returns>
+    public static byte[] Decompress(byte[] data)
+    {
+        if (data == null)
+        {
+            throw new ArgumentNullException(nameof(data));
         }
 
-        /// <summary>
-        /// Decompresses a byte array into memory.
-        /// </summary>
-        /// <param name="data">data to decompress.</param>
-        /// <returns>Returns a new byte[] array with decompressed data.</returns>
-        public static byte[] Decompress(byte[] data)
-        {
-            if (data == null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
+        using var source = new MemoryStream(data);
+        using var target = new MemoryStream();
+        Decompress(source, target, -1, true);
+        return target.ToArray();
+    }
 
-            using var source = new MemoryStream(data);
-            using var target = new MemoryStream();
-            Decompress(source, target, -1, true);
-            return target.ToArray();
+    /// <summary>
+    /// Compresses a file on the disk (new file will have .gz extension).
+    /// </summary>
+    /// <param name="fileName">Filename of the file to compress.</param>
+    /// <param name="delete">Delete the file after successful operation.</param>
+    public static void Compress(string fileName, bool delete)
+    {
+        if (fileName == null)
+        {
+            throw new ArgumentNullException(nameof(fileName));
         }
 
-        /// <summary>
-        /// Compresses a file on the disk (new file will have .gz extension).
-        /// </summary>
-        /// <param name="fileName">Filename of the file to compress.</param>
-        /// <param name="delete">Delete the file after successful operation.</param>
-        public static void Compress(string fileName, bool delete)
+        using (Stream source = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
         {
-            if (fileName == null)
-            {
-                throw new ArgumentNullException(nameof(fileName));
-            }
-
-            using (Stream source = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                using Stream target = File.Open(fileName + ".deflate", FileMode.Create, FileAccess.Write, FileShare.None);
-                Compress(source, target, source.Length, true);
-            }
-
-            if (delete)
-            {
-                File.Delete(fileName);
-            }
+            using Stream target = File.Open(fileName + ".deflate", FileMode.Create, FileAccess.Write, FileShare.None);
+            Compress(source, target, source.Length, true);
         }
 
-        /// <summary>
-        /// Decompresses a file on the disk (new file will have no longer a .deflate extension).
-        /// </summary>
-        /// <param name="fileName">Filename of the file to decompress.</param>
-        /// <param name="delete">Delete the file after successful operation.</param>
-        public static void Decompress(string fileName, bool delete)
+        if (delete)
         {
-            if (fileName == null)
-            {
-                throw new ArgumentNullException(nameof(fileName));
-            }
+            File.Delete(fileName);
+        }
+    }
 
-            if (Path.GetExtension(fileName) != ".deflate")
-            {
-                throw new ArgumentException(string.Format(".deflate extension expected!"), nameof(fileName));
-            }
+    /// <summary>
+    /// Decompresses a file on the disk (new file will have no longer a .deflate extension).
+    /// </summary>
+    /// <param name="fileName">Filename of the file to decompress.</param>
+    /// <param name="delete">Delete the file after successful operation.</param>
+    public static void Decompress(string fileName, bool delete)
+    {
+        if (fileName == null)
+        {
+            throw new ArgumentNullException(nameof(fileName));
+        }
 
-            using (Stream source = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                using Stream target = File.Open(Path.GetFileNameWithoutExtension(fileName), FileMode.Create, FileAccess.Write, FileShare.None);
-                Decompress(source, target, source.Length, true);
-            }
+        if (Path.GetExtension(fileName) != ".deflate")
+        {
+            throw new ArgumentException(string.Format(".deflate extension expected!"), nameof(fileName));
+        }
 
-            if (delete)
-            {
-                File.Delete(fileName);
-            }
+        using (Stream source = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+        {
+            using Stream target = File.Open(Path.GetFileNameWithoutExtension(fileName), FileMode.Create, FileAccess.Write, FileShare.None);
+            Decompress(source, target, source.Length, true);
+        }
+
+        if (delete)
+        {
+            File.Delete(fileName);
         }
     }
 }

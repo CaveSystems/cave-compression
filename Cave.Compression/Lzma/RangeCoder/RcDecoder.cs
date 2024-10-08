@@ -2,11 +2,11 @@
 
 namespace Cave.Compression.Lzma.RangeCoder;
 
-class RcDecoder
+sealed class RcDecoder
 {
     #region Public Fields
 
-    public const uint kTopValue = 1 << 24;
+    public const uint KTopValue = 1 << 24;
     public uint Code;
     public uint Range;
 
@@ -19,7 +19,7 @@ class RcDecoder
 
     public void CloseStream() => Stream.Close();
 
-    public void Decode(uint start, uint size, uint total)
+    public void Decode(uint start, uint size)
     {
         Code -= start * Range;
         Range *= size;
@@ -65,7 +65,7 @@ class RcDecoder
             code -= range & (t - 1);
             result = (result << 1) | (1 - t);
 
-            if (range < kTopValue)
+            if (range < KTopValue)
             {
                 code = (code << 8) | (byte)Stream.ReadByte();
                 range <<= 8;
@@ -91,7 +91,7 @@ class RcDecoder
 
     public void Normalize()
     {
-        while (Range < kTopValue)
+        while (Range < KTopValue)
         {
             Code = (Code << 8) | (byte)Stream.ReadByte();
             Range <<= 8;
@@ -100,7 +100,7 @@ class RcDecoder
 
     public void Normalize2()
     {
-        if (Range < kTopValue)
+        if (Range < KTopValue)
         {
             Code = (Code << 8) | (byte)Stream.ReadByte();
             Range <<= 8;

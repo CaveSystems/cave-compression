@@ -1,9 +1,8 @@
-// Define this to use simple synchronisation rather than events. They are about the same in terms of speed.
-#define SimpleSynch
-
 using NUnit.Framework;
 using System;
 using System.Threading;
+
+#nullable disable
 
 namespace Cave.Compression.Tests.TestSupport
 {
@@ -16,6 +15,7 @@ namespace Cave.Compression.Tests.TestSupport
         #region Constructors
 
 #if !(NET20 || NET35)
+
         /// <summary>Create a new RingBuffer with a specified size.</summary>
         /// <param name="size">The size of the ring buffer to create.</param>
         /// <param name="token">The cancellation token.</param>
@@ -38,12 +38,7 @@ namespace Cave.Compression.Tests.TestSupport
             token_ = token;
 #endif
 
-#if SimpleSynch
             waitSpan_ = TimeSpan.FromMilliseconds(1);
-#else
-			notEmptyEvent_ = new ManualResetEvent(false);
-			notFullEvent_ = new ManualResetEvent(true);
-#endif
         }
 
         #endregion Constructors
@@ -56,11 +51,6 @@ namespace Cave.Compression.Tests.TestSupport
             Count = 0;
 
             Array.Clear(array_, 0, array_.Length);
-
-#if !SimpleSynch
-			notFullEvent_.Set();
-			notEmptyEvent_.Reset();
-#endif
         }
 
         /// <summary>Close the buffer for writing.</summary>
@@ -68,9 +58,6 @@ namespace Cave.Compression.Tests.TestSupport
         public void Close()
         {
             IsClosed = true;
-#if !SimpleSynch
-			notEmptyEvent_.Set();
-#endif
         }
 
         /// <summary>Write adds a byte to the head of the RingBuffer.</summary>
@@ -82,7 +69,6 @@ namespace Cave.Compression.Tests.TestSupport
                 throw new ApplicationException("Buffer is closed");
             }
 
-#if SimpleSynch
             while (IsFull)
             {
                 Thread.Sleep(waitSpan_);
@@ -90,32 +76,13 @@ namespace Cave.Compression.Tests.TestSupport
                 token_?.ThrowIfCancellationRequested();
 #endif
             }
-#else
-			notFullEvent_.WaitOne();
-#endif
 
             lock (lockObject_)
             {
                 array_[head_] = value;
                 head_ = (head_ + 1) % array_.Length;
 
-#if !SimpleSynch
-				bool setEmpty = (count_ == 0);
-#endif
-
                 Count += 1;
-
-#if !SimpleSynch
-				if (IsFull)
-				{
-					notFullEvent_.Reset();
-				}
-
-				if (setEmpty)
-				{
-					notEmptyEvent_.Set();
-				}
-#endif
             }
 
             BytesWritten++;
@@ -130,7 +97,6 @@ namespace Cave.Compression.Tests.TestSupport
 
             while (count > 0)
             {
-#if SimpleSynch
                 while (IsFull)
                 {
                     Thread.Sleep(waitSpan_);
@@ -138,9 +104,6 @@ namespace Cave.Compression.Tests.TestSupport
                     token_?.ThrowIfCancellationRequested();
 #endif
                 }
-#else
-				notFullEvent_.WaitOne();
-#endif
 
                 // Gauranteed to not be full at this point, however readers may sill read from the buffer first.
                 lock (lockObject_)
@@ -151,9 +114,6 @@ namespace Cave.Compression.Tests.TestSupport
                     {
                         bytesToWrite = count;
                     }
-#if !SimpleSynch
-					bool setEmpty = (count_ == 0);
-#endif
 
                     while (bytesToWrite > 0)
                     {
@@ -167,18 +127,6 @@ namespace Cave.Compression.Tests.TestSupport
                         count--;
                         Count++;
                     }
-
-#if !SimpleSynch
-					if (IsFull)
-					{
-						notFullEvent_.Reset();
-					}
-
-					if (setEmpty)
-					{
-						notEmptyEvent_.Set();
-					}
-#endif
                 }
             }
         }
@@ -189,7 +137,6 @@ namespace Cave.Compression.Tests.TestSupport
         {
             var result = -1;
 
-#if SimpleSynch
             while (!IsClosed && IsEmpty)
             {
                 Thread.Sleep(waitSpan_);
@@ -197,9 +144,6 @@ namespace Cave.Compression.Tests.TestSupport
                 token_?.ThrowIfCancellationRequested();
 #endif
             }
-#else
-			notEmptyEvent_.WaitOne();
-#endif
 
             if (!IsEmpty)
             {
@@ -207,21 +151,7 @@ namespace Cave.Compression.Tests.TestSupport
                 {
                     result = array_[tail_];
                     tail_ = (tail_ + 1) % array_.Length;
-#if !SimpleSynch
-					bool setFull = IsFull;
-#endif
                     Count -= 1;
-#if !SimpleSynch
-					if (!isClosed_ && (count_ == 0))
-					{
-						notEmptyEvent_.Reset();
-					}
-
-					if (setFull)
-					{
-						notFullEvent_.Set();
-					}
-#endif
                 }
             }
 
@@ -236,7 +166,6 @@ namespace Cave.Compression.Tests.TestSupport
 
             while (count > 0)
             {
-#if SimpleSynch
                 while (!IsClosed && IsEmpty)
                 {
                     Thread.Sleep(waitSpan_);
@@ -244,9 +173,6 @@ namespace Cave.Compression.Tests.TestSupport
                     token_?.ThrowIfCancellationRequested();
 #endif
                 }
-#else
-				notEmptyEvent_.WaitOne();
-#endif
 
                 if (IsEmpty)
                 {
@@ -265,10 +191,6 @@ namespace Cave.Compression.Tests.TestSupport
 
                         result += toRead;
 
-#if !SimpleSynch
-						bool setFull = IsFull;
-#endif
-
                         while (toRead > 0)
                         {
                             buffer[index] = array_[tail_];
@@ -280,17 +202,6 @@ namespace Cave.Compression.Tests.TestSupport
                             toRead--;
                             BytesRead++;
                         }
-#if !SimpleSynch
-						if (!isClosed_ && (count_ == 0))
-						{
-							notEmptyEvent_.Reset();
-						}
-
-						if (setFull)
-						{
-							notFullEvent_.Set();
-						}
-#endif
                     }
                 }
             }
@@ -351,11 +262,6 @@ namespace Cave.Compression.Tests.TestSupport
         CancellationToken? token_;
 #endif
         TimeSpan waitSpan_;
-
-#if !SimpleSynch
-		ManualResetEvent notEmptyEvent_;
-		ManualResetEvent notFullEvent_;
-#endif
 
         #endregion Instance Variables
     }
@@ -448,6 +354,7 @@ namespace Cave.Compression.Tests.TestSupport
         }
 
         [Test]
+        [Category("Long Running")]
         public void Threaded()
         {
             buffer_ = new ReadWriteRingBuffer(8);

@@ -16,10 +16,7 @@ public class ArFile
     /// <summary>Creates a new ar file at the specified stream.</summary>
     /// <param name="stream">The stream to be written.</param>
     /// <returns>A new <see cref="ArFile"/> instance.</returns>
-    public static ArFile CreateNewAr(Stream stream)
-    {
-        return new ArFile(stream, stream, false);
-    }
+    public static ArFile CreateNewAr(Stream stream) => new(stream, stream, false);
 
     /// <summary>Creates a new ar file.</summary>
     /// <param name="file">Can be an string containing a path.</param>
@@ -43,10 +40,7 @@ public class ArFile
     /// <summary>Reads a ar from stream.</summary>
     /// <param name="stream">The stream to be read.</param>
     /// <returns>A new <see cref="ArFile"/> instance.</returns>
-    public static ArFile ReadAr(Stream stream)
-    {
-        return new ArFile(stream, stream, false);
-    }
+    public static ArFile ReadAr(Stream stream) => new(stream, stream, false);
 
     /// <summary>Reads a ar from stream with GZip compression.</summary>
     /// <param name="stream">The stream to be read.</param>
@@ -107,8 +101,8 @@ public class ArFile
 
     #region private functionality
 
-    Stream bottomStream;
-    Stream topStream;
+    Stream? bottomStream;
+    Stream? topStream;
 
     enum Operation
     {
@@ -124,6 +118,7 @@ public class ArFile
 
     void StartOperation(Operation operation)
     {
+        if (topStream is null) throw new ObjectDisposedException(nameof(ArFile));
         switch (lastOperation)
         {
             case Operation.ReadData: lastOperation = Operation.None; break;
@@ -210,13 +205,14 @@ public class ArFile
     public ArHeader ReadHeader()
     {
         StartOperation(Operation.ReadHeader);
+        if (topStream is null) throw new InvalidOperationException("TopStream is null!");
         return ArHeader.FromStream(topStream);
     }
 
     /// <summary>Reads a file from the ar file.</summary>
     /// <param name="fileData">Contents of the file.</param>
     /// <returns>the header of the file read on success and null when no more files exist in the ar file.</returns>
-    public ArHeader ReadFile(out byte[] fileData)
+    public ArHeader? ReadFile(out byte[] fileData)
     {
         ArHeader header;
         try
@@ -225,7 +221,7 @@ public class ArFile
         }
         catch (EndOfStreamException)
         {
-            fileData = null;
+            fileData = [];
             return null;
         }
 
@@ -236,7 +232,7 @@ public class ArFile
     /// <summary>Reads a file from the ar file and saves it at the specified output directory.</summary>
     /// <param name="outputDirectory">The output directory to copy the file to.</param>
     /// <returns>fileName and path on success and null when no more files exist in the ar file.</returns>
-    public string ReadFile(string outputDirectory)
+    public string? ReadFile(string outputDirectory)
     {
         ArHeader header;
         try
@@ -259,6 +255,7 @@ public class ArFile
     /// <returns>Returns a new byte array.</returns>
     public byte[] ReadData(int size)
     {
+        if (topStream is null) throw new ObjectDisposedException(nameof(ArFile));
         StartOperation(Operation.ReadData);
         var result = new byte[size];
         var bytesLeft = size;
@@ -294,6 +291,7 @@ public class ArFile
     /// <param name="size">Size of the file in bytes.</param>
     public void ReadDataTo(string fileName, int size)
     {
+        if (topStream is null) throw new ObjectDisposedException(nameof(ArFile));
         StartOperation(Operation.ReadData);
         using var stream = File.OpenWrite(fileName);
         var buffer = new byte[1024 * 1024];
@@ -328,6 +326,7 @@ public class ArFile
     /// <param name="size">Number of bytes to skip.</param>
     public void SkipData(int size)
     {
+        if (topStream is null) throw new ObjectDisposedException(nameof(ArFile));
         StartOperation(Operation.ReadData);
         if (topStream.CanSeek)
         {
@@ -354,6 +353,7 @@ public class ArFile
     /// <param name="header">Header to write.</param>
     public void WriteHeader(ArHeader header)
     {
+        if (topStream is null) throw new ObjectDisposedException(nameof(ArFile));
         if (header == null)
         {
             throw new ArgumentNullException(nameof(header));
@@ -380,6 +380,7 @@ public class ArFile
     /// <param name="file">Name of the file.</param>
     public void WriteDataFrom(string file)
     {
+        if (topStream is null) throw new ObjectDisposedException(nameof(ArFile));
         if (file == null)
         {
             throw new ArgumentNullException(nameof(file));
@@ -407,6 +408,7 @@ public class ArFile
     /// <param name="data">Byte array to write.</param>
     public void WriteData(byte[] data)
     {
+        if (topStream is null) throw new ObjectDisposedException(nameof(ArFile));
         if (data == null)
         {
             throw new ArgumentNullException(nameof(data));
@@ -483,6 +485,7 @@ public class ArFile
     {
         get
         {
+            if (bottomStream is null) throw new ObjectDisposedException(nameof(ArFile));
             return bottomStream.Position / (double)bottomStream.Length;
         }
     }

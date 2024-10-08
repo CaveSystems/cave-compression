@@ -17,16 +17,16 @@ public class LzmaDecoder
 {
     #region Private Classes
 
-    class LenDecoder
+    sealed class LenDecoder
     {
         #region Private Fields
 
-        RcBitDecoder choice = new RcBitDecoder();
-        RcBitDecoder choice2 = new RcBitDecoder();
-        RcBitTreeDecoder highCoder = new RcBitTreeDecoder(LzmaBase.kNumHighLenBits);
-        RcBitTreeDecoder[] lowCoder = new RcBitTreeDecoder[LzmaBase.kNumPosStatesMax];
-        RcBitTreeDecoder[] midCoder = new RcBitTreeDecoder[LzmaBase.kNumPosStatesMax];
-        uint numPosStates = 0;
+        readonly RcBitTreeDecoder highCoder = new(LzmaBase.KNumHighLenBits);
+        readonly RcBitTreeDecoder[] lowCoder = new RcBitTreeDecoder[LzmaBase.KNumPosStatesMax];
+        readonly RcBitTreeDecoder[] midCoder = new RcBitTreeDecoder[LzmaBase.KNumPosStatesMax];
+        RcBitDecoder choice;
+        RcBitDecoder choice2;
+        uint numPosStates;
 
         #endregion Private Fields
 
@@ -36,8 +36,8 @@ public class LzmaDecoder
         {
             for (var posState = this.numPosStates; posState < numPosStates; posState++)
             {
-                lowCoder[posState] = new RcBitTreeDecoder(LzmaBase.kNumLowLenBits);
-                midCoder[posState] = new RcBitTreeDecoder(LzmaBase.kNumMidLenBits);
+                lowCoder[posState] = new RcBitTreeDecoder(LzmaBase.KNumLowLenBits);
+                midCoder[posState] = new RcBitTreeDecoder(LzmaBase.KNumMidLenBits);
             }
             this.numPosStates = numPosStates;
         }
@@ -48,12 +48,12 @@ public class LzmaDecoder
                 return lowCoder[posState].Decode(rangeDecoder);
             else
             {
-                var symbol = LzmaBase.kNumLowLenSymbols;
+                var symbol = LzmaBase.KNumLowLenSymbols;
                 if (choice2.Decode(rangeDecoder) == 0)
                     symbol += midCoder[posState].Decode(rangeDecoder);
                 else
                 {
-                    symbol += LzmaBase.kNumMidLenSymbols;
+                    symbol += LzmaBase.KNumMidLenSymbols;
                     symbol += highCoder.Decode(rangeDecoder);
                 }
                 return symbol;
@@ -75,7 +75,7 @@ public class LzmaDecoder
         #endregion Public Methods
     }
 
-    class LiteralDecoder
+    sealed class LiteralDecoder
     {
         #region Private Structs
 
@@ -83,19 +83,19 @@ public class LzmaDecoder
         {
             #region Private Fields
 
-            RcBitDecoder[] m_Decoders;
+            RcBitDecoder[] decoders;
 
             #endregion Private Fields
 
             #region Public Methods
 
-            public void Create() => m_Decoders = new RcBitDecoder[0x300];
+            public void Create() => decoders = new RcBitDecoder[0x300];
 
             public byte DecodeNormal(RcDecoder rangeDecoder)
             {
                 uint symbol = 1;
                 do
-                    symbol = (symbol << 1) | m_Decoders[symbol].Decode(rangeDecoder);
+                    symbol = (symbol << 1) | decoders[symbol].Decode(rangeDecoder);
                 while (symbol < 0x100);
                 return (byte)symbol;
             }
@@ -107,12 +107,12 @@ public class LzmaDecoder
                 {
                     var matchBit = (uint)(matchByte >> 7) & 1;
                     matchByte <<= 1;
-                    var bit = m_Decoders[((1 + matchBit) << 8) + symbol].Decode(rangeDecoder);
+                    var bit = decoders[((1 + matchBit) << 8) + symbol].Decode(rangeDecoder);
                     symbol = (symbol << 1) | bit;
                     if (matchBit != bit)
                     {
                         while (symbol < 0x100)
-                            symbol = (symbol << 1) | m_Decoders[symbol].Decode(rangeDecoder);
+                            symbol = (symbol << 1) | decoders[symbol].Decode(rangeDecoder);
                         break;
                     }
                 }
@@ -120,7 +120,7 @@ public class LzmaDecoder
                 return (byte)symbol;
             }
 
-            public void Init() { for (var i = 0; i < 0x300; i++) m_Decoders[i].Init(); }
+            public void Init() { for (var i = 0; i < 0x300; i++) decoders[i].Init(); }
 
             #endregion Public Methods
         }
@@ -176,24 +176,24 @@ public class LzmaDecoder
 
     #region Private Fields
 
+    readonly RcBitDecoder[] isMatchDecoders = new RcBitDecoder[LzmaBase.KNumStates << LzmaBase.KNumPosStatesBitsMax];
+    readonly RcBitDecoder[] isRep0LongDecoders = new RcBitDecoder[LzmaBase.KNumStates << LzmaBase.KNumPosStatesBitsMax];
+    readonly RcBitDecoder[] isRepDecoders = new RcBitDecoder[LzmaBase.KNumStates];
+    readonly RcBitDecoder[] isRepG0Decoders = new RcBitDecoder[LzmaBase.KNumStates];
+    readonly RcBitDecoder[] isRepG1Decoders = new RcBitDecoder[LzmaBase.KNumStates];
+    readonly RcBitDecoder[] isRepG2Decoders = new RcBitDecoder[LzmaBase.KNumStates];
+    readonly LenDecoder lenDecoder = new();
+    readonly LiteralDecoder literalDecoder = new();
+    readonly LzOutWindow outWindow = new();
+    readonly RcBitTreeDecoder posAlignDecoder = new(LzmaBase.KNumAlignBits);
+    readonly RcBitDecoder[] posDecoders = new RcBitDecoder[LzmaBase.KNumFullDistances - LzmaBase.KEndPosModelIndex];
+    readonly RcBitTreeDecoder[] posSlotDecoder = new RcBitTreeDecoder[LzmaBase.KNumLenToPosStates];
+    readonly RcDecoder rangeDecoder = new();
+    readonly LenDecoder repLenDecoder = new();
     uint dictionarySize;
     uint dictionarySizeCheck;
-    RcBitDecoder[] isMatchDecoders = new RcBitDecoder[LzmaBase.kNumStates << LzmaBase.kNumPosStatesBitsMax];
-    RcBitDecoder[] isRep0LongDecoders = new RcBitDecoder[LzmaBase.kNumStates << LzmaBase.kNumPosStatesBitsMax];
-    RcBitDecoder[] isRepDecoders = new RcBitDecoder[LzmaBase.kNumStates];
-    RcBitDecoder[] isRepG0Decoders = new RcBitDecoder[LzmaBase.kNumStates];
-    RcBitDecoder[] isRepG1Decoders = new RcBitDecoder[LzmaBase.kNumStates];
-    RcBitDecoder[] isRepG2Decoders = new RcBitDecoder[LzmaBase.kNumStates];
-    LenDecoder lenDecoder = new LenDecoder();
-    LiteralDecoder literalDecoder = new LiteralDecoder();
-    LzOutWindow outWindow = new LzOutWindow();
-    RcBitTreeDecoder posAlignDecoder = new RcBitTreeDecoder(LzmaBase.kNumAlignBits);
-    RcBitDecoder[] posDecoders = new RcBitDecoder[LzmaBase.kNumFullDistances - LzmaBase.kEndPosModelIndex];
-    RcBitTreeDecoder[] posSlotDecoder = new RcBitTreeDecoder[LzmaBase.kNumLenToPosStates];
     uint posStateMask;
-    RcDecoder rangeDecoder = new RcDecoder();
-    LenDecoder repLenDecoder = new LenDecoder();
-    bool solid = false;
+    bool solid;
 
     #endregion Private Fields
 
@@ -206,11 +206,11 @@ public class LzmaDecoder
         outWindow.Init(outStream, solid);
 
         uint i;
-        for (i = 0; i < LzmaBase.kNumStates; i++)
+        for (i = 0; i < LzmaBase.KNumStates; i++)
         {
             for (uint j = 0; j <= posStateMask; j++)
             {
-                var index = (i << LzmaBase.kNumPosStatesBitsMax) + j;
+                var index = (i << LzmaBase.KNumPosStatesBitsMax) + j;
                 isMatchDecoders[index].Init();
                 isRep0LongDecoders[index].Init();
             }
@@ -221,10 +221,10 @@ public class LzmaDecoder
         }
 
         literalDecoder.Init();
-        for (i = 0; i < LzmaBase.kNumLenToPosStates; i++)
+        for (i = 0; i < LzmaBase.KNumLenToPosStates; i++)
             posSlotDecoder[i].Init();
         // m_PosSpecDecoder.Init();
-        for (i = 0; i < LzmaBase.kNumFullDistances - LzmaBase.kEndPosModelIndex; i++)
+        for (i = 0; i < LzmaBase.KNumFullDistances - LzmaBase.KEndPosModelIndex; i++)
             posDecoders[i].Init();
 
         lenDecoder.Init();
@@ -239,9 +239,9 @@ public class LzmaDecoder
     /// <summary>Creates a new instance of the decoder</summary>
     public LzmaDecoder()
     {
-        for (var i = 0; i < LzmaBase.kNumLenToPosStates; i++)
+        for (var i = 0; i < LzmaBase.KNumLenToPosStates; i++)
         {
-            posSlotDecoder[i] = new RcBitTreeDecoder(LzmaBase.kNumPosSlotBits);
+            posSlotDecoder[i] = new RcBitTreeDecoder(LzmaBase.KNumPosSlotBits);
         }
     }
 
@@ -253,7 +253,7 @@ public class LzmaDecoder
     public uint DictionarySize => dictionarySize > 0 ? dictionarySize : throw new InvalidOperationException($"{nameof(DictionarySize)} was not set. Use {nameof(SetDictionarySize)} first!");
 
     /// <summary>Use <see cref="DefaultProgressManager"/> during decoding.</summary>
-    public bool UseProgressManager { get; set; } = false;
+    public bool UseProgressManager { get; set; }
 
     #endregion Public Properties
 
@@ -280,7 +280,7 @@ public class LzmaDecoder
         var outSize64 = (ulong)outSize;
         if (nowPos64 < outSize64)
         {
-            if (isMatchDecoders[state.Index << LzmaBase.kNumPosStatesBitsMax].Decode(rangeDecoder) != 0)
+            if (isMatchDecoders[state.Index << LzmaBase.KNumPosStatesBitsMax].Decode(rangeDecoder) != 0)
                 throw new LzmaDataErrorException();
             state.UpdateChar();
             var b = literalDecoder.DecodeNormal(rangeDecoder, 0, 0);
@@ -291,7 +291,7 @@ public class LzmaDecoder
         while (nowPos64 < outSize64)
         {
             var posState = (uint)nowPos64 & posStateMask;
-            if (isMatchDecoders[(state.Index << LzmaBase.kNumPosStatesBitsMax) + posState].Decode(rangeDecoder) == 0)
+            if (isMatchDecoders[(state.Index << LzmaBase.KNumPosStatesBitsMax) + posState].Decode(rangeDecoder) == 0)
             {
                 byte b;
                 var prevByte = outWindow.GetByte(0);
@@ -311,7 +311,7 @@ public class LzmaDecoder
                 {
                     if (isRepG0Decoders[state.Index].Decode(rangeDecoder) == 0)
                     {
-                        if (isRep0LongDecoders[(state.Index << LzmaBase.kNumPosStatesBitsMax) + posState].Decode(rangeDecoder) == 0)
+                        if (isRep0LongDecoders[(state.Index << LzmaBase.KNumPosStatesBitsMax) + posState].Decode(rangeDecoder) == 0)
                         {
                             state.UpdateShortRep();
                             outWindow.PutByte(outWindow.GetByte(rep0));
@@ -340,7 +340,7 @@ public class LzmaDecoder
                         rep1 = rep0;
                         rep0 = distance;
                     }
-                    len = repLenDecoder.Decode(rangeDecoder, posState) + LzmaBase.kMatchMinLen;
+                    len = repLenDecoder.Decode(rangeDecoder, posState) + LzmaBase.KMatchMinLen;
                     state.UpdateRep();
                 }
                 else
@@ -348,20 +348,20 @@ public class LzmaDecoder
                     rep3 = rep2;
                     rep2 = rep1;
                     rep1 = rep0;
-                    len = LzmaBase.kMatchMinLen + lenDecoder.Decode(rangeDecoder, posState);
+                    len = LzmaBase.KMatchMinLen + lenDecoder.Decode(rangeDecoder, posState);
                     state.UpdateMatch();
                     var posSlot = posSlotDecoder[LzmaBase.GetLenToPosState(len)].Decode(rangeDecoder);
-                    if (posSlot >= LzmaBase.kStartPosModelIndex)
+                    if (posSlot >= LzmaBase.KStartPosModelIndex)
                     {
                         var numDirectBits = (int)((posSlot >> 1) - 1);
                         rep0 = (2 | (posSlot & 1)) << numDirectBits;
-                        if (posSlot < LzmaBase.kEndPosModelIndex)
+                        if (posSlot < LzmaBase.KEndPosModelIndex)
                             rep0 += RcBitTreeDecoder.ReverseDecode(posDecoders,
                                     rep0 - posSlot - 1, rangeDecoder, numDirectBits);
                         else
                         {
                             rep0 += rangeDecoder.DecodeDirectBits(
-                                numDirectBits - LzmaBase.kNumAlignBits) << LzmaBase.kNumAlignBits;
+                                numDirectBits - LzmaBase.KNumAlignBits) << LzmaBase.KNumAlignBits;
                             rep0 += posAlignDecoder.ReverseDecode(rangeDecoder);
                         }
                     }
@@ -411,7 +411,7 @@ public class LzmaDecoder
         var remainder = state / 9;
         var lp = remainder % 5;
         var pb = remainder / 5;
-        if (pb > LzmaBase.kNumPosStatesBitsMax) throw new LzmaInvalidParamException(nameof(LzmaBase.kNumPosStatesBitsMax));
+        if (pb > LzmaBase.KNumPosStatesBitsMax) throw new LzmaInvalidParamException(nameof(LzmaBase.KNumPosStatesBitsMax));
         SetLiteralProperties(lp, lc);
         SetPosBitsProperties(pb);
     }
@@ -445,7 +445,7 @@ public class LzmaDecoder
     /// <exception cref="LzmaInvalidParamException"></exception>
     public void SetPosBitsProperties(int posBits)
     {
-        if (posBits > LzmaBase.kNumPosStatesBitsMax) throw new LzmaInvalidParamException($"{nameof(posBits)} > {nameof(LzmaBase.kNumPosStatesBitsMax)}", nameof(posBits));
+        if (posBits > LzmaBase.KNumPosStatesBitsMax) throw new LzmaInvalidParamException($"{nameof(posBits)} > {nameof(LzmaBase.KNumPosStatesBitsMax)}", nameof(posBits));
         var numPosStates = (uint)1 << posBits;
         lenDecoder.Create(numPosStates);
         repLenDecoder.Create(numPosStates);

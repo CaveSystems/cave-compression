@@ -4,15 +4,15 @@ struct RcBitDecoder
 {
     #region Private Fields
 
-    const int kNumMoveBits = 5;
-    uint Prob;
+    const int KNumMoveBits = 5;
+    uint prob;
 
     #endregion Private Fields
 
     #region Public Fields
 
-    public const uint kBitModelTotal = 1 << kNumBitModelTotalBits;
-    public const int kNumBitModelTotalBits = 11;
+    public const uint KBitModelTotal = 1 << KNumBitModelTotalBits;
+    public const int KNumBitModelTotalBits = 11;
 
     #endregion Public Fields
 
@@ -20,12 +20,12 @@ struct RcBitDecoder
 
     public uint Decode(RcDecoder rangeDecoder)
     {
-        var newBound = (uint)(rangeDecoder.Range >> kNumBitModelTotalBits) * (uint)Prob;
+        var newBound = (rangeDecoder.Range >> KNumBitModelTotalBits) * prob;
         if (rangeDecoder.Code < newBound)
         {
             rangeDecoder.Range = newBound;
-            Prob += (kBitModelTotal - Prob) >> kNumMoveBits;
-            if (rangeDecoder.Range < RcDecoder.kTopValue)
+            prob += (KBitModelTotal - prob) >> KNumMoveBits;
+            if (rangeDecoder.Range < RcDecoder.KTopValue)
             {
                 rangeDecoder.Code = (rangeDecoder.Code << 8) | (byte)rangeDecoder.Stream.ReadByte();
                 rangeDecoder.Range <<= 8;
@@ -36,8 +36,8 @@ struct RcBitDecoder
         {
             rangeDecoder.Range -= newBound;
             rangeDecoder.Code -= newBound;
-            Prob -= (Prob) >> kNumMoveBits;
-            if (rangeDecoder.Range < RcDecoder.kTopValue)
+            prob -= (prob) >> KNumMoveBits;
+            if (rangeDecoder.Range < RcDecoder.KTopValue)
             {
                 rangeDecoder.Code = (rangeDecoder.Code << 8) | (byte)rangeDecoder.Stream.ReadByte();
                 rangeDecoder.Range <<= 8;
@@ -46,14 +46,14 @@ struct RcBitDecoder
         }
     }
 
-    public void Init() => Prob = kBitModelTotal >> 1;
+    public void Init() => prob = KBitModelTotal >> 1;
 
     public void UpdateModel(int numMoveBits, uint symbol)
     {
         if (symbol == 0)
-            Prob += (kBitModelTotal - Prob) >> numMoveBits;
+            prob += (KBitModelTotal - prob) >> numMoveBits;
         else
-            Prob -= (Prob) >> numMoveBits;
+            prob -= (prob) >> numMoveBits;
     }
 
     #endregion Public Methods
