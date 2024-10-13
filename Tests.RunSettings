@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RunSettings>
 	<RunConfiguration>
-		<!-- 30min = 1800s = 1.800.000 ms -->
-		<TestSessionTimeout>1800000</TestSessionTimeout>
+		<!-- 15min = 900s = 900.000 ms -->
+		<TestSessionTimeout>900000</TestSessionTimeout>
 	</RunConfiguration>
 	<LoggerRunSettings>
 		<Loggers>

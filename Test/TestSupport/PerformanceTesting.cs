@@ -5,6 +5,8 @@ using System.IO;
 using System.Threading;
 using Cave.Console;
 
+#nullable disable
+
 #if !(NET20 || NET35)
 
 using System.Runtime.ExceptionServices;

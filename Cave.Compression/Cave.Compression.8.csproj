@@ -1,12 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-      <TargetFrameworks>
-          net20;net35;
-          net40;
-          net45;net46;net47;net48;
-          netstandard2.0;netstandard2.1;
-          net6.0;net8.0;
-      </TargetFrameworks>
+      <TargetFramework>net8.0</TargetFramework>
     <!--project-->
     <RootNamespace>Cave.Compression</RootNamespace>
     <AssemblyOriginatorKeyFile>Cave.Compression.snk</AssemblyOriginatorKeyFile>
@@ -24,7 +18,7 @@
   </PropertyGroup>
   <!-- package files -->
   <ItemGroup>
-    <PackageReference Include="Cave.Extensions" Version="4.0.1" />
-    <PackageReference Include="Cave.IO" Version="4.0.0" />
+    <ProjectReference Include="..\..\cave-extensions\Cave.Extensions\Cave.Extensions.8.csproj" />
+    <ProjectReference Include="..\..\cave-io\Cave.IO\Cave.IO.8.csproj" />
   </ItemGroup>
 </Project>
