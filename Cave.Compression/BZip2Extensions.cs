@@ -2,18 +2,18 @@
 
 namespace Cave.Compression;
 
-/// <summary>Provides extensions for gzip compression/decompression.</summary>
-public static class GZipExtensions
+/// <summary>Provides extensions for bzip2 compression/decompression.</summary>
+public static class BZip2Extensions
 {
     #region Public Methods
 
     /// <summary>Uncompresses the <paramref name="data"/>.</summary>
     /// <param name="data">The compressed data.</param>
     /// <returns>Returns the uncompressed data.</returns>
-    public static byte[] Gunzip(this byte[] data)
+    public static byte[] Bunzip2(this byte[] data)
     {
         using var ms = new MemoryStream();
-        GZip.GZip.Decompress(new MemoryStream(data), ms, true);
+        Cave.Compression.BZip2.BZip2.Decompress(new MemoryStream(data), ms, true);
         return ms.ToArray();
     }
 
@@ -21,10 +21,10 @@ public static class GZipExtensions
     /// <param name="data">The uncompressed data.</param>
     /// <param name="level">Block size acts as compression level (1 to 9) with 1 giving the lowest compression and 9 the highest.</param>
     /// <returns>Returns the compressed data.</returns>
-    public static byte[] Gzip(this byte[] data, CompressionStrength level = CompressionStrength.Best)
+    public static byte[] BZip2(this byte[] data, CompressionStrength level = CompressionStrength.Best)
     {
         using var ms = new MemoryStream();
-        GZip.GZip.Compress(new MemoryStream(data), ms, true, level);
+        Cave.Compression.BZip2.BZip2.Compress(new MemoryStream(data), ms, true, (int)level);
         return ms.ToArray();
     }
 
