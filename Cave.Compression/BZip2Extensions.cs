@@ -2,7 +2,7 @@
 
 namespace Cave.Compression;
 
-/// <summary>Provides extensions for gzip compression/decompression.</summary>
+/// <summary>Provides extensions for bzip2 compression/decompression.</summary>
 public static class BZip2Extensions
 {
     #region Public Methods
@@ -13,7 +13,7 @@ public static class BZip2Extensions
     public static byte[] Bunzip2(this byte[] data)
     {
         using var ms = new MemoryStream();
-        GZip.GZip.Decompress(new MemoryStream(data), ms, true);
+        Cave.Compression.BZip2.BZip2.Decompress(new MemoryStream(data), ms, true);
         return ms.ToArray();
     }
 
@@ -24,7 +24,7 @@ public static class BZip2Extensions
     public static byte[] BZip2(this byte[] data, CompressionStrength level = CompressionStrength.Best)
     {
         using var ms = new MemoryStream();
-        GZip.GZip.Compress(new MemoryStream(data), ms, true, level);
+        Cave.Compression.BZip2.BZip2.Compress(new MemoryStream(data), ms, true, (int)level);
         return ms.ToArray();
     }
 
